@@ -1,0 +1,29 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+jar {
+	baseName = 'device-data'
+	version =  '1.0.0'
+}
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	maven { url "http://repo.spring.io/libs-snapshot" }
+	maven { url "http://repo.opensourceagility.com/snapshots" }
+}
+
+dependencies {
+	compile("org.springframework.data:spring-data-commons:1.8.0.RELEASE")
+	compile("org.socialsignin:spring-data-dynamodb:1.0.1-SNAPSHOT") {
+		exclude group: "org.springframework", module: "spring-context"
+		exclude group: "org.springframework", module: "spring-aop"
+		exclude group: "org.springframework", module: "sprint-tx"
+	}
+	testCompile("junit:junit")
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '1.11'
+}

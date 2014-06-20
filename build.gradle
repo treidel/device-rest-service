@@ -1,0 +1,11 @@
+subprojects {
+	apply plugin: 'java'
+	group = 'com.test.device'
+	version = '1.0'
+}
+
+project(':rest') {
+	dependencies {
+		compile project(':data')
+	}
+}
