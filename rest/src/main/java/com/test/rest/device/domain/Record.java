@@ -1,24 +1,22 @@
 package com.test.rest.device.domain;
 
-import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
-
-import org.springframework.hateoas.ResourceSupport;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Record extends ResourceSupport {
+public class Record {
 
 	private final UUID uuid;
 	private final Date timestamp;
-	private final Collection<Measurement> circuits;
+	private final Set<Measurement> circuits;
 
 	@JsonCreator
 	public Record(@JsonProperty("uuid") UUID uuid,
 			@JsonProperty("timestamp") Date timestamp,
-			@JsonProperty("circuits") Collection<Measurement> circuits) {
+			@JsonProperty("circuits") Set<Measurement> circuits) {
 		this.uuid = uuid;
 		this.timestamp = timestamp;
 		this.circuits = circuits;
@@ -32,7 +30,7 @@ public class Record extends ResourceSupport {
 		return timestamp;
 	}
 	
-	public Collection<Measurement> getCircuits() {
+	public Set<Measurement> getCircuits() {
 		return circuits;
 	}
 
