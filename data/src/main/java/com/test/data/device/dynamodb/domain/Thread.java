@@ -1,4 +1,4 @@
-package org.socialsignin.springframework.data.dynamodb.demo.domain;
+package com.test.data.device.dynamodb.domain;
 
 import java.util.Set;
 

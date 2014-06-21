@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.socialsignin.springframework.data.dynamodb.demo.repository;
+package com.test.data.device.dynamodb.repository;
 
-import org.socialsignin.springframework.data.dynamodb.demo.domain.Thread;
-import org.socialsignin.springframework.data.dynamodb.demo.domain.ThreadId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
+
+import com.test.data.device.dynamodb.domain.Thread;
+import com.test.data.device.dynamodb.domain.ThreadId;
 
 /**
  * Repository to manage {@link Thread} instances.

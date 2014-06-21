@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.socialsignin.springframework.data.dynamodb.demo.repository;
+package com.test.data.device.dynamodb.repository;
 
 import java.util.List;
 
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
-import org.socialsignin.springframework.data.dynamodb.demo.domain.Forum;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+
+import com.test.data.device.dynamodb.domain.Forum;
 
 /**
  * Repository to manage {@link Forum} instances.

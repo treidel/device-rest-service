@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.socialsignin.springframework.data.dynamodb.demo.domain;
+package com.test.data.device.dynamodb.domain;
 
 import javax.validation.constraints.NotNull;
 

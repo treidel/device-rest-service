@@ -1,11 +1,11 @@
-package hello;
+package com.test.rest.device;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-@ComponentScan
 @EnableAutoConfiguration
+@ComponentScan
 public class Application {
 
     public static void main(String[] args) {
