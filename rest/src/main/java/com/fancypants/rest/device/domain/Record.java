@@ -1,4 +1,4 @@
-package com.test.rest.device.domain;
+package com.fancypants.rest.device.domain;
 
 import java.util.Date;
 import java.util.Set;
