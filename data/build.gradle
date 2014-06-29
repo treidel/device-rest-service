@@ -21,7 +21,8 @@ dependencies {
 		exclude group: "org.springframework", module: "spring-aop"
 		exclude group: "org.springframework", module: "sprint-tx"
 	}
-	testCompile("junit:junit")
+	testCompile("org.springframework.boot:spring-boot-starter-test:1.1.2.RELEASE")
+	testCompile("org.springframework:spring-context:4.0.5.RELEASE")
 }
 
 task wrapper(type: Wrapper) {

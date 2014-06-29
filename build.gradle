@@ -6,6 +6,6 @@ subprojects {
 
 project(':rest') {
 	dependencies {
-	//	compile project(':data')
+		compile project(':data')
 	}
 }

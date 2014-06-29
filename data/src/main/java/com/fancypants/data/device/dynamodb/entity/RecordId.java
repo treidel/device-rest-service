@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.test.data.device.dynamodb.domain;
+package com.fancypants.data.device.dynamodb.entity;
 
-import java.io.Serializable;
-
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import java.io.Serializable;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
@@ -29,34 +25,32 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
  * identify which attribute is the hash key and which is the range key the
  * methods must be annotated with @DynamoDBHashKey or @DynamoDBRangeKey
  * 
- * 
- * @author Michael Lavelle
  */
-public class ThreadId implements Serializable {
+public class RecordId implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String forumName;
-	private String subject;
+	private String device;
+	private String uuid;
 
 	@DynamoDBHashKey
-	public String getForumName() {
-		return forumName;
+	public String getDevice() {
+		return device;
 	}
 
-	public void setForumName(String forumName) {
-		this.forumName = forumName;
+	public void setDevice(String device) {
+		this.device = device;
 	}
 
 	@DynamoDBRangeKey
-	public String getSubject() {
-		return subject;
+	public String getUUID() {
+		return uuid;
 	}
 
-	public void setSubject(String subject) {
-		this.subject = subject;
+	public void setUUID(String uuid) {
+		this.uuid = uuid;
 	}
 
 }
