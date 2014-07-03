@@ -18,10 +18,12 @@ package com.fancypants.data.device.dynamodb.repository;
 import java.util.Collection;
 
 import org.socialsignin.spring.data.dynamodb.repository.DynamoDBPagingAndSortingRepository;
+import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 
 import com.fancypants.data.device.dynamodb.entity.RecordEntity;
 import com.fancypants.data.device.dynamodb.entity.RecordId;
 
+@EnableScan
 public interface RecordRepository extends
 		DynamoDBPagingAndSortingRepository<RecordEntity, RecordId> {
 

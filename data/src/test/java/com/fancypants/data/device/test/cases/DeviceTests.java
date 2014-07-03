@@ -1,12 +1,12 @@
 package com.fancypants.data.device.test.cases;
 
-import java.text.DateFormat;
 import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,19 +23,16 @@ import com.fancypants.data.device.dynamodb.repository.DeviceRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = DynamoDBConfig.class)
-public class DeviceTests {
+public class DeviceTests extends AbstractTest {
 
 	private static final DeviceEntity DEVICE1 = new DeviceEntity();
 	private static final String INVALID_DEVICE_NAME = "XYZ789";
-	
+
 	private @Autowired
 	DeviceRepository repository;
-	
-	private @Autowired
-	DateFormat iso8601DateFormat;
 
-	@Before
-	public void setup() {
+	@BeforeClass
+	public static void init() {
 		// setup the test records
 		DEVICE1.setDevice("ABC1234");
 		DEVICE1.setSerialNumber("00000001");
@@ -45,9 +42,15 @@ public class DeviceTests {
 			Circuit circuit = new Circuit(i, String.valueOf(i), 120.0f, 30.0f);
 			circuits.add(circuit);
 		}
-		DEVICE1.setCircuits(circuits);	
+		DEVICE1.setCircuits(circuits);
 	}
-	
+
+	@Before
+	public void setup() {
+		// pre-clean
+		cleanup();
+	}
+
 	@After
 	public void cleanup() {
 		// remove all records just in case
@@ -58,25 +61,24 @@ public class DeviceTests {
 	public void createTest() {
 		repository.save(DEVICE1);
 	}
-	
+
 	@Test
 	public void duplicateCreateTest() {
-		// pre-create 
+		// pre-create
 		createTest();
 		// create + save again
 		querySuccessTest();
 	}
-	
+
 	@Test
 	public void querySuccessTest() {
-		// run the create test to create a record 
+		// run the create test to create a record
 		createTest();
-		// query for it 
+		// query for it
 		DeviceEntity device = repository.findOne(DEVICE1.getDevice());
 		Assert.isTrue(null != device);
 	}
-	
-	
+
 	@Test
 	public void queryInvalidTest() {
 		DeviceEntity device = repository.findOne(INVALID_DEVICE_NAME);

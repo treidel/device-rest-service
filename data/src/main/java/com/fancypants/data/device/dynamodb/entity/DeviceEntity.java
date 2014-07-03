@@ -5,7 +5,6 @@ import java.util.Set;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMarshalling;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 @DynamoDBTable(tableName = "devices")
@@ -25,7 +24,7 @@ public class DeviceEntity {
 		this.device = device;
 	}
 
-	@DynamoDBRangeKey
+	@DynamoDBAttribute(attributeName = "serial-number")
 	public String getSerialNumber() {
 		return serialnumber;
 	}
@@ -34,7 +33,7 @@ public class DeviceEntity {
 		this.serialnumber = serialnumber;
 	}
 	
-	@DynamoDBAttribute
+	@DynamoDBAttribute(attributeName = "circuits")
 	@DynamoDBMarshalling(marshallerClass = CircuitMarshaller.class)
 	public Set<Circuit> getCircuits() {
 		return circuits;
@@ -44,7 +43,7 @@ public class DeviceEntity {
 		this.circuits = circuits;
 	}
 
-	@DynamoDBAttribute
+	@DynamoDBAttribute(attributeName = "last-modified-timestamp")
 	public String getLastModifiedTimestamp() {
 		return lastModifiedTimestamp;
 	}

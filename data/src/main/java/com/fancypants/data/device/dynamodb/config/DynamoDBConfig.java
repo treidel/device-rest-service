@@ -11,7 +11,6 @@ import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBEntityIn
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBEntityMetadataSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -26,7 +25,6 @@ import com.fancypants.data.device.dynamodb.repository.impl.DeviceRepositoryImpl;
 import com.fancypants.data.device.dynamodb.repository.impl.RecordRepositoryImpl;
 
 @Configuration
-@PropertySource("classpath:environment.properties")
 public class DynamoDBConfig {
 
 	public static final String ISO8601_DATEFORMAT_BEAN = "iso8601DateFormat";

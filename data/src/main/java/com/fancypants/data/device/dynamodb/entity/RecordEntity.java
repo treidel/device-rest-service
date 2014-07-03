@@ -6,7 +6,7 @@ import java.util.TreeMap;
 
 import org.springframework.data.annotation.Id;
 
-import com.amazonaws.services.cloudfront_2012_03_15.model.InvalidArgumentException;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexRangeKey;
@@ -60,7 +60,7 @@ public class RecordEntity {
 
 	}
 
-	@DynamoDBIndexRangeKey(attributeName = "timestamp")
+	@DynamoDBIndexRangeKey( attributeName = "timestamp", localSecondaryIndexName = "timestamp-index")
 	public String getTimestamp() {
 		return timestamp;
 	}
@@ -74,7 +74,7 @@ public class RecordEntity {
 		return getCircuit(1);
 	}
 
-	public void setCircuit1(float value) {
+	public void setCircuit1(Float value) {
 		setCircuit(1, value);
 	}
 
@@ -83,7 +83,7 @@ public class RecordEntity {
 		return getCircuit(2);
 	}
 
-	public void setCircuit2(float value) {
+	public void setCircuit2(Float value) {
 		setCircuit(2, value);
 	}
 
@@ -92,7 +92,7 @@ public class RecordEntity {
 		return getCircuit(3);
 	}
 
-	public void setCircuit3(float value) {
+	public void setCircuit3(Float value) {
 		setCircuit(3, value);
 	}
 
@@ -101,7 +101,7 @@ public class RecordEntity {
 		return getCircuit(4);
 	}
 
-	public void setCircuit4(float value) {
+	public void setCircuit4(Float value) {
 		setCircuit(4, value);
 	}
 
@@ -110,7 +110,7 @@ public class RecordEntity {
 		return getCircuit(5);
 	}
 
-	public void setCircuit5(float value) {
+	public void setCircuit5(Float value) {
 		setCircuit(5, value);
 	}
 
@@ -119,7 +119,7 @@ public class RecordEntity {
 		return getCircuit(6);
 	}
 
-	public void setCircuit7(float value) {
+	public void setCircuit7(Float value) {
 		setCircuit(7, value);
 	}
 
@@ -128,7 +128,7 @@ public class RecordEntity {
 		return getCircuit(7);
 	}
 
-	public void setCircuit8(float value) {
+	public void setCircuit8(Float value) {
 		setCircuit(8, value);
 	}
 
@@ -146,7 +146,7 @@ public class RecordEntity {
 
 	public void setCircuit(int index, float value) {
 		if ((index < MIN_CIRCUIT) || (index > MAX_CIRCUIT)) {
-			throw new InvalidArgumentException("index=" + index
+			throw new IllegalArgumentException("index=" + index
 					+ " out of range (" + MIN_CIRCUIT + "," + MAX_CIRCUIT);
 		}
 		if (null == this.circuits) {
@@ -155,15 +155,16 @@ public class RecordEntity {
 		this.circuits.put(index, value);
 	}
 
+	@DynamoDBIgnore
 	public Map<Integer, Float> getCircuits() {
 		return circuits;
 	}
-	
+
 	public void setCircuits(Map<Integer, Float> circuits) {
 		int min = Collections.min(circuits.keySet());
 		int max = Collections.max(circuits.keySet());
 		if ((min < MIN_CIRCUIT) || (max > MAX_CIRCUIT)) {
-			throw new InvalidArgumentException("min=" + min + " or max=" + max
+			throw new IllegalArgumentException("min=" + min + " or max=" + max
 					+ " out of range (" + MIN_CIRCUIT + "," + MAX_CIRCUIT);
 		}
 		this.circuits = circuits;
