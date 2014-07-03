@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -13,9 +14,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.fancypants.data.device.dynamodb.repository.DeviceRepository;
+
 @Service
 public class DeviceUserDetailsService implements UserDetailsService {
 
+	private @Autowired DeviceRepository repository; 
+	
 	@PostConstruct
 	public void init() {
 		// set ourselves as the default user details service

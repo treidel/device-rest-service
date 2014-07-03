@@ -11,15 +11,15 @@ public class Record {
 
 	private final UUID uuid;
 	private final Date timestamp;
-	private final Set<Measurement> circuits;
+	private final Set<Measurement> measurements;
 
 	@JsonCreator
 	public Record(@JsonProperty("uuid") UUID uuid,
 			@JsonProperty("timestamp") Date timestamp,
-			@JsonProperty("circuits") Set<Measurement> circuits) {
+			@JsonProperty("measurements") Set<Measurement> measurements) {
 		this.uuid = uuid;
 		this.timestamp = timestamp;
-		this.circuits = circuits;
+		this.measurements = measurements;
 	}
 	
 	public UUID getUUID() {
@@ -30,8 +30,8 @@ public class Record {
 		return timestamp;
 	}
 	
-	public Set<Measurement> getCircuits() {
-		return circuits;
+	public Set<Measurement> getMeasurements() {
+		return measurements;
 	}
 
 }
