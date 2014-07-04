@@ -17,9 +17,8 @@ repositories {
 dependencies {
 	compile("org.springframework.data:spring-data-commons:1.8.0.RELEASE")
 	compile("org.socialsignin:spring-data-dynamodb:1.0.1-SNAPSHOT") {
-		exclude group: "org.springframework", module: "spring-context"
-		exclude group: "org.springframework", module: "spring-aop"
-		exclude group: "org.springframework", module: "sprint-tx"
+		exclude group: "com.fasterxml.jackson.core", module: "jackson-core"
+		exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
 	}
 	testCompile("org.springframework.boot:spring-boot-starter-test:1.1.2.RELEASE")
 	testCompile("org.springframework:spring-context:4.0.5.RELEASE")

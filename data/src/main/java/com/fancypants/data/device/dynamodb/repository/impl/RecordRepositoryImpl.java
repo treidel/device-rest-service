@@ -4,9 +4,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.socialsignin.spring.data.dynamodb.core.DynamoDBOperations;
-import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBEntityInformation;
+import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBEntityMetadataSupport;
 import org.socialsignin.spring.data.dynamodb.repository.support.EnableScanAnnotationPermissions;
 import org.socialsignin.spring.data.dynamodb.repository.support.SimpleDynamoDBPagingAndSortingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
@@ -19,9 +20,10 @@ public class RecordRepositoryImpl extends
 		SimpleDynamoDBPagingAndSortingRepository<RecordEntity, RecordId>
 		implements RecordRepository {
 
-	public RecordRepositoryImpl(DynamoDBOperations dynamoDBOperations,
-			DynamoDBEntityInformation<RecordEntity, RecordId> entityInformation) {
-		super(entityInformation, dynamoDBOperations,
+	@Autowired
+	public RecordRepositoryImpl(DynamoDBOperations dynamoDBOperations) {
+		super(new DynamoDBEntityMetadataSupport<RecordEntity, RecordId>(
+				RecordEntity.class).getEntityInformation(), dynamoDBOperations,
 				new EnableScanAnnotationPermissions(RecordRepository.class));
 	}
 

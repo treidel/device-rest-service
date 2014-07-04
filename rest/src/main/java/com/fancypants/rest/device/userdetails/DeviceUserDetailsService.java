@@ -19,14 +19,15 @@ import com.fancypants.data.device.dynamodb.repository.DeviceRepository;
 @Service
 public class DeviceUserDetailsService implements UserDetailsService {
 
-	private @Autowired DeviceRepository repository; 
-	
+	@Autowired
+	private DeviceRepository repository;
+
 	@PostConstruct
 	public void init() {
 		// set ourselves as the default user details service
-		
+
 	}
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
