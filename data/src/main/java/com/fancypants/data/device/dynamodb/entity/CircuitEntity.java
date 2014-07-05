@@ -3,14 +3,14 @@ package com.fancypants.data.device.dynamodb.entity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Circuit implements Comparable<Circuit> {
+public class CircuitEntity implements Comparable<CircuitEntity> {
 	private int index;
 	private String name;
 	private Float voltage;
 	private Float amperage;
 
 	@JsonCreator
-	public Circuit(@JsonProperty("index") int index,
+	public CircuitEntity(@JsonProperty("index") int index,
 			@JsonProperty("name") String name,
 			@JsonProperty("voltage") float voltage,
 			@JsonProperty("amperage") float amperage) {
@@ -37,7 +37,7 @@ public class Circuit implements Comparable<Circuit> {
 	}
 
 	@Override
-	public int compareTo(Circuit circuit) {
+	public int compareTo(CircuitEntity circuit) {
 		return Integer.compare(this.index, circuit.index);
 	}
 }

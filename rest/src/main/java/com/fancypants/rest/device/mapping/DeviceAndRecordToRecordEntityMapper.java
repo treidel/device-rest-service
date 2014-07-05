@@ -1,46 +1,40 @@
 package com.fancypants.rest.device.mapping;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fancypants.data.device.dynamodb.entity.Circuit;
+import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
+import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
 import com.fancypants.data.device.dynamodb.entity.RecordEntity;
-import com.fancypants.rest.device.domain.Device;
 import com.fancypants.rest.device.domain.Measurement;
 import com.fancypants.rest.device.domain.Record;
 
 @Component
 public class DeviceAndRecordToRecordEntityMapper implements
-		EntityMapper<RecordEntity, Pair<Device, Record>> {
+		EntityMapper<RecordEntity, Pair<DeviceEntity, Record>> {
 
 	private @Autowired
 	DateFormat iso8601DateFormat;
-
-	static {
-		// use ISO8601/RFC3339 time format
-		TimeZone tz = TimeZone.getTimeZone("UTC");
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-		df.setTimeZone(tz);
-	}
+	
+	private @Autowired
+	CircuitToCircuitEntityMapper mapper;
 
 	@Override
-	public RecordEntity convert(Pair<Device, Record> entity) {
+	public RecordEntity convert(Pair<DeviceEntity, Record> entity) {
 		// extract the inputs
-		Device device = entity.getLeft();
+		DeviceEntity deviceEntity = entity.getLeft();
 		Record record = entity.getRight();
 		// create + populate the return object
 		RecordEntity recordEntity = new RecordEntity();
-		recordEntity.setDevice(device.getName());
+		recordEntity.setDevice(deviceEntity.getDevice());
 		recordEntity.setTimestamp(iso8601DateFormat.format(record
 				.getTimestamp()));
-		for (Measurement measurement : record.getMeasurements()) {
-			Circuit circuit = device.getCircuitByName(measurement.getCircuit());
-			recordEntity.setCircuit(circuit.getIndex(), measurement.getValue());
+		for (Measurement measurement : record.getMeasurements()) {			
+			CircuitEntity circuitEntity = deviceEntity.getCircuitByName(measurement.getCircuit());
+			recordEntity.setCircuit(circuitEntity.getIndex(), measurement.getValue());
 		}
 		// done
 		return recordEntity;

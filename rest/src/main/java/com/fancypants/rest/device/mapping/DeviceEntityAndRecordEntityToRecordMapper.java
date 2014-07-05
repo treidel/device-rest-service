@@ -9,20 +9,20 @@ import java.util.UUID;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
-import com.fancypants.data.device.dynamodb.entity.Circuit;
+import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
+import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
 import com.fancypants.data.device.dynamodb.entity.RecordEntity;
-import com.fancypants.rest.device.domain.Device;
 import com.fancypants.rest.device.domain.Measurement;
 import com.fancypants.rest.device.domain.Record;
 
 @Component
-public class DeviceAndRecordEntityToRecordMapper implements
-		EntityMapper<Record, Pair<Device, RecordEntity>> {
+public class DeviceEntityAndRecordEntityToRecordMapper implements
+		EntityMapper<Record, Pair<DeviceEntity, RecordEntity>> {
 
 	@Override
-	public Record convert(Pair<Device, RecordEntity> entity) {
+	public Record convert(Pair<DeviceEntity, RecordEntity> entity) {
 		// extract the entities 
-		Device device = entity.getLeft();
+		DeviceEntity deviceEntity = entity.getLeft();
 		RecordEntity recordEntity = entity.getRight();
 		// create the set for the measurements
 		Set<Measurement> measurements = new HashSet<Measurement>(recordEntity
@@ -30,7 +30,7 @@ public class DeviceAndRecordEntityToRecordMapper implements
 		for (Map.Entry<Integer, Float> entry : recordEntity.getCircuits()
 				.entrySet()) {
 			// pull out the circuit
-			Circuit circuit = device.getCircuitByIndex(entry.getKey());
+			CircuitEntity circuit = deviceEntity.getCircuitByIndex(entry.getKey());
 			// create the measurement and add it to the set
 			Measurement measurement = new Measurement(circuit.getName(),
 					entry.getValue());

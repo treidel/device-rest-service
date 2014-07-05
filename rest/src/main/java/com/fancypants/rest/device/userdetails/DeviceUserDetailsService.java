@@ -3,8 +3,6 @@ package com.fancypants.rest.device.userdetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,25 +12,27 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.fancypants.data.device.dynamodb.repository.DeviceRepository;
+import com.fancypants.rest.device.domain.Device;
+import com.fancypants.rest.device.mapping.DeviceEntityToDeviceMapper;
+import com.fancypants.rest.device.service.DeviceService;
 
 @Service
 public class DeviceUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	private DeviceRepository repository;
+	private DeviceService deviceService;
 
-	@PostConstruct
-	public void init() {
-		// set ourselves as the default user details service
-
-	}
+	@Autowired
+	private DeviceEntityToDeviceMapper mapper;
 
 	@Override
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
-		// TBD: verify the device has not been disabled via some kind of
-		// database lookup
+		// lookup the device to be sure it exists
+		Device device = deviceService.getDevice(username);
+		if (null == device) {
+			throw new UsernameNotFoundException("device=" + username + " not found in database");
+		}
 
 		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(
 				1);
