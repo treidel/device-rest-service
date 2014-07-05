@@ -3,8 +3,8 @@ package com.fancypants.rest.device.mapping;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,8 +24,7 @@ public class DeviceEntityToDeviceMapper implements
 	@Override
 	public Device convert(DeviceEntity entity) {
 		// create the set for the circuits
-		Set<Circuit> circuits = new HashSet<Circuit>(entity.getCircuits()
-				.size());
+		SortedSet<Circuit> circuits = new TreeSet<Circuit>();
 		for (CircuitEntity circuitEntity : entity.getCircuits()) {
 			// create the circuit object
 			Circuit circuit = new Circuit(circuitEntity.getName(),

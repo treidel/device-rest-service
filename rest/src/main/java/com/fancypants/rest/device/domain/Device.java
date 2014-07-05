@@ -1,7 +1,7 @@
 package com.fancypants.rest.device.domain;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.SortedSet;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,15 +10,15 @@ public class Device {
 
 	private final String name;
 	private final String serialNumber;
-	private final Date lastModifiedTimestamp;
-	private final Set<Circuit> circuits;
+	private Date lastModifiedTimestamp;
+	private final SortedSet<Circuit> circuits;
 
 	@JsonCreator
 	public Device(
 			@JsonProperty("name") String name,
 			@JsonProperty("serial-number") String serialNumber,
 			@JsonProperty("last-modified-timestamp") Date lastModifiedTimestamp,
-			@JsonProperty("circuits") Set<Circuit> circuits) {
+			@JsonProperty("circuits") SortedSet<Circuit> circuits) {
 		this.name = name;
 		this.serialNumber = serialNumber;
 		this.lastModifiedTimestamp = lastModifiedTimestamp;
@@ -36,8 +36,12 @@ public class Device {
 	public Date getLastModifiedTimestamp() {
 		return lastModifiedTimestamp;
 	}
+	
+	public void setLastModifiedTimestamp(Date lastModifiedTimestamp) {
+		this.lastModifiedTimestamp = lastModifiedTimestamp;
+	}
 
-	public Set<Circuit> getCircuits() {
+	public SortedSet<Circuit> getCircuits() {
 		return circuits;
 	}
 }
