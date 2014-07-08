@@ -20,7 +20,7 @@ import com.fancypants.rest.device.service.DeviceService;
 
 @Controller
 @RequestMapping("/device")
-@Secured("ADMIN")
+@Secured("ROLE_ADMIN")
 public class DeviceController {
 
 	private final DeviceResourceAssembler deviceResourceAssembler = new DeviceResourceAssembler();
@@ -42,7 +42,7 @@ public class DeviceController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	@Secured("USER")
+	@Secured("ROLE_USER")
 	@ResponseBody
 	public HttpEntity<DeviceResource> getDevice() {
 		Device device = deviceContainer.getDevice();
@@ -51,6 +51,7 @@ public class DeviceController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT)
+	@Secured("ROLE_USER")
 	@ResponseBody
 	public HttpEntity<DeviceResource> putDevice(@RequestBody Device device) throws AbstractServiceException {
 

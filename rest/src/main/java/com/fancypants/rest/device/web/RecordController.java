@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @RequestMapping("/device")
-@Secured("USER")
+@Secured("ROLE_USER")
 public class RecordController {
 
 	private final RecordResourceAssembler recordResourceAssembler = new RecordResourceAssembler();

@@ -43,6 +43,8 @@ public class DeviceToDeviceEntityMapper implements
 			// increment the assignment counter
 			count++;
 		}
+		// store the circuits
+		deviceEntity.setCircuits(circuitEntities);
 		// done
 		return deviceEntity;
 	}

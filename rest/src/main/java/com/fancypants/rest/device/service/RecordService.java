@@ -67,8 +67,7 @@ public class RecordService {
 
 	public void bulkCreateRecords(Collection<Record> records) {
 		// find the device
-		DeviceEntity deviceEntity = deviceRepository.findOne(deviceContainer
-				.getDeviceEntity().getDevice());
+		DeviceEntity deviceEntity = deviceContainer.getDeviceEntity();
 		// create the list for the record entities
 		Collection<RecordEntity> recordEntities = new ArrayList<RecordEntity>(
 				records.size());

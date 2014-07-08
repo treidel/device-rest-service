@@ -19,7 +19,7 @@ import com.fancypants.rest.device.service.DeviceService;
 @Service
 public class DeviceUserDetailsService implements UserDetailsService {
 
-	private static final String ADMIN_USERNAME = "admin.fancypants.com";
+	private static final String ADMIN_USERNAME = "devices.fancypants.com";
 
 	@Autowired
 	private DeviceService deviceService;
@@ -35,7 +35,7 @@ public class DeviceUserDetailsService implements UserDetailsService {
 				1);
 		// if this is the special admin user grant additional authority
 		if (true == username.equals(ADMIN_USERNAME)) {
-			authorities.add(new SimpleGrantedAuthority("ADMIN"));
+			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 		} else {
 			// lookup the device to be sure it exists
 			Device device = deviceService.getDevice(username);
@@ -44,7 +44,7 @@ public class DeviceUserDetailsService implements UserDetailsService {
 						+ " not found in database");
 			}
 			// provide the user authority
-			authorities.add(new SimpleGrantedAuthority("USER"));
+			authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 		}
 		// create and return the user
 		UserDetails user = new User(username, "", authorities);
