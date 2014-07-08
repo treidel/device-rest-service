@@ -13,10 +13,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.Resource;
 
-import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBcanMe;
+import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe;
 
 @EnableAutoConfiguration
-@ComponentScan(basePackageClasses= { RestDeviceScanMe.class, DataDeviceDynamoDBcanMe.class })
+@ComponentScan(basePackageClasses= { RestDeviceScanMe.class, DataDeviceDynamoDBScanMe.class })
 public class Application {
 
 	public static void main(String[] args) {

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
 import com.fancypants.data.device.dynamodb.entity.RecordEntity;
+import com.fancypants.data.device.dynamodb.entity.RecordId;
 import com.fancypants.rest.device.domain.Measurement;
 import com.fancypants.rest.device.domain.Record;
 
@@ -28,8 +29,11 @@ public class DeviceAndRecordToRecordEntityMapper implements
 		DeviceEntity deviceEntity = entity.getLeft();
 		Record record = entity.getRight();
 		// create + populate the return object
+		RecordId recordId = new RecordId();
+		recordId.setDevice(deviceEntity.getDevice());
+		recordId.setUUID(record.getUUID().toString());
 		RecordEntity recordEntity = new RecordEntity();
-		recordEntity.setDevice(deviceEntity.getDevice());
+		recordEntity.setRecordId(recordId);
 		recordEntity.setTimestamp(iso8601DateFormat.format(record
 				.getTimestamp()));
 		for (Measurement measurement : record.getMeasurements()) {			
