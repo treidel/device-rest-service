@@ -4,7 +4,13 @@ subprojects {
 	version = '1.0'
 }
 
-project(':rest') {
+
+project(':device') {
+	dependencies {
+		compile project(':data')
+	}
+}
+project(':app') {
 	dependencies {
 		compile project(':data')
 	}
