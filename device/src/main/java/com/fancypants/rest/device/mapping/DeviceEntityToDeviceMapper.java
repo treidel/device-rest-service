@@ -31,18 +31,18 @@ public class DeviceEntityToDeviceMapper implements
 					circuitEntity.getVoltage(), circuitEntity.getAmperage());
 			circuits.add(circuit);
 		}
-		// parse the date
-		Date lastModifiedTimestamp;
 		try {
-			lastModifiedTimestamp = iso8601Format.parse(entity
+			// parse the date
+			Date lastModifiedTimestamp = iso8601Format.parse(entity
 					.getLastModifiedTimestamp());
+			// create + return the device
+			Device device = new Device(entity.getDevice(),
+					entity.getSerialNumber(), lastModifiedTimestamp, circuits);
+			return device;
+
 		} catch (ParseException e) {
 			throw new IllegalStateException(e.getMessage());
 		}
-		// create + return the device
-		Device device = new Device(entity.getDevice(),
-				entity.getSerialNumber(), lastModifiedTimestamp, circuits);
-		return device;
 	}
 
 }

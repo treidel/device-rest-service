@@ -2,7 +2,6 @@ package com.fancypants.data.device.dynamodb.config;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.TimeZone;
 
 import org.socialsignin.spring.data.dynamodb.core.DynamoDBOperations;
 import org.socialsignin.spring.data.dynamodb.core.DynamoDBTemplate;
@@ -44,9 +43,9 @@ public class DynamoDBConfig {
 	@Bean
 	DateFormat iso8601DateFormat() {
 		// use ISO8601/RFC3339 time format
-		TimeZone tz = TimeZone.getTimeZone("UTC");
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-		df.setTimeZone(tz);
+		//TimeZone tz = TimeZone.getTimeZone("UTC");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		//df.setTimeZone(tz);
 		return df;
 	}
 

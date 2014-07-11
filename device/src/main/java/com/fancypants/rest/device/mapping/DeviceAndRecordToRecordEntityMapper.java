@@ -19,7 +19,7 @@ public class DeviceAndRecordToRecordEntityMapper implements
 
 	private @Autowired
 	DateFormat iso8601DateFormat;
-	
+
 	private @Autowired
 	CircuitToCircuitEntityMapper mapper;
 
@@ -36,9 +36,13 @@ public class DeviceAndRecordToRecordEntityMapper implements
 		recordEntity.setRecordId(recordId);
 		recordEntity.setTimestamp(iso8601DateFormat.format(record
 				.getTimestamp()));
-		for (Measurement measurement : record.getMeasurements()) {			
-			CircuitEntity circuitEntity = deviceEntity.getCircuitByName(measurement.getCircuit());
-			recordEntity.setCircuit(circuitEntity.getIndex(), measurement.getValue());
+		for (Measurement measurement : record.getMeasurements()) {
+			CircuitEntity circuitEntity = deviceEntity
+					.getCircuitByName(measurement.getCircuit());
+			if (null != circuitEntity) {
+				recordEntity.setCircuit(circuitEntity.getIndex(),
+						measurement.getValue());
+			}
 		}
 		// done
 		return recordEntity;
