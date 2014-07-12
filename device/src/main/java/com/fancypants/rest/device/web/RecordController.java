@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fancypants.rest.device.assembler.RecordResourceAssembler;
-import com.fancypants.rest.device.domain.Device;
 import com.fancypants.rest.device.domain.Record;
 import com.fancypants.rest.device.request.DeviceContainer;
 import com.fancypants.rest.device.resource.RecordResource;
 import com.fancypants.rest.device.service.DeviceService;
 import com.fancypants.rest.device.service.RecordService;
+import com.fancypants.rest.domain.Device;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller

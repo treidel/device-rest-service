@@ -5,8 +5,8 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
-import com.fancypants.rest.device.domain.Device;
 import com.fancypants.rest.device.request.DeviceContainer;
+import com.fancypants.rest.domain.Device;
 
 @Component
 @Scope(proxyMode = ScopedProxyMode.INTERFACES, value = "request")

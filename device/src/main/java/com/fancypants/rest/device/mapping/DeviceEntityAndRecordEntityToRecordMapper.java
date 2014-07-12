@@ -12,8 +12,9 @@ import org.springframework.stereotype.Component;
 import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
 import com.fancypants.data.device.dynamodb.entity.RecordEntity;
-import com.fancypants.rest.device.domain.Measurement;
+import com.fancypants.rest.device.domain.CurrentMeasurement;
 import com.fancypants.rest.device.domain.Record;
+import com.fancypants.rest.mapping.EntityMapper;
 
 @Component
 public class DeviceEntityAndRecordEntityToRecordMapper implements
@@ -25,14 +26,14 @@ public class DeviceEntityAndRecordEntityToRecordMapper implements
 		DeviceEntity deviceEntity = entity.getLeft();
 		RecordEntity recordEntity = entity.getRight();
 		// create the set for the measurements
-		Set<Measurement> measurements = new HashSet<Measurement>(recordEntity
+		Set<CurrentMeasurement> measurements = new HashSet<CurrentMeasurement>(recordEntity
 				.getCircuits().size());
 		for (Map.Entry<Integer, Float> entry : recordEntity.getCircuits()
 				.entrySet()) {
 			// pull out the circuit
 			CircuitEntity circuit = deviceEntity.getCircuitByIndex(entry.getKey());
 			// create the measurement and add it to the set
-			Measurement measurement = new Measurement(circuit.getName(),
+			CurrentMeasurement measurement = new CurrentMeasurement(circuit.getName(),
 					entry.getValue());
 			measurements.add(measurement);
 		}

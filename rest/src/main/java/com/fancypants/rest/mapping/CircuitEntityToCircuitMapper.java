@@ -1,4 +1,4 @@
-package com.fancypants.rest.device.mapping;
+package com.fancypants.rest.mapping;
 
 import java.text.DateFormat;
 
@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
-import com.fancypants.rest.device.domain.Circuit;
+import com.fancypants.rest.domain.Circuit;
 
 @Component
 public class CircuitEntityToCircuitMapper implements

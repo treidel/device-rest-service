@@ -1,7 +1,7 @@
 package com.fancypants.rest.device.request;
 
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
-import com.fancypants.rest.device.domain.Device;
+import com.fancypants.rest.domain.Device;
 
 public interface DeviceContainer {
 

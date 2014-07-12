@@ -1,4 +1,4 @@
-package com.fancypants.rest.device.domain;
+package com.fancypants.rest.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

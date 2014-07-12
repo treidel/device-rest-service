@@ -1,6 +1,7 @@
-package com.fancypants.rest.device.mapping;
+package com.fancypants.rest.mapping;
 
 import java.text.DateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
-import com.fancypants.rest.device.domain.Circuit;
-import com.fancypants.rest.device.domain.Device;
+import com.fancypants.rest.domain.Circuit;
+import com.fancypants.rest.domain.Device;
 
 @Component
 public class DeviceToDeviceEntityMapper implements
@@ -28,7 +29,7 @@ public class DeviceToDeviceEntityMapper implements
 		// create the entity
 		DeviceEntity deviceEntity = new DeviceEntity();
 		deviceEntity.setDevice(device.getName());
-		deviceEntity.setLastModifiedTimestamp(iso8601Format.format(device.getLastModifiedTimestamp()));
+		deviceEntity.setLastModifiedTimestamp(iso8601Format.format(new Date()));
 		deviceEntity.setSerialNumber(device.getSerialNumber());
 		// create the set for the circuits
 		Set<CircuitEntity> circuitEntities = new HashSet<CircuitEntity>(device.getCircuits()

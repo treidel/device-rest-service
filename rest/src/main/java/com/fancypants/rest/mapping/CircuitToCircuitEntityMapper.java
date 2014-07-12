@@ -1,10 +1,10 @@
-package com.fancypants.rest.device.mapping;
+package com.fancypants.rest.mapping;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
 import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
-import com.fancypants.rest.device.domain.Circuit;
+import com.fancypants.rest.domain.Circuit;
 
 @Component
 public class CircuitToCircuitEntityMapper implements

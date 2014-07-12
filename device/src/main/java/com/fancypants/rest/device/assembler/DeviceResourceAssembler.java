@@ -5,9 +5,9 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 
-import com.fancypants.rest.device.domain.Device;
 import com.fancypants.rest.device.resource.DeviceResource;
 import com.fancypants.rest.device.web.DeviceController;
+import com.fancypants.rest.domain.Device;
 
 public class DeviceResourceAssembler extends
 		ResourceAssemblerSupport<Device, DeviceResource> {

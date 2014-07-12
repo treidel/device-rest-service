@@ -1,0 +1,28 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+jar {
+	baseName = 'device-rest'
+	version =  '1.0.0'
+}
+
+repositories {
+	mavenCentral()
+	maven { url "http://repo.spring.io/libs-release" }
+	maven { url "http://repository-opensourceagility.forge.cloudbees.com/snapshot" }
+}
+
+dependencies {
+	compile("com.fasterxml.jackson.core:jackson-databind:2.4.1.1")
+	compile("org.springframework.hateoas:spring-hateoas:0.13.0.RELEASE")
+	compile("org.springframework.plugin:spring-plugin-core:1.1.0.RELEASE")
+	compile("org.springframework.security:spring-security-web:3.2.4.RELEASE")
+	compile("org.springframework.security:spring-security-config:3.2.4.RELEASE")
+	compile("com.jayway.jsonpath:json-path:0.9.1")
+	testCompile("org.springframework.boot:spring-boot-starter-test:1.1.3.RELEASE")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}

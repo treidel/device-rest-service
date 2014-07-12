@@ -1,20 +1,18 @@
 package com.fancypants.rest.device.service;
 
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
 import com.fancypants.data.device.dynamodb.entity.RecordEntity;
 import com.fancypants.data.device.dynamodb.repository.DeviceRepository;
-import com.fancypants.rest.device.domain.Device;
 import com.fancypants.rest.device.exception.AbstractServiceException;
 import com.fancypants.rest.device.exception.BusinessLogicException;
 import com.fancypants.rest.device.exception.DataValidationException;
-import com.fancypants.rest.device.mapping.DeviceEntityToDeviceMapper;
-import com.fancypants.rest.device.mapping.DeviceToDeviceEntityMapper;
 import com.fancypants.rest.device.request.DeviceContainer;
+import com.fancypants.rest.domain.Device;
+import com.fancypants.rest.mapping.DeviceEntityToDeviceMapper;
+import com.fancypants.rest.mapping.DeviceToDeviceEntityMapper;
 
 @Service
 public class DeviceService {
@@ -63,9 +61,6 @@ public class DeviceService {
 
 		// TBD: possibly generate and/or validate the serial number format
 
-		// set the last modified time
-		device.setLastModifiedTimestamp(new Date());
-
 		// convert the device to a database entity
 		deviceEntity = deviceMapper.convert(device);
 
@@ -83,9 +78,6 @@ public class DeviceService {
 			throw new DataValidationException(
 					"can not change device identifier");
 		}
-
-		// update the last modified time
-		device.setLastModifiedTimestamp(new Date());
 
 		// convert the device to a database entity
 		DeviceEntity deviceEntity = deviceMapper.convert(device);

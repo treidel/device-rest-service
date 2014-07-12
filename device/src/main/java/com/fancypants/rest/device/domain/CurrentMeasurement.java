@@ -3,14 +3,14 @@ package com.fancypants.rest.device.domain;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Measurement implements
-		Comparable<Measurement> {
+public class CurrentMeasurement implements
+		Comparable<CurrentMeasurement> {
 
 	private final String circuit;
 	private final float value;
 
 	@JsonCreator
-	public Measurement(@JsonProperty("circuit") String circuit,
+	public CurrentMeasurement(@JsonProperty("circuit") String circuit,
 			@JsonProperty("value") float value) {
 		this.circuit = circuit;
 		this.value = value;
@@ -20,12 +20,12 @@ public class Measurement implements
 		return circuit;
 	}
 
-	public float getValue() {
+	public float getCurrent() {
 		return value;
 	}
 
 	@Override
-	public int compareTo(Measurement measurement) {
+	public int compareTo(CurrentMeasurement measurement) {
 		return circuit.compareTo(measurement.circuit);
 	}
 }

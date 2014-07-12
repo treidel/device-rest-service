@@ -1,25 +1,18 @@
-package com.fancypants.rest.device.mapping;
+package com.fancypants.rest.mapping;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
-import com.fancypants.rest.device.domain.Circuit;
-import com.fancypants.rest.device.domain.Device;
+import com.fancypants.rest.domain.Circuit;
+import com.fancypants.rest.domain.Device;
 
 @Component
 public class DeviceEntityToDeviceMapper implements
 		EntityMapper<Device, DeviceEntity> {
-
-	@Autowired
-	private DateFormat iso8601Format;
 
 	@Override
 	public Device convert(DeviceEntity entity) {
@@ -31,18 +24,12 @@ public class DeviceEntityToDeviceMapper implements
 					circuitEntity.getVoltage(), circuitEntity.getAmperage());
 			circuits.add(circuit);
 		}
-		try {
-			// parse the date
-			Date lastModifiedTimestamp = iso8601Format.parse(entity
-					.getLastModifiedTimestamp());
-			// create + return the device
-			Device device = new Device(entity.getDevice(),
-					entity.getSerialNumber(), lastModifiedTimestamp, circuits);
-			return device;
 
-		} catch (ParseException e) {
-			throw new IllegalStateException(e.getMessage());
-		}
+		// create + return the device
+		Device device = new Device(entity.getDevice(),
+				entity.getSerialNumber(), circuits);
+		return device;
+
 	}
 
 }
