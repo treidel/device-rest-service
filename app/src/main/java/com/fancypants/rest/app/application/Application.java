@@ -1,4 +1,4 @@
-package com.fancypants.rest.device;
+package com.fancypants.rest.app.application;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.Http11NioProtocol;
@@ -14,10 +14,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.Resource;
 
 import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe;
-import com.fancypants.rest.RestScanMe;
+import com.fancypants.rest.app.RestAppScanMe;
 
 @EnableAutoConfiguration
-@ComponentScan(basePackageClasses= { RestScanMe.class, RestDeviceScanMe.class, DataDeviceDynamoDBScanMe.class })
+@ComponentScan(basePackageClasses= { RestAppScanMe.class, DataDeviceDynamoDBScanMe.class })
 public class Application {
 
 	public static void main(String[] args) {

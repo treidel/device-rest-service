@@ -1,4 +1,4 @@
-package com.fancypants.rest.device.mapping;
+package com.fancypants.rest.mapping;
 
 import java.text.DateFormat;
 
@@ -10,14 +10,12 @@ import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
 import com.fancypants.data.device.dynamodb.entity.RecordEntity;
 import com.fancypants.data.device.dynamodb.entity.RecordId;
-import com.fancypants.rest.device.domain.CurrentMeasurement;
-import com.fancypants.rest.device.domain.Record;
-import com.fancypants.rest.mapping.CircuitToCircuitEntityMapper;
-import com.fancypants.rest.mapping.EntityMapper;
+import com.fancypants.rest.domain.CurrentMeasurement;
+import com.fancypants.rest.domain.CurrentRecord;
 
 @Component
 public class DeviceAndRecordToRecordEntityMapper implements
-		EntityMapper<RecordEntity, Pair<DeviceEntity, Record>> {
+		EntityMapper<RecordEntity, Pair<DeviceEntity, CurrentRecord>> {
 
 	private @Autowired
 	DateFormat iso8601DateFormat;
@@ -26,10 +24,10 @@ public class DeviceAndRecordToRecordEntityMapper implements
 	CircuitToCircuitEntityMapper mapper;
 
 	@Override
-	public RecordEntity convert(Pair<DeviceEntity, Record> entity) {
+	public RecordEntity convert(Pair<DeviceEntity, CurrentRecord> entity) {
 		// extract the inputs
 		DeviceEntity deviceEntity = entity.getLeft();
-		Record record = entity.getRight();
+		CurrentRecord record = entity.getRight();
 		// create + populate the return object
 		RecordId recordId = new RecordId();
 		recordId.setDevice(deviceEntity.getDevice());

@@ -1,4 +1,4 @@
-package com.fancypants.rest.device.exception;
+package com.fancypants.rest.exception;
 
 public class BusinessLogicException extends AbstractServiceException {
 

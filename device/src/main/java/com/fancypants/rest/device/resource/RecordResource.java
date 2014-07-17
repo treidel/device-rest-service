@@ -2,9 +2,9 @@ package com.fancypants.rest.device.resource;
 
 import org.springframework.hateoas.ResourceSupport;
 
-import com.fancypants.rest.device.domain.Record;
+import com.fancypants.rest.domain.CurrentRecord;
 
 public class RecordResource extends ResourceSupport {
 
-	public Record record;
+	public CurrentRecord record;
 }

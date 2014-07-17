@@ -1,4 +1,4 @@
-package com.fancypants.rest.device.request;
+package com.fancypants.rest.request;
 
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
 import com.fancypants.rest.domain.Device;

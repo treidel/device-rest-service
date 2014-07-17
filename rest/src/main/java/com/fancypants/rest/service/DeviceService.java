@@ -1,4 +1,4 @@
-package com.fancypants.rest.device.service;
+package com.fancypants.rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
 import com.fancypants.data.device.dynamodb.entity.RecordEntity;
 import com.fancypants.data.device.dynamodb.repository.DeviceRepository;
-import com.fancypants.rest.device.exception.AbstractServiceException;
-import com.fancypants.rest.device.exception.BusinessLogicException;
-import com.fancypants.rest.device.exception.DataValidationException;
-import com.fancypants.rest.device.request.DeviceContainer;
 import com.fancypants.rest.domain.Device;
+import com.fancypants.rest.exception.AbstractServiceException;
+import com.fancypants.rest.exception.BusinessLogicException;
+import com.fancypants.rest.exception.DataValidationException;
 import com.fancypants.rest.mapping.DeviceEntityToDeviceMapper;
 import com.fancypants.rest.mapping.DeviceToDeviceEntityMapper;
+import com.fancypants.rest.request.DeviceContainer;
 
 @Service
 public class DeviceService {

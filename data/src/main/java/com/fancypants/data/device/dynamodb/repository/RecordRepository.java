@@ -15,7 +15,7 @@
  */
 package com.fancypants.data.device.dynamodb.repository;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.socialsignin.spring.data.dynamodb.repository.DynamoDBPagingAndSortingRepository;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
@@ -27,9 +27,9 @@ import com.fancypants.data.device.dynamodb.entity.RecordId;
 public interface RecordRepository extends
 		DynamoDBPagingAndSortingRepository<RecordEntity, RecordId> {
 
-	public Collection<RecordEntity> findByDevice(String device);
+	public List<RecordEntity> findByDevice(String device);
 
-	public Collection<RecordEntity> findByDeviceAndTimestampRange(
+	public List<RecordEntity> findByDeviceAndTimestampRange(
 			String timestamp_low, String timestamp_high);
 
 }

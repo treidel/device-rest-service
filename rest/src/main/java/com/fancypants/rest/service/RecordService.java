@@ -1,7 +1,8 @@
-package com.fancypants.rest.device.service;
+package com.fancypants.rest.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -13,10 +14,10 @@ import com.fancypants.data.device.dynamodb.entity.RecordEntity;
 import com.fancypants.data.device.dynamodb.entity.RecordId;
 import com.fancypants.data.device.dynamodb.repository.DeviceRepository;
 import com.fancypants.data.device.dynamodb.repository.RecordRepository;
-import com.fancypants.rest.device.domain.Record;
-import com.fancypants.rest.device.mapping.DeviceAndRecordToRecordEntityMapper;
-import com.fancypants.rest.device.mapping.DeviceEntityAndRecordEntityToRecordMapper;
-import com.fancypants.rest.device.request.DeviceContainer;
+import com.fancypants.rest.domain.CurrentRecord;
+import com.fancypants.rest.mapping.DeviceAndRecordToRecordEntityMapper;
+import com.fancypants.rest.mapping.DeviceEntityAndRecordEntityToRecordMapper;
+import com.fancypants.rest.request.DeviceContainer;
 
 @Service
 public class RecordService {
@@ -32,7 +33,7 @@ public class RecordService {
 	@Autowired
 	private DeviceContainer deviceContainer;
 
-	public Record findRecordForDevice(UUID uuid) {
+	public CurrentRecord findRecordForDevice(UUID uuid) {
 		// create the record id for the query
 		RecordId recordId = new RecordId();
 		recordId.setDevice(deviceContainer.getDeviceEntity().getDevice());
@@ -43,21 +44,21 @@ public class RecordService {
 			return null;
 		}
 		// map the data back to record
-		Record record = recordEntityMapper
+		CurrentRecord record = recordEntityMapper
 				.convert(new ImmutablePair<DeviceEntity, RecordEntity>(
 						deviceContainer.getDeviceEntity(), recordEntity));
 		// done
 		return record;
 	}
 
-	public Collection<Record> findAllRecordsForDevice() {
+	public List<CurrentRecord> findAllRecordsForDevice() {
 		// query for all records for this device
-		Collection<RecordEntity> recordEntities = recordRepository
+		List<RecordEntity> recordEntities = recordRepository
 				.findByDevice(deviceContainer.getDeviceEntity().getDevice());
-		Collection<Record> records = new ArrayList<Record>(
+		List<CurrentRecord> records = new ArrayList<CurrentRecord>(
 				recordEntities.size());
 		for (RecordEntity recordEntity : recordEntities) {
-			Record record = recordEntityMapper
+			CurrentRecord record = recordEntityMapper
 					.convert(new ImmutablePair<DeviceEntity, RecordEntity>(
 							deviceContainer.getDeviceEntity(), recordEntity));
 			records.add(record);
@@ -65,15 +66,15 @@ public class RecordService {
 		return records;
 	}
 
-	public void bulkCreateRecords(Collection<Record> records) {
+	public void bulkCreateRecords(Collection<CurrentRecord> records) {
 		// find the device
 		DeviceEntity deviceEntity = deviceContainer.getDeviceEntity();
 		// create the list for the record entities
 		Collection<RecordEntity> recordEntities = new ArrayList<RecordEntity>(
 				records.size());
-		for (Record record : records) {
+		for (CurrentRecord record : records) {
 			RecordEntity recordEntity = recordMapper
-					.convert(new ImmutablePair<DeviceEntity, Record>(
+					.convert(new ImmutablePair<DeviceEntity, CurrentRecord>(
 							deviceEntity, record));
 			recordEntities.add(recordEntity);
 		}

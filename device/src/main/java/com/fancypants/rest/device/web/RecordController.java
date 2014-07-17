@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fancypants.rest.device.assembler.RecordResourceAssembler;
-import com.fancypants.rest.device.domain.Record;
-import com.fancypants.rest.device.request.DeviceContainer;
 import com.fancypants.rest.device.resource.RecordResource;
-import com.fancypants.rest.device.service.DeviceService;
-import com.fancypants.rest.device.service.RecordService;
 import com.fancypants.rest.domain.Device;
+import com.fancypants.rest.domain.CurrentRecord;
+import com.fancypants.rest.request.DeviceContainer;
+import com.fancypants.rest.service.DeviceService;
+import com.fancypants.rest.service.RecordService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
@@ -55,15 +55,15 @@ public class RecordController {
 	@RequestMapping(value = "/records", method = RequestMethod.POST)
 	@ResponseBody
 	public HttpEntity<Collection<RecordResource>> putRecords(
-			@RequestBody Collection<Record> records) {
+			@RequestBody Collection<CurrentRecord> records) {
 		// create the list of resources to be returned
 		Collection<RecordResource> resources = new LinkedList<RecordResource>();
 		// bulk create the records
 		recordService.bulkCreateRecords(records);
 		// go through each record and create the resource
-		for (Record record : records) {
+		for (CurrentRecord record : records) {
 			RecordResource resource = recordResourceAssembler
-					.toResource(new ImmutablePair<Device, Record>(
+					.toResource(new ImmutablePair<Device, CurrentRecord>(
 							deviceContainer.getDevice(), record));
 			resources.add(resource);
 		}
@@ -78,11 +78,11 @@ public class RecordController {
 		// create the list of resources
 		Collection<RecordResource> resources = new LinkedList<RecordResource>();
 		// query for all of the records
-		Collection<Record> records = recordService.findAllRecordsForDevice();
-		for (Record record : records) {
+		Collection<CurrentRecord> records = recordService.findAllRecordsForDevice();
+		for (CurrentRecord record : records) {
 			// create a resource for each record
 			RecordResource resource = recordResourceAssembler
-					.toResource(new ImmutablePair<Device, Record>(
+					.toResource(new ImmutablePair<Device, CurrentRecord>(
 							deviceContainer.getDevice(), record));
 			resources.add(resource);
 		}
@@ -95,13 +95,13 @@ public class RecordController {
 	public HttpEntity<RecordResource> getRecord(
 			@PathVariable("uuid") String uuid) {
 		// find the record
-		Record record = recordService
+		CurrentRecord record = recordService
 				.findRecordForDevice(UUID.fromString(uuid));
 		if (null == record) {
 			return new ResponseEntity<RecordResource>(HttpStatus.NOT_FOUND);
 		}
 		RecordResource resource = recordResourceAssembler
-				.toResource(new ImmutablePair<Device, Record>(deviceContainer
+				.toResource(new ImmutablePair<Device, CurrentRecord>(deviceContainer
 						.getDevice(), record));
 		return new ResponseEntity<RecordResource>(resource, HttpStatus.OK);
 	}

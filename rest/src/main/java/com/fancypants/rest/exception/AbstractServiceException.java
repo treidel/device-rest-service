@@ -1,4 +1,4 @@
-package com.fancypants.rest.device.exception;
+package com.fancypants.rest.exception;
 
 public abstract class AbstractServiceException extends Exception {
 

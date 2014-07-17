@@ -1,4 +1,4 @@
-package com.fancypants.rest.device.mapping;
+package com.fancypants.rest.mapping;
 
 import java.sql.Date;
 import java.util.HashSet;
@@ -12,16 +12,15 @@ import org.springframework.stereotype.Component;
 import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
 import com.fancypants.data.device.dynamodb.entity.RecordEntity;
-import com.fancypants.rest.device.domain.CurrentMeasurement;
-import com.fancypants.rest.device.domain.Record;
-import com.fancypants.rest.mapping.EntityMapper;
+import com.fancypants.rest.domain.CurrentMeasurement;
+import com.fancypants.rest.domain.CurrentRecord;
 
 @Component
 public class DeviceEntityAndRecordEntityToRecordMapper implements
-		EntityMapper<Record, Pair<DeviceEntity, RecordEntity>> {
+		EntityMapper<CurrentRecord, Pair<DeviceEntity, RecordEntity>> {
 
 	@Override
-	public Record convert(Pair<DeviceEntity, RecordEntity> entity) {
+	public CurrentRecord convert(Pair<DeviceEntity, RecordEntity> entity) {
 		// extract the entities 
 		DeviceEntity deviceEntity = entity.getLeft();
 		RecordEntity recordEntity = entity.getRight();
@@ -38,7 +37,7 @@ public class DeviceEntityAndRecordEntityToRecordMapper implements
 			measurements.add(measurement);
 		}
 		// create + return the record
-		Record domain = new Record(UUID.fromString(recordEntity.getUUID()),
+		CurrentRecord domain = new CurrentRecord(UUID.fromString(recordEntity.getUUID()),
 				Date.valueOf(recordEntity.getTimestamp()), measurements);
 		return domain;
 	}

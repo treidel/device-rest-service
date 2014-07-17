@@ -1,16 +1,16 @@
-package com.fancypants.rest.app.domain;
+package com.fancypants.rest.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PowerMeasurement implements
-		Comparable<PowerMeasurement> {
+public class PowerConsumptionMeasurement implements
+		Comparable<PowerConsumptionMeasurement> {
 
 	private final String circuit;
-	private final float value;
+	private float value;
 
 	@JsonCreator
-	public PowerMeasurement(@JsonProperty("circuit") String circuit,
+	public PowerConsumptionMeasurement(@JsonProperty("circuit") String circuit,
 			@JsonProperty("value") float value) {
 		this.circuit = circuit;
 		this.value = value;
@@ -24,8 +24,12 @@ public class PowerMeasurement implements
 		return value;
 	}
 
+	public void setValue(float value) {
+		this.value = value;
+	}
+
 	@Override
-	public int compareTo(PowerMeasurement measurement) {
+	public int compareTo(PowerConsumptionMeasurement measurement) {
 		return circuit.compareTo(measurement.circuit);
 	}
 }

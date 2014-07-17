@@ -1,6 +1,5 @@
 package com.fancypants.data.device.dynamodb.repository.impl;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.socialsignin.spring.data.dynamodb.core.DynamoDBOperations;
@@ -28,7 +27,7 @@ public class RecordRepositoryImpl extends
 	}
 
 	@Override
-	public Collection<RecordEntity> findByDevice(String device) {
+	public List<RecordEntity> findByDevice(String device) {
 		RecordEntity record = new RecordEntity();
 		record.setDevice(device);
 		DynamoDBQueryExpression<RecordEntity> queryExpression = new DynamoDBQueryExpression<RecordEntity>()
@@ -39,7 +38,7 @@ public class RecordRepositoryImpl extends
 	}
 
 	@Override
-	public Collection<RecordEntity> findByDeviceAndTimestampRange(
+	public List<RecordEntity> findByDeviceAndTimestampRange(
 			String timestamp_low, String timestamp_high) {
 		// TODO Auto-generated method stub
 		return null;
