@@ -34,7 +34,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Secured("ROLE_USER")
 public class RecordController {
 
-	private final RecordResourceAssembler recordResourceAssembler = new RecordResourceAssembler();
+	@Autowired
+	private RecordResourceAssembler recordResourceAssembler;
 	@Autowired
 	private ObjectMapper objectMapper;
 	@Autowired

@@ -119,8 +119,8 @@ public class RecordEntity {
 		return getCircuit(6);
 	}
 
-	public void setCircuit7(Float value) {
-		setCircuit(7, value);
+	public void setCircuit6(Float value) {
+		setCircuit(6, value);
 	}
 
 	@DynamoDBAttribute(attributeName = "circuit7")
@@ -128,8 +128,8 @@ public class RecordEntity {
 		return getCircuit(7);
 	}
 
-	public void setCircuit8(Float value) {
-		setCircuit(8, value);
+	public void setCircuit7(Float value) {
+		setCircuit(7, value);
 	}
 
 	@DynamoDBAttribute(attributeName = "circuit8")
@@ -137,6 +137,10 @@ public class RecordEntity {
 		return getCircuit(8);
 	}
 
+	public void setCircuit8(Float value) {
+		setCircuit(8, value);
+	}
+	
 	public Float getCircuit(int index) {
 		if (null == this.circuits) {
 			return null;

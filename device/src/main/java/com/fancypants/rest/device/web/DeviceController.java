@@ -23,7 +23,8 @@ import com.fancypants.rest.service.DeviceService;
 @Secured("ROLE_ADMIN")
 public class DeviceController {
 
-	private final DeviceResourceAssembler deviceResourceAssembler = new DeviceResourceAssembler();
+	@Autowired
+	private DeviceResourceAssembler deviceResourceAssembler;
 	@Autowired
 	private DeviceService deviceService;
 	@Autowired

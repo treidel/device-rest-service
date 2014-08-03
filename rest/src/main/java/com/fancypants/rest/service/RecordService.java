@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
@@ -27,6 +28,7 @@ public class RecordService {
 	@Autowired
 	private DeviceAndRecordToRecordEntityMapper recordMapper;
 	@Autowired
+	@Qualifier("recordRepository")
 	private RecordRepository recordRepository;
 	@Autowired
 	private DeviceRepository deviceRepository;

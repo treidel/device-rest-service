@@ -1,7 +1,26 @@
+def versionOverrides = [
+	"org.springframework:spring-core": "4.0.6.RELEASE",
+	"org.springframework:spring-tx": "4.0.6.RELEASE",
+	"org.springframework:spring-aop": "4.0.6.RELEASE",
+	"org.springframework:spring-context": "4.0.6.RELEASE",
+	"org.springframework:spring-webmvc": "4.0.6.RELEASE",
+	"com.fasterxml.jackson.core:jackson-databind" : "2.4.1.2"
+]
+
 subprojects {
 	apply plugin: 'java'
-	group = 'com.test.device'
+	group = 'com.fancypants'
 	version = '1.0'
+
+	configurations.all {
+		resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+			def overrideVersion = versionOverrides[details.requested.group + ":" + details.requested.name]
+			if (overrideVersion != null && details.requested.version != overrideVersion) {
+				logger.info "Overriding dependency ${details.requested.group}:${details.requested.name} version ${details.requested.version} --> $overrideVersion"
+				details.useVersion overrideVersion
+			}
+		}
+    	}
 }
 
 project(':rest') {
