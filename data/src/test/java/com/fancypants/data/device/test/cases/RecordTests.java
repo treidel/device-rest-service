@@ -76,7 +76,7 @@ public class RecordTests extends AbstractTest {
 
 	@Test
 	public void createTest() {
-		repository.save(RECORD1);
+		Assert.isTrue(repository.insert(RECORD1));
 	}
 
 	@Test
@@ -92,19 +92,21 @@ public class RecordTests extends AbstractTest {
 		// run the create test to create a record
 		createTest();
 		// query for it
-		RecordEntity record = repository.findOne(RECORD1.getRecordId());
+		RecordEntity record = repository.get(RECORD1.getRecordId());
 		Assert.isTrue(null != record);
 	}
 
 	@Test
 	public void queryInvalidTest() {
-		RecordEntity record = repository.findOne(INVALID_RECORD_ID);
+		RecordEntity record = repository.get(INVALID_RECORD_ID);
 		Assert.isNull(record);
 	}
 
 	@Test
 	public void bulkInsertTest() {
-		repository.save(RECORDS);
+		for (RecordEntity record : RECORDS) {
+			repository.insert(record);
+		}
 		Assert.isTrue(RECORDS.size() == repository.count());
 	}
 

@@ -41,7 +41,7 @@ public class RecordService {
 		recordId.setDevice(deviceContainer.getDeviceEntity().getDevice());
 		recordId.setUUID(uuid.toString());
 		// execute the query
-		RecordEntity recordEntity = recordRepository.findOne(recordId);
+		RecordEntity recordEntity = recordRepository.get(recordId);
 		if (null == recordEntity) {
 			return null;
 		}
@@ -71,17 +71,20 @@ public class RecordService {
 	public void bulkCreateRecords(Collection<CurrentRecord> records) {
 		// find the device
 		DeviceEntity deviceEntity = deviceContainer.getDeviceEntity();
-		// create the list for the record entities
-		Collection<RecordEntity> recordEntities = new ArrayList<RecordEntity>(
-				records.size());
 		for (CurrentRecord record : records) {
 			RecordEntity recordEntity = recordMapper
 					.convert(new ImmutablePair<DeviceEntity, CurrentRecord>(
 							deviceEntity, record));
-			recordEntities.add(recordEntity);
+			// try to create the record
+			boolean created = recordRepository.insert(recordEntity);
+			if (true == created) {
+				// not a dup, insert it into the queue for more processing
+				
+				// TBD: insert into queue
+				
+			}
 		}
-		// bulk write the records
-		recordRepository.save(recordEntities);
+
 	}
 
 }

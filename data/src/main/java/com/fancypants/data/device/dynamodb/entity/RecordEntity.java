@@ -17,6 +17,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 @DynamoDBTable(tableName = "records")
 public class RecordEntity {
 
+	public static final String HASH_KEY = "device";
+	public static final String RANGE_KEY = "uuid";
 	public static final int MIN_CIRCUIT = 1;
 	public static final int MAX_CIRCUIT = 8;
 
@@ -35,7 +37,7 @@ public class RecordEntity {
 		this.recordId = recordId;
 	}
 
-	@DynamoDBHashKey(attributeName = "device")
+	@DynamoDBHashKey(attributeName = HASH_KEY)
 	public String getDevice() {
 		return recordId != null ? recordId.getDevice() : null;
 	}
@@ -47,7 +49,7 @@ public class RecordEntity {
 		this.recordId.setDevice(device);
 	}
 
-	@DynamoDBRangeKey(attributeName = "uuid")
+	@DynamoDBRangeKey(attributeName = RANGE_KEY)
 	public String getUUID() {
 		return recordId != null ? recordId.getUUID() : null;
 	}
