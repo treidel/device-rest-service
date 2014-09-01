@@ -13,11 +13,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.Resource;
 
+import com.fancypants.data.device.aws.DataDeviceAWSScanMe;
 import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe;
+import com.fancypants.data.device.kinesis.DataDeviceKinesisScanMe;
 import com.fancypants.rest.RestScanMe;
 
 @EnableAutoConfiguration
-@ComponentScan(basePackageClasses= { RestScanMe.class, RestDeviceScanMe.class, DataDeviceDynamoDBScanMe.class })
+@ComponentScan(basePackageClasses = { RestScanMe.class, RestDeviceScanMe.class,
+		DataDeviceAWSScanMe.class, DataDeviceKinesisScanMe.class,
+		DataDeviceDynamoDBScanMe.class })
 public class Application {
 
 	public static void main(String[] args) {

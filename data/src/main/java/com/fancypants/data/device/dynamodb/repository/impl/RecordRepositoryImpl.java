@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
@@ -25,8 +26,8 @@ public class RecordRepositoryImpl implements RecordRepository {
 	private final DynamoDBMapper dynamoDBMapper;
 
 	@Autowired
-	public RecordRepositoryImpl(DynamoDBMapper dynamoDBMapper) {
-		this.dynamoDBMapper = dynamoDBMapper;
+	public RecordRepositoryImpl(AmazonDynamoDB amazonDynamoDB) {
+		this.dynamoDBMapper = new DynamoDBMapper(amazonDynamoDB);
 	}
 
 	@Override
@@ -60,13 +61,15 @@ public class RecordRepositoryImpl implements RecordRepository {
 	@Override
 	public void deleteAll() {
 		DynamoDBScanExpression expression = new DynamoDBScanExpression();
-		List<RecordEntity> records = dynamoDBMapper.scan(RecordEntity.class, expression);
+		List<RecordEntity> records = dynamoDBMapper.scan(RecordEntity.class,
+				expression);
 		dynamoDBMapper.batchDelete(records);
 	}
 
 	@Override
 	public RecordEntity get(RecordId recordId) {
-		return dynamoDBMapper.load(RecordEntity.class, recordId.getDevice(), recordId.getUUID());
+		return dynamoDBMapper.load(RecordEntity.class, recordId.getDevice(),
+				recordId.getUUID());
 	}
 
 	@Override

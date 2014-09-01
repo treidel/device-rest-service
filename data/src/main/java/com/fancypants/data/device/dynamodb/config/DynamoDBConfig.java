@@ -6,11 +6,11 @@ import java.text.SimpleDateFormat;
 import org.socialsignin.spring.data.dynamodb.core.DynamoDBOperations;
 import org.socialsignin.spring.data.dynamodb.core.DynamoDBTemplate;
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.fancypants.data.device.dynamodb.repository.RecordRepository;
@@ -21,10 +21,12 @@ public class DynamoDBConfig {
 
 	public static final String ISO8601_DATEFORMAT_BEAN = "iso8601DateFormat";
 
+	@Autowired
+	private AWSCredentials awsCredentials;
+	
 	@Bean
 	public AmazonDynamoDB amazonDynamoDB() {
-		AmazonDynamoDB amazonDynamoDB = new AmazonDynamoDBClient(
-				amazonAWSCredentials());
+		AmazonDynamoDB amazonDynamoDB = new AmazonDynamoDBClient(awsCredentials);
 		amazonDynamoDB.setEndpoint(getAmazonDynamoDBEndpoint());
 		return amazonDynamoDB;
 	}
@@ -32,12 +34,6 @@ public class DynamoDBConfig {
 	@Bean
 	public DynamoDBOperations dynamoDBOperations() {
 		return new DynamoDBTemplate(amazonDynamoDB());
-	}
-
-	@Bean
-	public AWSCredentials amazonAWSCredentials() {
-		return new BasicAWSCredentials(getAmazonAWSAccessKey(),
-				getAmazonAWSSecretKey());
 	}
 
 	@Bean
@@ -51,14 +47,6 @@ public class DynamoDBConfig {
 
 	private String getAmazonDynamoDBEndpoint() {
 		return System.getProperty("amazon.dynamodb.endpoint");
-	}
-
-	private String getAmazonAWSAccessKey() {
-		return System.getProperty("amazon.aws.accesskey");
-	}
-
-	private String getAmazonAWSSecretKey() {
-		return System.getProperty("amazon.aws.secretkey");
 	}
 
 }

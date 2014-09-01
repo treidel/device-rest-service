@@ -10,12 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.amazonaws.services.kinesis.model.Record;
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
 import com.fancypants.data.device.dynamodb.entity.RecordEntity;
 import com.fancypants.data.device.dynamodb.entity.RecordId;
 import com.fancypants.data.device.dynamodb.repository.DeviceRepository;
 import com.fancypants.data.device.dynamodb.repository.RecordRepository;
+import com.fancypants.data.device.kinesis.stream.StreamWriter;
 import com.fancypants.rest.domain.CurrentRecord;
+import com.fancypants.rest.mapping.CurrentRecordToRecordMapper;
 import com.fancypants.rest.mapping.DeviceAndRecordToRecordEntityMapper;
 import com.fancypants.rest.mapping.DeviceEntityAndRecordEntityToRecordMapper;
 import com.fancypants.rest.request.DeviceContainer;
@@ -28,12 +31,16 @@ public class RecordService {
 	@Autowired
 	private DeviceAndRecordToRecordEntityMapper recordMapper;
 	@Autowired
-	@Qualifier("recordRepository")
+	private CurrentRecordToRecordMapper queueMapper;
+	@Autowired
 	private RecordRepository recordRepository;
 	@Autowired
 	private DeviceRepository deviceRepository;
 	@Autowired
 	private DeviceContainer deviceContainer;
+	@Autowired
+	@Qualifier("rawRecordStreamWriter")
+	private StreamWriter rawRecordStreamWriter;
 
 	public CurrentRecord findRecordForDevice(UUID uuid) {
 		// create the record id for the query
@@ -68,20 +75,19 @@ public class RecordService {
 		return records;
 	}
 
-	public void bulkCreateRecords(Collection<CurrentRecord> records) {
+	public void bulkCreateRecords(Collection<CurrentRecord> currentRecords) {
 		// find the device
 		DeviceEntity deviceEntity = deviceContainer.getDeviceEntity();
-		for (CurrentRecord record : records) {
+		for (CurrentRecord currentRecord : currentRecords) {
 			RecordEntity recordEntity = recordMapper
 					.convert(new ImmutablePair<DeviceEntity, CurrentRecord>(
-							deviceEntity, record));
+							deviceEntity, currentRecord));
 			// try to create the record
 			boolean created = recordRepository.insert(recordEntity);
 			if (true == created) {
 				// not a dup, insert it into the queue for more processing
-				
-				// TBD: insert into queue
-				
+				Record record = queueMapper.convert(currentRecord);
+				rawRecordStreamWriter.putRecord(record);				
 			}
 		}
 
