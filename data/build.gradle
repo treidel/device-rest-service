@@ -7,12 +7,6 @@ jar {
 	version =  '1.0.0'
 }
 
-repositories {
-	mavenCentral()
-	maven { url "http://repo.spring.io/libs-release" }
-	maven { url "http://repository-opensourceagility.forge.cloudbees.com/snapshot" }
-}
-
 dependencies {
 	compile("org.springframework.data:spring-data-commons:1.8.0.RELEASE")
 	compile("com.fasterxml.jackson.core:jackson-databind:2.3.3")

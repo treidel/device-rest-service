@@ -24,6 +24,7 @@ public class RecordEntity {
 
 	private String timestamp;
 	private Map<Integer, Float> circuits;
+	private float duration;
 
 	@Id
 	@DynamoDBMarshalling(marshallerClass = RecordIdMarshaller.class)
@@ -62,13 +63,22 @@ public class RecordEntity {
 
 	}
 
-	@DynamoDBIndexRangeKey( attributeName = "timestamp", localSecondaryIndexName = "timestamp-index")
+	@DynamoDBIndexRangeKey(attributeName = "timestamp", localSecondaryIndexName = "timestamp-index")
 	public String getTimestamp() {
 		return timestamp;
 	}
 
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	@DynamoDBAttribute(attributeName = "duration")
+	public float getDuration() {
+		return duration;
+	}
+
+	public void setDuration(float duration) {
+		this.duration = duration;
 	}
 
 	@DynamoDBAttribute(attributeName = "circuit1")
@@ -142,7 +152,7 @@ public class RecordEntity {
 	public void setCircuit8(Float value) {
 		setCircuit(8, value);
 	}
-	
+
 	public Float getCircuit(int index) {
 		if (null == this.circuits) {
 			return null;

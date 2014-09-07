@@ -14,14 +14,8 @@ apply plugin: 'idea'
 apply plugin: 'spring-boot'
 
 jar {
-	baseName = 'device-app-service'
+	baseName = 'app-service'
 	version =  '1.0.0'
-}
-
-repositories {
-	mavenCentral()
-	maven { url "http://repo.spring.io/libs-release" }
-	maven { url "http://repository-opensourceagility.forge.cloudbees.com/snapshot" }
 }
 
 dependencies {

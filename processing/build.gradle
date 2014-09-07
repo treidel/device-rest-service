@@ -1,0 +1,25 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+jar {
+	baseName = 'processing'
+	version =  '1.0.0'
+}
+
+dependencies {
+	compile("com.amazonaws:aws-java-sdk")
+	compile("org.apache.storm:storm-core")
+	compile("org.apache.curator:curator-framework")
+	compile("com.esotericsoftware.kryo:kryo")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}

@@ -4,13 +4,24 @@ def versionOverrides = [
 	"org.springframework:spring-aop": "4.0.6.RELEASE",
 	"org.springframework:spring-context": "4.0.6.RELEASE",
 	"org.springframework:spring-webmvc": "4.0.6.RELEASE",
-	"com.fasterxml.jackson.core:jackson-databind" : "2.4.1.2"
+	"com.fasterxml.jackson.core:jackson-databind" : "2.4.1.2",
+	"com.amazonaws:aws-java-sdk" : "1.8.9",
+	"org.apache.storm:storm-core" : "0.9.2-incubating",
+	"org.apache.curator:curator-framework" : "2.6.0",
+	"com.esotericsoftware.kryo:kryo" : "2.24.0"
 ]
 
 subprojects {
 	apply plugin: 'java'
 	group = 'com.fancypants'
 	version = '1.0'
+
+	repositories {
+		mavenCentral()
+		maven { url "http://repo.spring.io/libs-release" }
+		maven { url "http://clojars.org/repo" }
+		maven { url "http://repository-opensourceagility.forge.cloudbees.com/snapshot" }
+	}
 
 	configurations.all {
 		resolutionStrategy.eachDependency { DependencyResolveDetails details ->
@@ -29,14 +40,20 @@ project(':rest') {
         }
 }
 
-
 project(':device') {
 	dependencies {
 		compile project(':rest')
 	}
 }
+
 project(':app') {
 	dependencies {
 		compile project(':rest')
+	}
+}
+
+project(':processing') { 
+	dependencies { 
+		compile project(':data')
 	}
 }

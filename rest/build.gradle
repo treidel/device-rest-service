@@ -3,14 +3,8 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 jar {
-	baseName = 'device-rest'
+	baseName = 'rest'
 	version =  '1.0.0'
-}
-
-repositories {
-	mavenCentral()
-	maven { url "http://repo.spring.io/libs-release" }
-	maven { url "http://repository-opensourceagility.forge.cloudbees.com/snapshot" }
 }
 
 dependencies {
