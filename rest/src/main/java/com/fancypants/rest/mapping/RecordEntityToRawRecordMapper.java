@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fancypants.data.device.dynamodb.entity.RecordEntity;
-import com.fancypants.data.device.kinesis.entity.RawRecord;
+import com.fancypants.stream.device.kinesis.entity.RawRecord;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component

@@ -1,4 +1,4 @@
-package com.fancypants.data.device.kinesis.entity;
+package com.fancypants.stream.device.kinesis.entity;
 
 import java.util.Date;
 import java.util.Map;
@@ -8,6 +8,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RawRecord implements KinesisRecord {
+
+	public final static String[] FIXED_FIELDS = { "device", "uuid", "timestamp",
+			"circuits", "duration"};
+	public final static int MAX_CIRCUITS = 32;
 
 	private final String device;
 	private final UUID uuid;
@@ -27,7 +31,7 @@ public class RawRecord implements KinesisRecord {
 		this.circuits = circuits;
 		this.duration = duration;
 	}
-	
+
 	@Override
 	public String getPartitionKey() {
 		return device;

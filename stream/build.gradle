@@ -9,17 +9,14 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 jar {
-	baseName = 'processing'
+	baseName = 'stream'
 	version =  '1.0.0'
 }
 
 dependencies {
 	compile("com.amazonaws:aws-java-sdk")
-	compile("org.apache.storm:storm-core")
-	compile("org.apache.curator:curator-framework")
-	compile("com.esotericsoftware.kryo:kryo")
-	compile("org.clojars.maxweber:kinesis-storm-spout")
-	compile("commons-beanutils:commons-beanutils")
+	compile("org.springframework:spring-context") 
+	testCompile("junit:junit:4.+")
 }
 
 task wrapper(type: Wrapper) {

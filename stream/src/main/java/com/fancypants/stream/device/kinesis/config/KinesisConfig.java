@@ -1,14 +1,15 @@
-package com.fancypants.data.device.kinesis.config;
+package com.fancypants.stream.device.kinesis.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.kinesis.AmazonKinesis;
 import com.amazonaws.services.kinesis.AmazonKinesisClient;
-import com.fancypants.data.device.kinesis.entity.RawRecord;
-import com.fancypants.data.device.kinesis.stream.StreamWriter;
+import com.fancypants.stream.device.kinesis.entity.RawRecord;
+import com.fancypants.stream.device.kinesis.stream.StreamWriter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
@@ -35,4 +36,18 @@ public class KinesisConfig {
 		return streamWriter;
 	}
 
+	@Bean
+	public AWSCredentials amazonAWSKinesisCredentials() {
+		return new BasicAWSCredentials(getAmazonAWSAccessKey(),
+				getAmazonAWSSecretKey());
+	}
+
+	private String getAmazonAWSAccessKey() {
+		return System.getProperty("amazon.aws.accesskey");
+	}
+
+	private String getAmazonAWSSecretKey() {
+		return System.getProperty("amazon.aws.secretkey");
+	}
+	
 }

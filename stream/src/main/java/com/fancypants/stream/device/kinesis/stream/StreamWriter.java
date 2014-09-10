@@ -1,9 +1,9 @@
-package com.fancypants.data.device.kinesis.stream;
+package com.fancypants.stream.device.kinesis.stream;
 
 import java.nio.ByteBuffer;
 
 import com.amazonaws.services.kinesis.AmazonKinesis;
-import com.fancypants.data.device.kinesis.entity.KinesisRecord;
+import com.fancypants.stream.device.kinesis.entity.KinesisRecord;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
