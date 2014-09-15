@@ -18,12 +18,10 @@ public class KinesisConfig {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	@Autowired
-	private AWSCredentials awsCredentials;
-
 	@Bean
 	public AmazonKinesis amazonKinesis() {
-		AmazonKinesis amazonKinesis = new AmazonKinesisClient(awsCredentials);
+		AmazonKinesis amazonKinesis = new AmazonKinesisClient(
+				getAmazonAWSKinesisCredentials());
 		return amazonKinesis;
 	}
 
@@ -36,8 +34,7 @@ public class KinesisConfig {
 		return streamWriter;
 	}
 
-	@Bean
-	public AWSCredentials amazonAWSKinesisCredentials() {
+	private AWSCredentials getAmazonAWSKinesisCredentials() {
 		return new BasicAWSCredentials(getAmazonAWSAccessKey(),
 				getAmazonAWSSecretKey());
 	}
@@ -49,5 +46,5 @@ public class KinesisConfig {
 	private String getAmazonAWSSecretKey() {
 		return System.getProperty("amazon.aws.secretkey");
 	}
-	
+
 }

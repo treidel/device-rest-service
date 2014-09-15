@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import org.socialsignin.spring.data.dynamodb.core.DynamoDBOperations;
 import org.socialsignin.spring.data.dynamodb.core.DynamoDBTemplate;
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,13 +20,10 @@ import com.fancypants.data.device.dynamodb.repository.RecordRepository;
 public class DynamoDBConfig {
 
 	public static final String ISO8601_DATEFORMAT_BEAN = "iso8601DateFormat";
-
-	@Autowired
-	private AWSCredentials awsCredentials;
 	
 	@Bean
 	public AmazonDynamoDB amazonDynamoDB() {
-		AmazonDynamoDB amazonDynamoDB = new AmazonDynamoDBClient(awsCredentials);
+		AmazonDynamoDB amazonDynamoDB = new AmazonDynamoDBClient(getAmazonAWSDynamoDBCredentials());
 		amazonDynamoDB.setEndpoint(getAmazonDynamoDBEndpoint());
 		return amazonDynamoDB;
 	}
@@ -46,8 +42,7 @@ public class DynamoDBConfig {
 		return df;
 	}
 
-	@Bean
-	public AWSCredentials amazonAWSDynamoDBCredentials() {
+	private AWSCredentials getAmazonAWSDynamoDBCredentials() {
 		return new BasicAWSCredentials(getAmazonAWSAccessKey(),
 				getAmazonAWSSecretKey());
 	}
