@@ -17,8 +17,9 @@ dependencies {
 	compile("com.amazonaws:aws-java-sdk")
 	compile("org.apache.storm:storm-core")
 	compile("org.apache.curator:curator-framework")
+	compile("commons-beanutils:commons-beanutils")
 	compile("com.esotericsoftware.kryo:kryo")
-	compile("org.clojars.maxweber:kinesis-storm-spout")
+	compile("org.clojars.reideltj:kinesis-storm-spout")
 	compile("commons-beanutils:commons-beanutils")
 }
 
