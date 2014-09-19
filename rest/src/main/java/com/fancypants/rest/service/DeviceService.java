@@ -4,14 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
-import com.fancypants.data.device.dynamodb.entity.RecordEntity;
+import com.fancypants.data.device.dynamodb.entity.RawRecordEntity;
 import com.fancypants.data.device.dynamodb.repository.DeviceRepository;
 import com.fancypants.rest.domain.Device;
 import com.fancypants.rest.exception.AbstractServiceException;
 import com.fancypants.rest.exception.BusinessLogicException;
 import com.fancypants.rest.exception.DataValidationException;
-import com.fancypants.rest.mapping.DeviceEntityToDeviceMapper;
-import com.fancypants.rest.mapping.DeviceToDeviceEntityMapper;
+import com.fancypants.rest.mapping.DeviceMapper;
+import com.fancypants.rest.mapping.DeviceEntityMapper;
 import com.fancypants.rest.request.DeviceContainer;
 
 @Service
@@ -21,10 +21,10 @@ public class DeviceService {
 	private DeviceRepository repository;
 
 	@Autowired
-	private DeviceEntityToDeviceMapper entityMapper;
+	private DeviceMapper entityMapper;
 
 	@Autowired
-	private DeviceToDeviceEntityMapper deviceMapper;
+	private DeviceEntityMapper deviceMapper;
 
 	@Autowired
 	private DeviceContainer deviceContainer;
@@ -48,10 +48,10 @@ public class DeviceService {
 	public void createDevice(Device device) throws AbstractServiceException {
 		// validate that the number of reported circuits does not exceed the
 		// maximum
-		if (device.getCircuits().size() > RecordEntity.MAX_CIRCUIT) {
+		if (device.getCircuits().size() > RawRecordEntity.MAX_CIRCUIT) {
 			throw new DataValidationException("number of circuits ("
 					+ device.getCircuits().size() + ") exceeds the maximum ("
-					+ RecordEntity.MAX_CIRCUIT + ")");
+					+ RawRecordEntity.MAX_CIRCUIT + ")");
 		}
 		// ensure this device id does not already exist
 		DeviceEntity deviceEntity = repository.findOne(device.getName());

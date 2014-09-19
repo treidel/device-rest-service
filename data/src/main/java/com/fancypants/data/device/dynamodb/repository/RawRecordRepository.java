@@ -17,18 +17,18 @@ package com.fancypants.data.device.dynamodb.repository;
 
 import java.util.List;
 
-import com.fancypants.data.device.dynamodb.entity.RecordEntity;
-import com.fancypants.data.device.dynamodb.entity.RecordId;
+import com.fancypants.data.device.dynamodb.entity.RawRecordEntity;
+import com.fancypants.data.device.dynamodb.entity.RawRecordId;
 
-public interface RecordRepository {
+public interface RawRecordRepository {
 
-	public List<RecordEntity> findByDevice(String device);
+	public List<RawRecordEntity> findByDevice(String device);
 
-	public boolean insert(RecordEntity record);
+	public boolean insert(RawRecordEntity record);
 	
 	public void deleteAll();
 	
-	public RecordEntity get(RecordId recordId);
+	public RawRecordEntity get(RawRecordId recordId);
 	
 	public int count();
 

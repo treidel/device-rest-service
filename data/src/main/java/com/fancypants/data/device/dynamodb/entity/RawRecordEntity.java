@@ -6,19 +6,16 @@ import java.util.TreeMap;
 
 import org.springframework.data.annotation.Id;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexRangeKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMarshalling;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
-@DynamoDBTable(tableName = "records")
-public class RecordEntity {
+@DynamoDBTable(tableName = "raw")
+public class RawRecordEntity {
 
-	public static final String HASH_KEY = "device";
-	public static final String RANGE_KEY = "uuid";
+	public static final String HASH_KEY = "recordId";
 	public static final int MIN_CIRCUIT = 1;
 	public static final int MAX_CIRCUIT = 8;
 
@@ -27,43 +24,44 @@ public class RecordEntity {
 	private float duration;
 
 	@Id
-	@DynamoDBMarshalling(marshallerClass = RecordIdMarshaller.class)
-	private RecordId recordId;
+	@DynamoDBHashKey(attributeName = HASH_KEY)
+	@DynamoDBMarshalling(marshallerClass = RawRecordIdMarshaller.class)
+	private RawRecordId recordId;
 
-	public RecordId getRecordId() {
+	public RawRecordId getRecordId() {
 		return recordId;
 	}
 
-	public void setRecordId(RecordId recordId) {
+	public void setRecordId(RawRecordId recordId) {
 		this.recordId = recordId;
 	}
 
-	@DynamoDBHashKey(attributeName = HASH_KEY)
+	@DynamoDBAttribute(attributeName = "device")
 	public String getDevice() {
 		return recordId != null ? recordId.getDevice() : null;
 	}
 
 	public void setDevice(String device) {
 		if (recordId == null) {
-			recordId = new RecordId();
+			recordId = new RawRecordId();
 		}
 		this.recordId.setDevice(device);
 	}
 
-	@DynamoDBRangeKey(attributeName = RANGE_KEY)
+	@DynamoDBAttribute(attributeName = "uuid")
 	public String getUUID() {
 		return recordId != null ? recordId.getUUID() : null;
 	}
 
 	public void setUUID(String uuid) {
 		if (recordId == null) {
-			recordId = new RecordId();
+			recordId = new RawRecordId();
 		}
 		this.recordId.setUUID(uuid);
 
 	}
 
-	@DynamoDBIndexRangeKey(attributeName = "timestamp", localSecondaryIndexName = "timestamp-index")
+	@DynamoDBAttribute(attributeName = "timestamp")
 	public String getTimestamp() {
 		return timestamp;
 	}

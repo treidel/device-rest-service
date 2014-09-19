@@ -11,7 +11,7 @@ import com.fancypants.rest.domain.Circuit;
 import com.fancypants.rest.domain.Device;
 
 @Component
-public class DeviceEntityToDeviceMapper implements
+public class DeviceMapper implements
 		EntityMapper<Device, DeviceEntity> {
 
 	@Override

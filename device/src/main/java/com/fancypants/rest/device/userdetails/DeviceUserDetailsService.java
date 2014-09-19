@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.fancypants.rest.domain.Device;
-import com.fancypants.rest.mapping.DeviceEntityToDeviceMapper;
+import com.fancypants.rest.mapping.DeviceMapper;
 import com.fancypants.rest.service.DeviceService;
 
 @Service
@@ -25,7 +25,7 @@ public class DeviceUserDetailsService implements UserDetailsService {
 	private DeviceService deviceService;
 
 	@Autowired
-	private DeviceEntityToDeviceMapper mapper;
+	private DeviceMapper mapper;
 
 	@Override
 	public UserDetails loadUserByUsername(String username)

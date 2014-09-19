@@ -13,10 +13,10 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-import com.fancypants.data.device.dynamodb.repository.RecordRepository;
+import com.fancypants.data.device.dynamodb.repository.RawRecordRepository;
 
 @Configuration
-@EnableDynamoDBRepositories(basePackageClasses = RecordRepository.class, dynamoDBOperationsRef = "dynamoDBOperations")
+@EnableDynamoDBRepositories(basePackageClasses = RawRecordRepository.class, dynamoDBOperationsRef = "dynamoDBOperations")
 public class DynamoDBConfig {
 
 	public static final String ISO8601_DATEFORMAT_BEAN = "iso8601DateFormat";

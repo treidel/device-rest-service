@@ -9,30 +9,33 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
-import com.fancypants.data.device.dynamodb.entity.RecordEntity;
-import com.fancypants.data.device.dynamodb.entity.RecordId;
+import com.fancypants.data.device.dynamodb.entity.RawRecordEntity;
+import com.fancypants.data.device.dynamodb.entity.RawRecordId;
 import com.fancypants.data.device.dynamodb.repository.DeviceRepository;
-import com.fancypants.data.device.dynamodb.repository.RecordRepository;
+import com.fancypants.data.device.dynamodb.repository.RawRecordRepository;
 import com.fancypants.stream.device.kinesis.entity.RawRecord;
 import com.fancypants.stream.device.kinesis.stream.StreamWriter;
 import com.fancypants.rest.domain.CurrentRecord;
-import com.fancypants.rest.mapping.DeviceAndRecordToRecordEntityMapper;
-import com.fancypants.rest.mapping.DeviceEntityAndRecordEntityToRecordMapper;
-import com.fancypants.rest.mapping.RecordEntityToRawRecordMapper;
+import com.fancypants.rest.exception.AbstractServiceException;
+import com.fancypants.rest.exception.BusinessLogicException;
+import com.fancypants.rest.mapping.RecordEntityMapper;
+import com.fancypants.rest.mapping.CurrentRecordMapper;
+import com.fancypants.rest.mapping.RawRecordMapper;
 import com.fancypants.rest.request.DeviceContainer;
 
 @Service
 public class RecordService {
 
 	@Autowired
-	private DeviceEntityAndRecordEntityToRecordMapper recordEntityMapper;
+	private CurrentRecordMapper recordEntityMapper;
 	@Autowired
-	private DeviceAndRecordToRecordEntityMapper recordMapper;
+	private RecordEntityMapper recordMapper;
 	@Autowired
-	private RecordEntityToRawRecordMapper rawMapper;
+	private RawRecordMapper rawMapper;
 	@Autowired
-	private RecordRepository recordRepository;
+	private RawRecordRepository recordRepository;
 	@Autowired
 	private DeviceRepository deviceRepository;
 	@Autowired
@@ -40,46 +43,58 @@ public class RecordService {
 	@Autowired
 	private StreamWriter<RawRecord> streamWriter;
 
-	public CurrentRecord findRecordForDevice(UUID uuid) {
+	public CurrentRecord findRecordForDevice(UUID uuid)
+			throws AbstractServiceException {
 		// create the record id for the query
-		RecordId recordId = new RecordId();
+		RawRecordId recordId = new RawRecordId();
 		recordId.setDevice(deviceContainer.getDeviceEntity().getDevice());
 		recordId.setUUID(uuid.toString());
 		// execute the query
-		RecordEntity recordEntity = recordRepository.get(recordId);
+		RawRecordEntity recordEntity = recordRepository.get(recordId);
 		if (null == recordEntity) {
 			return null;
 		}
 		// map the data back to record
 		CurrentRecord record = recordEntityMapper
-				.convert(new ImmutablePair<DeviceEntity, RecordEntity>(
+				.convert(new ImmutablePair<DeviceEntity, RawRecordEntity>(
 						deviceContainer.getDeviceEntity(), recordEntity));
 		// done
 		return record;
 	}
 
-	public List<CurrentRecord> findAllRecordsForDevice() {
+	public List<CurrentRecord> findAllRecordsForDevice()
+			throws AbstractServiceException {
 		// query for all records for this device
-		List<RecordEntity> recordEntities = recordRepository
+		List<RawRecordEntity> recordEntities = recordRepository
 				.findByDevice(deviceContainer.getDeviceEntity().getDevice());
 		List<CurrentRecord> records = new ArrayList<CurrentRecord>(
 				recordEntities.size());
-		for (RecordEntity recordEntity : recordEntities) {
+		for (RawRecordEntity recordEntity : recordEntities) {
 			CurrentRecord record = recordEntityMapper
-					.convert(new ImmutablePair<DeviceEntity, RecordEntity>(
+					.convert(new ImmutablePair<DeviceEntity, RawRecordEntity>(
 							deviceContainer.getDeviceEntity(), recordEntity));
 			records.add(record);
 		}
 		return records;
 	}
 
-	public void bulkCreateRecords(Collection<CurrentRecord> records) {
+	public void bulkCreateRecords(Collection<CurrentRecord> records)
+			throws AbstractServiceException {
 		// find the device
 		DeviceEntity deviceEntity = deviceContainer.getDeviceEntity();
 		for (CurrentRecord record : records) {
-			RecordEntity recordEntity = recordMapper
+			// convert into an internal representation
+			RawRecordEntity recordEntity = recordMapper
 					.convert(new ImmutablePair<DeviceEntity, CurrentRecord>(
 							deviceEntity, record));
+			// business rule: record must contain data for all circuits
+			for (CircuitEntity circuitEntity : deviceEntity.getCircuits()) {
+				if (null == recordEntity.getCircuit(circuitEntity.getIndex())) {
+					throw new BusinessLogicException("no data in record="
+							+ record.getUUID().toString() + " for circuit="
+							+ circuitEntity.getIndex());
+				}
+			}
 			// try to create the record
 			boolean created = recordRepository.insert(recordEntity);
 			if (true == created) {

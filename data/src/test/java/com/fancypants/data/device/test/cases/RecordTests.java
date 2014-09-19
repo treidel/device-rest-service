@@ -18,23 +18,23 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.util.Assert;
 
 import com.fancypants.data.device.dynamodb.config.DynamoDBConfig;
-import com.fancypants.data.device.dynamodb.entity.RecordEntity;
-import com.fancypants.data.device.dynamodb.entity.RecordId;
-import com.fancypants.data.device.dynamodb.repository.RecordRepository;
+import com.fancypants.data.device.dynamodb.entity.RawRecordEntity;
+import com.fancypants.data.device.dynamodb.entity.RawRecordId;
+import com.fancypants.data.device.dynamodb.repository.RawRecordRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = DynamoDBConfig.class)
 public class RecordTests extends AbstractTest {
 
-	private static final RecordEntity RECORD1 = new RecordEntity();
-	private static final RecordEntity RECORD2 = new RecordEntity();
-	private static final RecordId INVALID_RECORD_ID = new RecordId();
-	private static final Collection<RecordEntity> RECORDS = new ArrayList<RecordEntity>(
+	private static final RawRecordEntity RECORD1 = new RawRecordEntity();
+	private static final RawRecordEntity RECORD2 = new RawRecordEntity();
+	private static final RawRecordId INVALID_RECORD_ID = new RawRecordId();
+	private static final Collection<RawRecordEntity> RECORDS = new ArrayList<RawRecordEntity>(
 			2);
 
 	private @Autowired
 	@Qualifier("recordRepository")
-	RecordRepository repository;
+	RawRecordRepository repository;
 
 	@BeforeClass
 	public static void init() {
@@ -42,14 +42,14 @@ public class RecordTests extends AbstractTest {
 		RECORD1.setDevice("ABC1234");
 		RECORD1.setUUID(UUID.randomUUID().toString());
 		RECORD1.setTimestamp(iso8601DateFormat.format(new Date()));
-		for (int i = RecordEntity.MIN_CIRCUIT; i <= RecordEntity.MAX_CIRCUIT; i++) {
+		for (int i = RawRecordEntity.MIN_CIRCUIT; i <= RawRecordEntity.MAX_CIRCUIT; i++) {
 			RECORD1.setCircuit(1, 10.0f);
 		}
 
 		RECORD2.setDevice("ABC1234");
 		RECORD2.setUUID(UUID.randomUUID().toString());
 		RECORD2.setTimestamp(iso8601DateFormat.format(new Date()));
-		for (int i = RecordEntity.MIN_CIRCUIT; i <= RecordEntity.MAX_CIRCUIT; i++) {
+		for (int i = RawRecordEntity.MIN_CIRCUIT; i <= RawRecordEntity.MAX_CIRCUIT; i++) {
 			RECORD2.setCircuit(1, 20.0f);
 		}
 
@@ -92,19 +92,19 @@ public class RecordTests extends AbstractTest {
 		// run the create test to create a record
 		createTest();
 		// query for it
-		RecordEntity record = repository.get(RECORD1.getRecordId());
+		RawRecordEntity record = repository.get(RECORD1.getRecordId());
 		Assert.isTrue(null != record);
 	}
 
 	@Test
 	public void queryInvalidTest() {
-		RecordEntity record = repository.get(INVALID_RECORD_ID);
+		RawRecordEntity record = repository.get(INVALID_RECORD_ID);
 		Assert.isNull(record);
 	}
 
 	@Test
 	public void bulkInsertTest() {
-		for (RecordEntity record : RECORDS) {
+		for (RawRecordEntity record : RECORDS) {
 			repository.insert(record);
 		}
 		Assert.isTrue(RECORDS.size() == repository.count());
@@ -115,7 +115,7 @@ public class RecordTests extends AbstractTest {
 		// run the bulk insert test to create multiple records
 		bulkInsertTest();
 		// query for all records
-		Collection<RecordEntity> records = repository.findByDevice(RECORD1
+		Collection<RawRecordEntity> records = repository.findByDevice(RECORD1
 				.getDevice());
 		Assert.isTrue(RECORDS.size() == records.size());
 	}

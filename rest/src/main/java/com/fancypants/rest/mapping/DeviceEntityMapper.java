@@ -15,11 +15,11 @@ import com.fancypants.rest.domain.Circuit;
 import com.fancypants.rest.domain.Device;
 
 @Component
-public class DeviceToDeviceEntityMapper implements
+public class DeviceEntityMapper implements
 		EntityMapper<DeviceEntity, Device> {
 
 	@Autowired
-	private CircuitToCircuitEntityMapper circuitMapper;
+	private CircuitEntityMapper circuitMapper;
 	
 	@Autowired
 	private DateFormat iso8601Format;

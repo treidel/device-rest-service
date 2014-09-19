@@ -11,19 +11,19 @@ import org.springframework.stereotype.Component;
 
 import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
-import com.fancypants.data.device.dynamodb.entity.RecordEntity;
+import com.fancypants.data.device.dynamodb.entity.RawRecordEntity;
 import com.fancypants.rest.domain.CurrentMeasurement;
 import com.fancypants.rest.domain.CurrentRecord;
 
 @Component
-public class DeviceEntityAndRecordEntityToRecordMapper implements
-		EntityMapper<CurrentRecord, Pair<DeviceEntity, RecordEntity>> {
+public class CurrentRecordMapper implements
+		EntityMapper<CurrentRecord, Pair<DeviceEntity, RawRecordEntity>> {
 
 	@Override
-	public CurrentRecord convert(Pair<DeviceEntity, RecordEntity> entity) {
+	public CurrentRecord convert(Pair<DeviceEntity, RawRecordEntity> entity) {
 		// extract the entities 
 		DeviceEntity deviceEntity = entity.getLeft();
-		RecordEntity recordEntity = entity.getRight();
+		RawRecordEntity recordEntity = entity.getRight();
 		// create the set for the measurements
 		Set<CurrentMeasurement> measurements = new HashSet<CurrentMeasurement>(recordEntity
 				.getCircuits().size());

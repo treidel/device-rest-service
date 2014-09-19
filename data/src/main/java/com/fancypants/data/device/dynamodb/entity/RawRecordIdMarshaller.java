@@ -2,10 +2,10 @@ package com.fancypants.data.device.dynamodb.entity;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMarshaller;
 
-public class RecordIdMarshaller implements DynamoDBMarshaller<RecordId> {
+public class RawRecordIdMarshaller implements DynamoDBMarshaller<RawRecordId> {
 
 	@Override
-	public String marshall(RecordId getterReturnResult) {
+	public String marshall(RawRecordId getterReturnResult) {
 		return getterReturnResult == null ? null : getterReturnResult
 				.getDevice()
 				+ "#"
@@ -14,12 +14,12 @@ public class RecordIdMarshaller implements DynamoDBMarshaller<RecordId> {
 	}
 
 	@Override
-	public RecordId unmarshall(Class<RecordId> clazz, String obj) {
+	public RawRecordId unmarshall(Class<RawRecordId> clazz, String obj) {
 
 		if (obj == null)
 			return null;
 		String[] parts = obj.split("#");
-		RecordId deviceAndUUID = new RecordId();
+		RawRecordId deviceAndUUID = new RawRecordId();
 
 		if (parts.length == 2) {
 			deviceAndUUID.setDevice(parts[0]);

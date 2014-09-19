@@ -9,7 +9,7 @@ import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
 import com.fancypants.rest.domain.Circuit;
 
 @Component
-public class CircuitEntityToCircuitMapper implements
+public class CircuitMapper implements
 		EntityMapper<Circuit, CircuitEntity> {
 
 	@Autowired

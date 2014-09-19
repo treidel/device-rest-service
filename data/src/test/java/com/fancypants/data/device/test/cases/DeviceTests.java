@@ -18,7 +18,7 @@ import org.springframework.util.Assert;
 import com.fancypants.data.device.dynamodb.config.DynamoDBConfig;
 import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
-import com.fancypants.data.device.dynamodb.entity.RecordEntity;
+import com.fancypants.data.device.dynamodb.entity.RawRecordEntity;
 import com.fancypants.data.device.dynamodb.repository.DeviceRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -38,7 +38,7 @@ public class DeviceTests extends AbstractTest {
 		DEVICE1.setSerialNumber("00000001");
 		DEVICE1.setLastModifiedTimestamp(iso8601DateFormat.format(new Date()));
 		Set<CircuitEntity> circuits = new TreeSet<CircuitEntity>();
-		for (int i = RecordEntity.MIN_CIRCUIT; i <= RecordEntity.MAX_CIRCUIT; i++) {
+		for (int i = RawRecordEntity.MIN_CIRCUIT; i <= RawRecordEntity.MAX_CIRCUIT; i++) {
 			CircuitEntity circuit = new CircuitEntity(i, String.valueOf(i), 120.0f, 30.0f);
 			circuits.add(circuit);
 		}

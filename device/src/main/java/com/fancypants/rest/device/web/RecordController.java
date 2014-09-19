@@ -24,6 +24,7 @@ import com.fancypants.rest.device.assembler.RecordResourceAssembler;
 import com.fancypants.rest.device.resource.RecordResource;
 import com.fancypants.rest.domain.Device;
 import com.fancypants.rest.domain.CurrentRecord;
+import com.fancypants.rest.exception.AbstractServiceException;
 import com.fancypants.rest.request.DeviceContainer;
 import com.fancypants.rest.service.DeviceService;
 import com.fancypants.rest.service.RecordService;
@@ -56,7 +57,8 @@ public class RecordController {
 	@RequestMapping(value = "/records", method = RequestMethod.POST)
 	@ResponseBody
 	public HttpEntity<Collection<RecordResource>> putRecords(
-			@RequestBody Collection<CurrentRecord> records) {
+			@RequestBody Collection<CurrentRecord> records)
+			throws AbstractServiceException {
 		// create the list of resources to be returned
 		Collection<RecordResource> resources = new LinkedList<RecordResource>();
 		// bulk create the records
@@ -75,11 +77,13 @@ public class RecordController {
 
 	@RequestMapping(value = "/records", method = RequestMethod.GET)
 	@ResponseBody
-	public HttpEntity<Collection<RecordResource>> getRecords() {
+	public HttpEntity<Collection<RecordResource>> getRecords()
+			throws AbstractServiceException {
 		// create the list of resources
 		Collection<RecordResource> resources = new LinkedList<RecordResource>();
 		// query for all of the records
-		Collection<CurrentRecord> records = recordService.findAllRecordsForDevice();
+		Collection<CurrentRecord> records = recordService
+				.findAllRecordsForDevice();
 		for (CurrentRecord record : records) {
 			// create a resource for each record
 			RecordResource resource = recordResourceAssembler
@@ -94,16 +98,16 @@ public class RecordController {
 	@RequestMapping(value = "/records/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
 	public HttpEntity<RecordResource> getRecord(
-			@PathVariable("uuid") String uuid) {
+			@PathVariable("uuid") String uuid) throws AbstractServiceException {
 		// find the record
-		CurrentRecord record = recordService
-				.findRecordForDevice(UUID.fromString(uuid));
+		CurrentRecord record = recordService.findRecordForDevice(UUID
+				.fromString(uuid));
 		if (null == record) {
 			return new ResponseEntity<RecordResource>(HttpStatus.NOT_FOUND);
 		}
 		RecordResource resource = recordResourceAssembler
-				.toResource(new ImmutablePair<Device, CurrentRecord>(deviceContainer
-						.getDevice(), record));
+				.toResource(new ImmutablePair<Device, CurrentRecord>(
+						deviceContainer.getDevice(), record));
 		return new ResponseEntity<RecordResource>(resource, HttpStatus.OK);
 	}
 

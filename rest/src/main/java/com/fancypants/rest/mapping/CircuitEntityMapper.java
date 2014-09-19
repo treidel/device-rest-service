@@ -7,7 +7,7 @@ import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
 import com.fancypants.rest.domain.Circuit;
 
 @Component
-public class CircuitToCircuitEntityMapper implements
+public class CircuitEntityMapper implements
 		EntityMapper<CircuitEntity, Pair<Integer, Circuit>> {
 
 	@Override

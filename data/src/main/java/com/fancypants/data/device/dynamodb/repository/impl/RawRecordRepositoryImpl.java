@@ -16,39 +16,39 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
-import com.fancypants.data.device.dynamodb.entity.RecordEntity;
-import com.fancypants.data.device.dynamodb.entity.RecordId;
-import com.fancypants.data.device.dynamodb.repository.RecordRepository;
+import com.fancypants.data.device.dynamodb.entity.RawRecordEntity;
+import com.fancypants.data.device.dynamodb.entity.RawRecordId;
+import com.fancypants.data.device.dynamodb.repository.RawRecordRepository;
 
 @Component
-public class RecordRepositoryImpl implements RecordRepository {
+public class RawRecordRepositoryImpl implements RawRecordRepository {
 
 	private final DynamoDBMapper dynamoDBMapper;
 
 	@Autowired
-	public RecordRepositoryImpl(AmazonDynamoDB amazonDynamoDB) {
+	public RawRecordRepositoryImpl(AmazonDynamoDB amazonDynamoDB) {
 		this.dynamoDBMapper = new DynamoDBMapper(amazonDynamoDB);
 	}
 
 	@Override
-	public List<RecordEntity> findByDevice(String device) {
-		RecordEntity record = new RecordEntity();
+	public List<RawRecordEntity> findByDevice(String device) {
+		RawRecordEntity record = new RawRecordEntity();
 		record.setDevice(device);
-		DynamoDBQueryExpression<RecordEntity> queryExpression = new DynamoDBQueryExpression<RecordEntity>()
+		DynamoDBQueryExpression<RawRecordEntity> queryExpression = new DynamoDBQueryExpression<RawRecordEntity>()
 				.withHashKeyValues(record);
-		List<RecordEntity> records = dynamoDBMapper.query(RecordEntity.class,
+		List<RawRecordEntity> records = dynamoDBMapper.query(RawRecordEntity.class,
 				queryExpression);
 		return records;
 	}
 
 	@Override
-	public boolean insert(RecordEntity record) {
+	public boolean insert(RawRecordEntity record) {
 		DynamoDBSaveExpression expression = new DynamoDBSaveExpression();
 		Map<String, ExpectedAttributeValue> expected = new HashMap<String, ExpectedAttributeValue>();
 		ExpectedAttributeValue expectedValue = new ExpectedAttributeValue(
 				new AttributeValue());
 		expectedValue.setComparisonOperator(ComparisonOperator.NULL);
-		expected.put(RecordEntity.HASH_KEY, expectedValue);
+		expected.put(RawRecordEntity.HASH_KEY, expectedValue);
 		expression.setExpected(expected);
 		try {
 			dynamoDBMapper.save(record, expression);
@@ -61,20 +61,20 @@ public class RecordRepositoryImpl implements RecordRepository {
 	@Override
 	public void deleteAll() {
 		DynamoDBScanExpression expression = new DynamoDBScanExpression();
-		List<RecordEntity> records = dynamoDBMapper.scan(RecordEntity.class,
+		List<RawRecordEntity> records = dynamoDBMapper.scan(RawRecordEntity.class,
 				expression);
 		dynamoDBMapper.batchDelete(records);
 	}
 
 	@Override
-	public RecordEntity get(RecordId recordId) {
-		return dynamoDBMapper.load(RecordEntity.class, recordId.getDevice(),
+	public RawRecordEntity get(RawRecordId recordId) {
+		return dynamoDBMapper.load(RawRecordEntity.class, recordId.getDevice(),
 				recordId.getUUID());
 	}
 
 	@Override
 	public int count() {
 		DynamoDBScanExpression expression = new DynamoDBScanExpression();
-		return dynamoDBMapper.count(RecordEntity.class, expression);
+		return dynamoDBMapper.count(RawRecordEntity.class, expression);
 	}
 }

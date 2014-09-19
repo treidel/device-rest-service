@@ -26,7 +26,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
  * methods must be annotated with @DynamoDBHashKey or @DynamoDBRangeKey
  * 
  */
-public class RecordId implements Serializable {
+public class RawRecordId implements Serializable {
 	/**
 	 * 
 	 */
