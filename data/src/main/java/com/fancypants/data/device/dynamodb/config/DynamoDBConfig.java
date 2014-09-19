@@ -13,10 +13,10 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-import com.fancypants.data.device.dynamodb.repository.RawRecordRepository;
+import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe;
 
 @Configuration
-@EnableDynamoDBRepositories(basePackageClasses = RawRecordRepository.class, dynamoDBOperationsRef = "dynamoDBOperations")
+@EnableDynamoDBRepositories(basePackageClasses = DataDeviceDynamoDBScanMe.class, dynamoDBOperationsRef = "dynamoDBOperations")
 public class DynamoDBConfig {
 
 	public static final String ISO8601_DATEFORMAT_BEAN = "iso8601DateFormat";
@@ -34,7 +34,7 @@ public class DynamoDBConfig {
 	}
 
 	@Bean
-	DateFormat iso8601DateFormat() {
+	public DateFormat iso8601DateFormat() {
 		// use ISO8601/RFC3339 time format
 		//TimeZone tz = TimeZone.getTimeZone("UTC");
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");

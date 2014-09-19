@@ -9,10 +9,8 @@ import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
@@ -31,22 +29,10 @@ public class RawRecordRepositoryImpl implements RawRecordRepository {
 	}
 
 	@Override
-	public List<RawRecordEntity> findByDevice(String device) {
-		RawRecordEntity record = new RawRecordEntity();
-		record.setDevice(device);
-		DynamoDBQueryExpression<RawRecordEntity> queryExpression = new DynamoDBQueryExpression<RawRecordEntity>()
-				.withHashKeyValues(record);
-		List<RawRecordEntity> records = dynamoDBMapper.query(RawRecordEntity.class,
-				queryExpression);
-		return records;
-	}
-
-	@Override
 	public boolean insert(RawRecordEntity record) {
 		DynamoDBSaveExpression expression = new DynamoDBSaveExpression();
 		Map<String, ExpectedAttributeValue> expected = new HashMap<String, ExpectedAttributeValue>();
-		ExpectedAttributeValue expectedValue = new ExpectedAttributeValue(
-				new AttributeValue());
+		ExpectedAttributeValue expectedValue = new ExpectedAttributeValue();
 		expectedValue.setComparisonOperator(ComparisonOperator.NULL);
 		expected.put(RawRecordEntity.HASH_KEY, expectedValue);
 		expression.setExpected(expected);
@@ -68,8 +54,7 @@ public class RawRecordRepositoryImpl implements RawRecordRepository {
 
 	@Override
 	public RawRecordEntity get(RawRecordId recordId) {
-		return dynamoDBMapper.load(RawRecordEntity.class, recordId.getDevice(),
-				recordId.getUUID());
+		return dynamoDBMapper.load(RawRecordEntity.class, recordId);
 	}
 
 	@Override

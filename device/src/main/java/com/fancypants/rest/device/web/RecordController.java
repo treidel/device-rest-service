@@ -75,26 +75,6 @@ public class RecordController {
 		return response;
 	}
 
-	@RequestMapping(value = "/records", method = RequestMethod.GET)
-	@ResponseBody
-	public HttpEntity<Collection<RecordResource>> getRecords()
-			throws AbstractServiceException {
-		// create the list of resources
-		Collection<RecordResource> resources = new LinkedList<RecordResource>();
-		// query for all of the records
-		Collection<CurrentRecord> records = recordService
-				.findAllRecordsForDevice();
-		for (CurrentRecord record : records) {
-			// create a resource for each record
-			RecordResource resource = recordResourceAssembler
-					.toResource(new ImmutablePair<Device, CurrentRecord>(
-							deviceContainer.getDevice(), record));
-			resources.add(resource);
-		}
-		return new ResponseEntity<Collection<RecordResource>>(resources,
-				HttpStatus.OK);
-	}
-
 	@RequestMapping(value = "/records/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
 	public HttpEntity<RecordResource> getRecord(

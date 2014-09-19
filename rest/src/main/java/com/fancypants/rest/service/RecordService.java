@@ -1,8 +1,6 @@
 package com.fancypants.rest.service;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -15,15 +13,15 @@ import com.fancypants.data.device.dynamodb.entity.RawRecordEntity;
 import com.fancypants.data.device.dynamodb.entity.RawRecordId;
 import com.fancypants.data.device.dynamodb.repository.DeviceRepository;
 import com.fancypants.data.device.dynamodb.repository.RawRecordRepository;
-import com.fancypants.stream.device.kinesis.entity.RawRecord;
-import com.fancypants.stream.device.kinesis.stream.StreamWriter;
 import com.fancypants.rest.domain.CurrentRecord;
 import com.fancypants.rest.exception.AbstractServiceException;
 import com.fancypants.rest.exception.BusinessLogicException;
-import com.fancypants.rest.mapping.RecordEntityMapper;
 import com.fancypants.rest.mapping.CurrentRecordMapper;
 import com.fancypants.rest.mapping.RawRecordMapper;
+import com.fancypants.rest.mapping.RecordEntityMapper;
 import com.fancypants.rest.request.DeviceContainer;
+import com.fancypants.stream.device.kinesis.entity.RawRecord;
+import com.fancypants.stream.device.kinesis.stream.StreamWriter;
 
 @Service
 public class RecordService {
@@ -60,22 +58,6 @@ public class RecordService {
 						deviceContainer.getDeviceEntity(), recordEntity));
 		// done
 		return record;
-	}
-
-	public List<CurrentRecord> findAllRecordsForDevice()
-			throws AbstractServiceException {
-		// query for all records for this device
-		List<RawRecordEntity> recordEntities = recordRepository
-				.findByDevice(deviceContainer.getDeviceEntity().getDevice());
-		List<CurrentRecord> records = new ArrayList<CurrentRecord>(
-				recordEntities.size());
-		for (RawRecordEntity recordEntity : recordEntities) {
-			CurrentRecord record = recordEntityMapper
-					.convert(new ImmutablePair<DeviceEntity, RawRecordEntity>(
-							deviceContainer.getDeviceEntity(), recordEntity));
-			records.add(record);
-		}
-		return records;
 	}
 
 	public void bulkCreateRecords(Collection<CurrentRecord> records)

@@ -11,7 +11,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -21,9 +20,11 @@ import com.fancypants.data.device.dynamodb.config.DynamoDBConfig;
 import com.fancypants.data.device.dynamodb.entity.RawRecordEntity;
 import com.fancypants.data.device.dynamodb.entity.RawRecordId;
 import com.fancypants.data.device.dynamodb.repository.RawRecordRepository;
+import com.fancypants.data.device.dynamodb.repository.impl.MonthlyRecordRepositoryImpl;
+import com.fancypants.data.device.dynamodb.repository.impl.RawRecordRepositoryImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = DynamoDBConfig.class)
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {DynamoDBConfig.class, RawRecordRepositoryImpl.class, MonthlyRecordRepositoryImpl.class})
 public class RecordTests extends AbstractTest {
 
 	private static final RawRecordEntity RECORD1 = new RawRecordEntity();
@@ -33,7 +34,6 @@ public class RecordTests extends AbstractTest {
 			2);
 
 	private @Autowired
-	@Qualifier("recordRepository")
 	RawRecordRepository repository;
 
 	@BeforeClass
@@ -83,8 +83,8 @@ public class RecordTests extends AbstractTest {
 	public void duplicateCreateTest() {
 		// pre-create
 		createTest();
-		// now create against + query
-		querySuccessTest();
+		// now create again and make sure duplicate is detected
+		Assert.isTrue(false == repository.insert(RECORD1));		
 	}
 
 	@Test
@@ -108,16 +108,6 @@ public class RecordTests extends AbstractTest {
 			repository.insert(record);
 		}
 		Assert.isTrue(RECORDS.size() == repository.count());
-	}
-
-	@Test
-	public void bulkQueryTest() {
-		// run the bulk insert test to create multiple records
-		bulkInsertTest();
-		// query for all records
-		Collection<RawRecordEntity> records = repository.findByDevice(RECORD1
-				.getDevice());
-		Assert.isTrue(RECORDS.size() == records.size());
 	}
 
 }

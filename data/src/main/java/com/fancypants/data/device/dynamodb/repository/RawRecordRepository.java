@@ -15,14 +15,10 @@
  */
 package com.fancypants.data.device.dynamodb.repository;
 
-import java.util.List;
-
 import com.fancypants.data.device.dynamodb.entity.RawRecordEntity;
 import com.fancypants.data.device.dynamodb.entity.RawRecordId;
 
 public interface RawRecordRepository {
-
-	public List<RawRecordEntity> findByDevice(String device);
 
 	public boolean insert(RawRecordEntity record);
 	
