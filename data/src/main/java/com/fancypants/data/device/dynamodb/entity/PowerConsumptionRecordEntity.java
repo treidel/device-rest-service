@@ -10,17 +10,19 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
-@DynamoDBTable(tableName = "monthly")
+@DynamoDBTable(tableName = PowerConsumptionRecordEntity.TABLE_NAME)
 public class PowerConsumptionRecordEntity {
 
+	public static final String TABLE_NAME = "monthly";
 	public static final String HASH_KEY = "device";
 	public static final String RANGE_KEY = "date";
+	public static final String MEASUREMENT_ATTRIBUTE_PREFIX = "measurement";
 
 	private String device;
 	private String date;
 	private Map<Integer, Float> measurements;
 
-	@DynamoDBHashKey(attributeName = "device")
+	@DynamoDBHashKey(attributeName = HASH_KEY)
 	public String getDevice() {
 		return device;
 	}
@@ -29,7 +31,7 @@ public class PowerConsumptionRecordEntity {
 		this.device = device;
 	}
 
-	@DynamoDBRangeKey(attributeName = "date")
+	@DynamoDBRangeKey(attributeName = RANGE_KEY)
 	public String getDate() {
 		return date;
 	}
@@ -38,7 +40,7 @@ public class PowerConsumptionRecordEntity {
 		this.date = date;
 	}
 
-	@DynamoDBAttribute(attributeName = "measurement1")
+	@DynamoDBAttribute(attributeName = MEASUREMENT_ATTRIBUTE_PREFIX + "1")
 	public Float getMeasurement1() {
 		return getMeasurement(1);
 	}
@@ -47,7 +49,7 @@ public class PowerConsumptionRecordEntity {
 		setMeasurement(1, value);
 	}
 
-	@DynamoDBAttribute(attributeName = "measurement2")
+	@DynamoDBAttribute(attributeName = MEASUREMENT_ATTRIBUTE_PREFIX + "2")
 	public Float getMeasurement2() {
 		return getMeasurement(2);
 	}
@@ -56,7 +58,7 @@ public class PowerConsumptionRecordEntity {
 		setMeasurement(2, value);
 	}
 
-	@DynamoDBAttribute(attributeName = "measurement3")
+	@DynamoDBAttribute(attributeName = MEASUREMENT_ATTRIBUTE_PREFIX + "3")
 	public Float getMeasurement3() {
 		return getMeasurement(3);
 	}
@@ -65,7 +67,7 @@ public class PowerConsumptionRecordEntity {
 		setMeasurement(3, value);
 	}
 
-	@DynamoDBAttribute(attributeName = "measurement4")
+	@DynamoDBAttribute(attributeName = MEASUREMENT_ATTRIBUTE_PREFIX + "4")
 	public Float getMeasurement4() {
 		return getMeasurement(4);
 	}
@@ -74,7 +76,7 @@ public class PowerConsumptionRecordEntity {
 		setMeasurement(4, value);
 	}
 
-	@DynamoDBAttribute(attributeName = "measurement5")
+	@DynamoDBAttribute(attributeName = MEASUREMENT_ATTRIBUTE_PREFIX + "5")
 	public Float getMeasurement5() {
 		return getMeasurement(5);
 	}
@@ -83,7 +85,7 @@ public class PowerConsumptionRecordEntity {
 		setMeasurement(5, value);
 	}
 
-	@DynamoDBAttribute(attributeName = "measurement6")
+	@DynamoDBAttribute(attributeName = MEASUREMENT_ATTRIBUTE_PREFIX + "6")
 	public Float getMeasurement6() {
 		return getMeasurement(6);
 	}
@@ -92,7 +94,7 @@ public class PowerConsumptionRecordEntity {
 		setMeasurement(6, value);
 	}
 
-	@DynamoDBAttribute(attributeName = "measurement7")
+	@DynamoDBAttribute(attributeName = MEASUREMENT_ATTRIBUTE_PREFIX + "7")
 	public Float getMeasurement7() {
 		return getMeasurement(7);
 	}
@@ -101,7 +103,7 @@ public class PowerConsumptionRecordEntity {
 		setMeasurement(1, value);
 	}
 
-	@DynamoDBAttribute(attributeName = "measurement8")
+	@DynamoDBAttribute(attributeName = MEASUREMENT_ATTRIBUTE_PREFIX + "8")
 	public Float getMeasurement8() {
 		return getMeasurement(8);
 	}

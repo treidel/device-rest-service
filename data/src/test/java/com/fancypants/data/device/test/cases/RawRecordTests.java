@@ -20,12 +20,11 @@ import com.fancypants.data.device.dynamodb.config.DynamoDBConfig;
 import com.fancypants.data.device.dynamodb.entity.RawRecordEntity;
 import com.fancypants.data.device.dynamodb.entity.RawRecordId;
 import com.fancypants.data.device.dynamodb.repository.RawRecordRepository;
-import com.fancypants.data.device.dynamodb.repository.impl.MonthlyRecordRepositoryImpl;
 import com.fancypants.data.device.dynamodb.repository.impl.RawRecordRepositoryImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {DynamoDBConfig.class, RawRecordRepositoryImpl.class, MonthlyRecordRepositoryImpl.class})
-public class RecordTests extends AbstractTest {
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {DynamoDBConfig.class, RawRecordRepositoryImpl.class})
+public class RawRecordTests extends AbstractTest {
 
 	private static final RawRecordEntity RECORD1 = new RawRecordEntity();
 	private static final RawRecordEntity RECORD2 = new RawRecordEntity();
@@ -43,14 +42,14 @@ public class RecordTests extends AbstractTest {
 		RECORD1.setUUID(UUID.randomUUID().toString());
 		RECORD1.setTimestamp(iso8601DateFormat.format(new Date()));
 		for (int i = RawRecordEntity.MIN_CIRCUIT; i <= RawRecordEntity.MAX_CIRCUIT; i++) {
-			RECORD1.setCircuit(1, 10.0f);
+			RECORD1.setCircuit(i, 10.0f);
 		}
 
 		RECORD2.setDevice("ABC1234");
 		RECORD2.setUUID(UUID.randomUUID().toString());
 		RECORD2.setTimestamp(iso8601DateFormat.format(new Date()));
 		for (int i = RawRecordEntity.MIN_CIRCUIT; i <= RawRecordEntity.MAX_CIRCUIT; i++) {
-			RECORD2.setCircuit(1, 20.0f);
+			RECORD2.setCircuit(i, 20.0f);
 		}
 
 		INVALID_RECORD_ID.setDevice("XYZ789");
