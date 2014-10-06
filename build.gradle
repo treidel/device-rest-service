@@ -50,13 +50,13 @@ project(':rest') {
         }
 }
 
-project(':device') {
+project(':device-rest') {
 	dependencies {
 		compile project(':rest')
 	}
 }
 
-project(':app') {
+project(':app-rest') {
 	dependencies {
 		compile project(':rest')
 	}

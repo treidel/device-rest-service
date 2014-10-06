@@ -1,1 +1,1 @@
-include 'data', 'rest', 'app', 'device', 'processing', 'stream'
+include 'data', 'rest', 'app-rest', 'device-rest', 'processing', 'stream'
