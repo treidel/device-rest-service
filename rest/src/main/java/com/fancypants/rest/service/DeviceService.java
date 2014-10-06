@@ -29,11 +29,11 @@ public class DeviceService {
 	@Autowired
 	private DeviceContainer deviceContainer;
 
-	public Device getDevice(String deviceId) {
+	public Device getDevice(String deviceId) throws AbstractServiceException {
 		// find the device
 		DeviceEntity deviceEntity = repository.findOne(deviceId);
 		if (null == deviceEntity) {
-			return null;
+			throw new BusinessLogicException("device not found");
 		}
 		// map the device
 		Device device = entityMapper.convert(deviceEntity);

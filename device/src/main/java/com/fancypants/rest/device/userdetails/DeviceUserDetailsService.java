@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.fancypants.rest.domain.Device;
+import com.fancypants.rest.exception.AbstractServiceException;
 import com.fancypants.rest.mapping.DeviceMapper;
 import com.fancypants.rest.service.DeviceService;
 
@@ -37,9 +37,10 @@ public class DeviceUserDetailsService implements UserDetailsService {
 		if (true == username.equals(ADMIN_USERNAME)) {
 			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 		} else {
-			// lookup the device to be sure it exists
-			Device device = deviceService.getDevice(username);
-			if (null == device) {
+			try {
+				// lookup the device to be sure it exists
+				deviceService.getDevice(username);
+			} catch (AbstractServiceException e) {
 				throw new UsernameNotFoundException("device=" + username
 						+ " not found in database");
 			}

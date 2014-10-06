@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.fancypants.rest.domain.Device;
+import com.fancypants.rest.exception.AbstractServiceException;
 import com.fancypants.rest.service.DeviceService;
 
 @Service
@@ -27,18 +28,19 @@ public class AppUserDetailsService implements UserDetailsService {
 		// create the list of authorities
 		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(
 				1);
-		// lookup the device to be sure it exists
-		Device device = deviceService.getDevice(username);
-		if (null == device) {
+		try {
+			// lookup the device to be sure it exists
+			Device device = deviceService.getDevice(username);
+			// provide the user authority
+			authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+			// create and return the user
+			UserDetails user = new User(username, device.getSerialNumber(),
+					authorities);
+			return user;
+		} catch (AbstractServiceException e) {
 			throw new UsernameNotFoundException("device=" + username
 					+ " not found in database");
 		}
-		// provide the user authority
-		authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-		// create and return the user
-		UserDetails user = new User(username, device.getSerialNumber(),
-				authorities);
-		return user;
 	}
 
 }

@@ -18,6 +18,7 @@ import com.fancypants.data.device.dynamodb.repository.RawRecordRepository;
 import com.fancypants.rest.domain.CurrentRecord;
 import com.fancypants.rest.exception.AbstractServiceException;
 import com.fancypants.rest.exception.BusinessLogicException;
+import com.fancypants.rest.exception.DataValidationException;
 import com.fancypants.rest.mapping.CurrentRecordMapper;
 import com.fancypants.rest.mapping.RawRecordMapper;
 import com.fancypants.rest.mapping.RecordEntityMapper;
@@ -52,7 +53,7 @@ public class RecordService {
 		// execute the query
 		RawRecordEntity recordEntity = recordRepository.findOne(recordId);
 		if (null == recordEntity) {
-			return null;
+			throw new BusinessLogicException("record not found");
 		}
 		// map the data back to record
 		CurrentRecord record = recordEntityMapper
@@ -84,10 +85,10 @@ public class RecordService {
 			RawRecordEntity recordEntity = recordMapper
 					.convert(new ImmutablePair<DeviceEntity, CurrentRecord>(
 							deviceEntity, record));
-			// business rule: record must contain data for all circuits
+			// data validation rule: record must contain data for all circuits
 			for (CircuitEntity circuitEntity : deviceEntity.getCircuits()) {
 				if (null == recordEntity.getCircuit(circuitEntity.getIndex())) {
-					throw new BusinessLogicException("no data in record="
+					throw new DataValidationException("no data in record="
 							+ record.getUUID().toString() + " for circuit="
 							+ circuitEntity.getIndex());
 				}
