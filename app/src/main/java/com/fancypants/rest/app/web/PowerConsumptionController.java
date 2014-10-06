@@ -35,7 +35,7 @@ public class PowerConsumptionController {
 	public HttpEntity<List<PowerConsumptionResource>> getHourlyData() {
 		// query all records for this device
 		Set<PowerConsumptionRecord> powerRecords = usageService
-				.getMonthlyRecords();
+				.getHourlyRecords();
 		// create resources
 		List<PowerConsumptionResource> resources = new ArrayList<PowerConsumptionResource>(
 				powerRecords.size());

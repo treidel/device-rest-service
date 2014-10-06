@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.springframework.data.annotation.Id;
+
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
@@ -13,139 +15,154 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 @DynamoDBTable(tableName = PowerConsumptionRecordEntity.TABLE_NAME)
 public class PowerConsumptionRecordEntity {
 
-	public static final String TABLE_NAME = "monthly";
+	public static final String TABLE_NAME = "hourly";
 	public static final String HASH_KEY = "device";
 	public static final String RANGE_KEY = "date";
-	public static final String MEASUREMENT_ATTRIBUTE_PREFIX = "measurement";
+	public static final String ENERGY_ATTRIBUTE_PREFIX = "energyKWH";
 
-	private String device;
-	private String date;
-	private Map<Integer, Float> measurements;
+	private PowerConsumptionRecordId recordId;
+	private Map<Integer, Float> energy;
+
+	@Id
+	@DynamoDBIgnore
+	public PowerConsumptionRecordId getRecordId() {
+		return recordId;
+	}
+
+	public void setRecordId(PowerConsumptionRecordId recordId) {
+		this.recordId = recordId;
+	}
 
 	@DynamoDBHashKey(attributeName = HASH_KEY)
 	public String getDevice() {
-		return device;
+		return recordId != null ? recordId.getDevice() : null;
 	}
 
 	public void setDevice(String device) {
-		this.device = device;
+		if (recordId == null) {
+			recordId = new PowerConsumptionRecordId();
+		}
+		this.recordId.setDevice(device);
 	}
 
 	@DynamoDBRangeKey(attributeName = RANGE_KEY)
 	public String getDate() {
-		return date;
+		return recordId != null ? recordId.getDate() : null;
 	}
 
 	public void setDate(String date) {
-		this.date = date;
+		if (recordId == null) {
+			recordId = new PowerConsumptionRecordId();
+		}
+		this.recordId.setDate(date);
 	}
 
-	@DynamoDBAttribute(attributeName = MEASUREMENT_ATTRIBUTE_PREFIX + "1")
-	public Float getMeasurement1() {
-		return getMeasurement(1);
+	@DynamoDBAttribute(attributeName = ENERGY_ATTRIBUTE_PREFIX + "1")
+	public float getEnergy1() {
+		return getEnergy(1);
 	}
 
-	public void setMeasurement1(Float value) {
-		setMeasurement(1, value);
+	public void setEnergy1(float energyInKWH) {
+		setEnergy(1, energyInKWH);
 	}
 
-	@DynamoDBAttribute(attributeName = MEASUREMENT_ATTRIBUTE_PREFIX + "2")
-	public Float getMeasurement2() {
-		return getMeasurement(2);
+	@DynamoDBAttribute(attributeName = ENERGY_ATTRIBUTE_PREFIX + "2")
+	public float getEnergy2() {
+		return getEnergy(2);
 	}
 
-	public void setMeasurement2(Float value) {
-		setMeasurement(2, value);
+	public void setEnergy2(float energyInKWH) {
+		setEnergy(2, energyInKWH);
 	}
 
-	@DynamoDBAttribute(attributeName = MEASUREMENT_ATTRIBUTE_PREFIX + "3")
-	public Float getMeasurement3() {
-		return getMeasurement(3);
+	@DynamoDBAttribute(attributeName = ENERGY_ATTRIBUTE_PREFIX + "3")
+	public float getEnergy3() {
+		return getEnergy(3);
 	}
 
-	public void setMeasurement3(Float value) {
-		setMeasurement(3, value);
+	public void setEnergy3(float energyInKWH) {
+		setEnergy(3, energyInKWH);
 	}
 
-	@DynamoDBAttribute(attributeName = MEASUREMENT_ATTRIBUTE_PREFIX + "4")
-	public Float getMeasurement4() {
-		return getMeasurement(4);
+	@DynamoDBAttribute(attributeName = ENERGY_ATTRIBUTE_PREFIX + "4")
+	public float getEnergy4() {
+		return getEnergy(4);
 	}
 
-	public void setMeasurement4(Float value) {
-		setMeasurement(4, value);
+	public void setEnergy4(float energyInKWH) {
+		setEnergy(4, energyInKWH);
 	}
 
-	@DynamoDBAttribute(attributeName = MEASUREMENT_ATTRIBUTE_PREFIX + "5")
-	public Float getMeasurement5() {
-		return getMeasurement(5);
+	@DynamoDBAttribute(attributeName = ENERGY_ATTRIBUTE_PREFIX + "5")
+	public float getEnergy5() {
+		return getEnergy(5);
 	}
 
-	public void setMeasurement5(Float value) {
-		setMeasurement(5, value);
+	public void setEnergy5(float energyInKWH) {
+		setEnergy(5, energyInKWH);
 	}
 
-	@DynamoDBAttribute(attributeName = MEASUREMENT_ATTRIBUTE_PREFIX + "6")
-	public Float getMeasurement6() {
-		return getMeasurement(6);
+	@DynamoDBAttribute(attributeName = ENERGY_ATTRIBUTE_PREFIX + "6")
+	public float getEnergy6() {
+		return getEnergy(6);
 	}
 
-	public void setMeasurement6(Float value) {
-		setMeasurement(6, value);
+	public void setEnergy6(float energyInKWH) {
+		setEnergy(6, energyInKWH);
 	}
 
-	@DynamoDBAttribute(attributeName = MEASUREMENT_ATTRIBUTE_PREFIX + "7")
-	public Float getMeasurement7() {
-		return getMeasurement(7);
+	@DynamoDBAttribute(attributeName = ENERGY_ATTRIBUTE_PREFIX + "7")
+	public float getEnergy7() {
+		return getEnergy(7);
 	}
 
-	public void setMeasurement7(Float value) {
-		setMeasurement(1, value);
+	public void setEnergy7(float energyInKWH) {
+		setEnergy(1, energyInKWH);
 	}
 
-	@DynamoDBAttribute(attributeName = MEASUREMENT_ATTRIBUTE_PREFIX + "8")
-	public Float getMeasurement8() {
-		return getMeasurement(8);
+	@DynamoDBAttribute(attributeName = ENERGY_ATTRIBUTE_PREFIX + "8")
+	public float getEnergy8() {
+		return getEnergy(8);
 	}
 
-	public void setMeasurement8(Float value) {
-		setMeasurement(8, value);
+	public void setEnergy8(float energyInKWH) {
+		setEnergy(8, energyInKWH);
 	}
 
-	public Float getMeasurement(int index) {
-		if (null == this.measurements) {
+	public Float getEnergy(int index) {
+		if (null == this.energy) {
 			return null;
 		}
-		return this.measurements.get(index);
+		return this.energy.get(index);
 	}
 
-	public void setMeasurement(int index, float value) {
+	public void setEnergy(int index, float energyInKWH) {
 		if ((index < RawRecordEntity.MIN_CIRCUIT)
 				|| (index > RawRecordEntity.MAX_CIRCUIT)) {
 			throw new IllegalArgumentException("index=" + index
 					+ " out of range (" + RawRecordEntity.MIN_CIRCUIT + ","
 					+ RawRecordEntity.MAX_CIRCUIT);
 		}
-		if (null == this.measurements) {
-			this.measurements = new TreeMap<Integer, Float>();
+		if (null == this.energy) {
+			this.energy = new TreeMap<Integer, Float>();
 		}
-		this.measurements.put(index, value);
+		this.energy.put(index, energyInKWH);
 	}
 
 	@DynamoDBIgnore
-	public Map<Integer, Float> getMeasurements() {
-		return measurements;
+	public Map<Integer, Float> getEnergy() {
+		return energy;
 	}
 
-	public void setCircuits(Map<Integer, Float> measurements) {
-		int min = Collections.min(measurements.keySet());
-		int max = Collections.max(measurements.keySet());
+	public void setCircuits(Map<Integer, Float> energy) {
+		int min = Collections.min(energy.keySet());
+		int max = Collections.max(energy.keySet());
 		if ((min < RawRecordEntity.MIN_CIRCUIT)
 				|| (max > RawRecordEntity.MAX_CIRCUIT)) {
 			throw new IllegalArgumentException("min=" + min + " or max=" + max
 					+ " out of range (" + RawRecordEntity.MIN_CIRCUIT + ","
 					+ RawRecordEntity.MAX_CIRCUIT);
 		}
-		this.measurements = measurements;
+		this.energy = energy;
 	}
 }

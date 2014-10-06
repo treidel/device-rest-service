@@ -1,6 +1,8 @@
 package com.fancypants.rest.service;
 
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -48,7 +50,7 @@ public class RecordService {
 		recordId.setDevice(deviceContainer.getDeviceEntity().getDevice());
 		recordId.setUUID(uuid.toString());
 		// execute the query
-		RawRecordEntity recordEntity = recordRepository.get(recordId);
+		RawRecordEntity recordEntity = recordRepository.findOne(recordId);
 		if (null == recordEntity) {
 			return null;
 		}
@@ -58,6 +60,19 @@ public class RecordService {
 						deviceContainer.getDeviceEntity(), recordEntity));
 		// done
 		return record;
+	}
+
+	public Collection<CurrentRecord> findRecordsForDevice() {
+		List<RawRecordEntity> entities = recordRepository
+				.findAllForDevice(deviceContainer.getDeviceEntity().getDevice());
+		Collection<CurrentRecord> records = new LinkedList<CurrentRecord>();
+		for (RawRecordEntity entity : entities) {
+			CurrentRecord record = recordEntityMapper
+					.convert(new ImmutablePair<DeviceEntity, RawRecordEntity>(
+							deviceContainer.getDeviceEntity(), entity));
+			records.add(record);
+		}
+		return records;
 	}
 
 	public void bulkCreateRecords(Collection<CurrentRecord> records)

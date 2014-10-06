@@ -91,13 +91,13 @@ public class RawRecordTests extends AbstractTest {
 		// run the create test to create a record
 		createTest();
 		// query for it
-		RawRecordEntity record = repository.get(RECORD1.getRecordId());
+		RawRecordEntity record = repository.findOne(RECORD1.getRecordId());
 		Assert.isTrue(null != record);
 	}
 
 	@Test
 	public void queryInvalidTest() {
-		RawRecordEntity record = repository.get(INVALID_RECORD_ID);
+		RawRecordEntity record = repository.findOne(INVALID_RECORD_ID);
 		Assert.isNull(record);
 	}
 

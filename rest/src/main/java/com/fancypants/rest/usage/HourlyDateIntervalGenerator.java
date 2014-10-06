@@ -6,7 +6,7 @@ import java.util.Date;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MonthlyDateIntervalGenerator implements DateIntervalGenerator {
+public class HourlyDateIntervalGenerator implements DateIntervalGenerator {
 
 	@Override
 	public Date flattenDate(Date input) {

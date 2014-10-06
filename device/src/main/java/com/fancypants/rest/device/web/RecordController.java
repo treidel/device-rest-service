@@ -75,6 +75,23 @@ public class RecordController {
 		return response;
 	}
 
+	@RequestMapping(value = "/records", method = RequestMethod.GET)
+	@ResponseBody
+	public HttpEntity<Collection<RecordResource>> getRecords() {
+		// find all records
+		Collection<CurrentRecord> records = recordService
+				.findRecordsForDevice();
+		Collection<RecordResource> resources = new LinkedList<RecordResource>();
+		for (CurrentRecord record : records) {
+			RecordResource resource = recordResourceAssembler
+					.toResource(new ImmutablePair<Device, CurrentRecord>(
+							deviceContainer.getDevice(), record));
+			resources.add(resource);
+		}
+		return new ResponseEntity<Collection<RecordResource>>(resources,
+				HttpStatus.OK);
+	}
+
 	@RequestMapping(value = "/records/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
 	public HttpEntity<RecordResource> getRecord(

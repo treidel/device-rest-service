@@ -17,16 +17,15 @@ package com.fancypants.data.device.dynamodb.repository;
 
 import java.util.List;
 
-import com.fancypants.data.device.dynamodb.entity.PowerConsumptionRecordEntity;
+import org.springframework.data.repository.CrudRepository;
 
-public interface MonthlyRecordRepository {
+import com.fancypants.data.device.dynamodb.entity.PowerConsumptionRecordEntity;
+import com.fancypants.data.device.dynamodb.entity.PowerConsumptionRecordId;
+
+public interface HourlyRecordRepository extends CrudRepository<PowerConsumptionRecordEntity, PowerConsumptionRecordId>{
 
 	public List<PowerConsumptionRecordEntity> findByDevice(String device);
 
 	public void insertOrIncrement(PowerConsumptionRecordEntity record);
-	
-	public void deleteAll();
-	
-	public int count();
 
 }

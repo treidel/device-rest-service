@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
@@ -19,13 +19,13 @@ import com.fancypants.data.device.dynamodb.entity.RawRecordId;
 import com.fancypants.data.device.dynamodb.repository.RawRecordRepository;
 
 @Component
-public class RawRecordRepositoryImpl implements RawRecordRepository {
-
-	private final DynamoDBMapper dynamoDBMapper;
+public class RawRecordRepositoryImpl extends
+		AbstractRepositoryImpl<RawRecordEntity, RawRecordId> implements
+		RawRecordRepository {
 
 	@Autowired
 	public RawRecordRepositoryImpl(AmazonDynamoDB amazonDynamoDB) {
-		this.dynamoDBMapper = new DynamoDBMapper(amazonDynamoDB);
+		super(new DynamoDBMapper(amazonDynamoDB), RawRecordEntity.class);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class RawRecordRepositoryImpl implements RawRecordRepository {
 		expected.put(RawRecordEntity.HASH_KEY, expectedValue);
 		expression.setExpected(expected);
 		try {
-			dynamoDBMapper.save(record, expression);
+			getDynamoDBMapper().save(record, expression);
 		} catch (ConditionalCheckFailedException e) {
 			return false;
 		}
@@ -45,21 +45,19 @@ public class RawRecordRepositoryImpl implements RawRecordRepository {
 	}
 
 	@Override
-	public void deleteAll() {
-		DynamoDBScanExpression expression = new DynamoDBScanExpression();
-		List<RawRecordEntity> records = dynamoDBMapper.scan(RawRecordEntity.class,
-				expression);
-		dynamoDBMapper.batchDelete(records);
+	public List<RawRecordEntity> findAllForDevice(String device) {
+		DynamoDBQueryExpression<RawRecordEntity> expression = new DynamoDBQueryExpression<RawRecordEntity>();
+		RawRecordEntity entity = new RawRecordEntity();
+		entity.setDevice(device);
+		expression.setHashKeyValues(entity);
+		List<RawRecordEntity> records = getDynamoDBMapper().query(
+				RawRecordEntity.class, expression);
+		return records;
 	}
 
 	@Override
-	public RawRecordEntity get(RawRecordId recordId) {
-		return dynamoDBMapper.load(RawRecordEntity.class, recordId);
+	public RawRecordEntity findOne(RawRecordId id) {
+		return getDynamoDBMapper().load(RawRecordEntity.class, id.getDevice(), id.getUUID());
 	}
-
-	@Override
-	public int count() {
-		DynamoDBScanExpression expression = new DynamoDBScanExpression();
-		return dynamoDBMapper.count(RawRecordEntity.class, expression);
-	}
+	
 }

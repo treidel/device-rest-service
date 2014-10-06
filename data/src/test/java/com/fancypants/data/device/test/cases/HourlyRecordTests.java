@@ -1,9 +1,11 @@
 package com.fancypants.data.device.test.cases;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Before;
@@ -19,13 +21,13 @@ import org.springframework.util.Assert;
 import com.fancypants.data.device.dynamodb.config.DynamoDBConfig;
 import com.fancypants.data.device.dynamodb.entity.PowerConsumptionRecordEntity;
 import com.fancypants.data.device.dynamodb.entity.RawRecordEntity;
-import com.fancypants.data.device.dynamodb.repository.MonthlyRecordRepository;
-import com.fancypants.data.device.dynamodb.repository.impl.MonthlyRecordRepositoryImpl;
+import com.fancypants.data.device.dynamodb.repository.HourlyRecordRepository;
+import com.fancypants.data.device.dynamodb.repository.impl.HourlyRecordRepositoryImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {
-		DynamoDBConfig.class, MonthlyRecordRepositoryImpl.class })
-public class MonthlyRecordTests extends AbstractTest {
+		DynamoDBConfig.class, HourlyRecordRepositoryImpl.class })
+public class HourlyRecordTests extends AbstractTest {
 
 	private static final PowerConsumptionRecordEntity RECORD1 = new PowerConsumptionRecordEntity();
 	private static final PowerConsumptionRecordEntity RECORD2 = new PowerConsumptionRecordEntity();
@@ -33,21 +35,36 @@ public class MonthlyRecordTests extends AbstractTest {
 			2);
 
 	private @Autowired
-	MonthlyRecordRepository repository;
+	HourlyRecordRepository repository;
 
 	@BeforeClass
 	public static void init() {
+		// get the current time
+		Date currentTime = new Date();
+		// use GMT time		
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+		// populate the current time
+		calendar.setTime(currentTime);
+		// want times on hour boundary
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		// find the start time of the hour		
+		Date startOfHour = calendar.getTime();
+		// find the nextday of the next 
+		calendar.add(Calendar.HOUR, 1);
+		Date endOfHour = calendar.getTime();
 		// setup the test records
 		RECORD1.setDevice("ABC1234");
-		RECORD1.setDate(iso8601DateFormat.format(new Date()));
+		RECORD1.setDate(iso8601DateFormat.format(startOfHour));
 		for (int i = RawRecordEntity.MIN_CIRCUIT; i <= RawRecordEntity.MAX_CIRCUIT; i++) {
-			RECORD1.setMeasurement(i, 10.0f);
+			RECORD1.setEnergy(i, 10.0f);
 		}
 
 		RECORD2.setDevice("ABC1234");
-		RECORD2.setDate(iso8601DateFormat.format(new Date()));
+		RECORD2.setDate(iso8601DateFormat.format(endOfHour));
 		for (int i = RawRecordEntity.MIN_CIRCUIT; i <= RawRecordEntity.MAX_CIRCUIT; i++) {
-			RECORD2.setMeasurement(i, 20.0f);
+			RECORD2.setEnergy(i, 20.0f);
 		}
 
 		// setup the list of records

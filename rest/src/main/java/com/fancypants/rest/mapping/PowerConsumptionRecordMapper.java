@@ -17,19 +17,25 @@ import com.fancypants.rest.domain.PowerConsumptionRecord;
 @Component
 public class PowerConsumptionRecordMapper
 		implements
-		EntityMapper<PowerConsumptionRecord, Pair<DeviceEntity,PowerConsumptionRecordEntity>> {
+		EntityMapper<PowerConsumptionRecord, Pair<DeviceEntity, PowerConsumptionRecordEntity>> {
 
 	@Override
-	public PowerConsumptionRecord convert(Pair<DeviceEntity,PowerConsumptionRecordEntity> value) {
-		
-		Set<PowerConsumptionMeasurement> measurements = new HashSet<PowerConsumptionMeasurement>(value.getValue().getMeasurements().size());
-		for (Map.Entry<Integer, Float> entry : value.getValue().getMeasurements().entrySet()) {
-			CircuitEntity circuit = value.getKey().getCircuitByIndex(entry.getKey());
-			PowerConsumptionMeasurement measurement = new PowerConsumptionMeasurement(circuit.getName(), entry.getValue());
+	public PowerConsumptionRecord convert(
+			Pair<DeviceEntity, PowerConsumptionRecordEntity> value) {
+
+		Set<PowerConsumptionMeasurement> measurements = new HashSet<PowerConsumptionMeasurement>(
+				value.getValue().getEnergy().size());
+		for (Map.Entry<Integer, Float> entry : value.getValue().getEnergy()
+				.entrySet()) {
+			CircuitEntity circuit = value.getKey().getCircuitByIndex(
+					entry.getKey());
+			PowerConsumptionMeasurement measurement = new PowerConsumptionMeasurement(
+					circuit.getName(), entry.getValue());
 			measurements.add(measurement);
 		}
 		// create the record
-		PowerConsumptionRecord record = new PowerConsumptionRecord(Date.valueOf(value.getValue().getDate()), measurements);	
+		PowerConsumptionRecord record = new PowerConsumptionRecord(
+				Date.valueOf(value.getValue().getDate()), measurements);
 		// done
 		return record;
 	}

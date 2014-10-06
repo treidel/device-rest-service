@@ -15,17 +15,17 @@
  */
 package com.fancypants.data.device.dynamodb.repository;
 
+import java.util.List;
+
+import org.springframework.data.repository.CrudRepository;
+
 import com.fancypants.data.device.dynamodb.entity.RawRecordEntity;
 import com.fancypants.data.device.dynamodb.entity.RawRecordId;
 
-public interface RawRecordRepository {
+public interface RawRecordRepository extends
+		CrudRepository<RawRecordEntity, RawRecordId> {
 
 	public boolean insert(RawRecordEntity record);
-	
-	public void deleteAll();
-	
-	public RawRecordEntity get(RawRecordId recordId);
-	
-	public int count();
+	public List<RawRecordEntity> findAllForDevice(String device);
 
 }

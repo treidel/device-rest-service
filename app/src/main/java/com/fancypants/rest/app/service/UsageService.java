@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
 import com.fancypants.data.device.dynamodb.entity.PowerConsumptionRecordEntity;
-import com.fancypants.data.device.dynamodb.repository.MonthlyRecordRepository;
+import com.fancypants.data.device.dynamodb.repository.HourlyRecordRepository;
 import com.fancypants.rest.domain.PowerConsumptionRecord;
 import com.fancypants.rest.mapping.PowerConsumptionRecordMapper;
 import com.fancypants.rest.request.DeviceContainer;
@@ -22,13 +22,13 @@ public class UsageService {
 	private DeviceContainer deviceContainer;
 
 	@Autowired
-	private MonthlyRecordRepository monthlyRepository;
+	private HourlyRecordRepository hourlyRepository;
 
 	private final PowerConsumptionRecordMapper mapper = new PowerConsumptionRecordMapper();
 
-	public Set<PowerConsumptionRecord> getMonthlyRecords() {
-		// query for all monthly records
-		List<PowerConsumptionRecordEntity> entities = monthlyRepository
+	public Set<PowerConsumptionRecord> getHourlyRecords() {
+		// query for all hourly records
+		List<PowerConsumptionRecordEntity> entities = hourlyRepository
 				.findByDevice(deviceContainer.getDevice().getName());
 		// create the result set
 		Set<PowerConsumptionRecord> records = new HashSet<PowerConsumptionRecord>(

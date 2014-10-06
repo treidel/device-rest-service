@@ -32,4 +32,9 @@ public class PowerConsumptionMeasurement implements
 	public int compareTo(PowerConsumptionMeasurement measurement) {
 		return circuit.compareTo(measurement.circuit);
 	}
+	
+	@Override
+	public int hashCode() {
+		return circuit.hashCode();
+	}
 }

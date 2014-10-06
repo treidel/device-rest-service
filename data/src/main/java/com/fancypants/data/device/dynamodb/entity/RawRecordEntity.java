@@ -6,6 +6,7 @@ import java.util.TreeMap;
 
 import org.springframework.data.annotation.Id;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
@@ -15,7 +16,14 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 @DynamoDBTable(tableName = "raw")
 public class RawRecordEntity {
 
-	public static final String HASH_KEY = "recordId";
+	public static final String RECORDID_ATTRIBUTE = "recordId";
+	public static final String DEVICE_ATTRIBUTE = "device";
+	public static final String UUID_ATTRIBUTE = "uuid";
+	public static final String DURATION_ATTRIBUTE = "duration";
+	public static final String TIMESTAMP_ATTRIBUTE = "timestamp";
+	public static final String CIRCUIT_ATTRIBUTE_PREFIX = "circuitAMPS";
+	public static final String HASH_KEY = DEVICE_ATTRIBUTE;
+	public static final String RANGE_KEY = UUID_ATTRIBUTE;
 	public static final int MIN_CIRCUIT = 1;
 	public static final int MAX_CIRCUIT = 8;
 
@@ -24,7 +32,7 @@ public class RawRecordEntity {
 	private float duration;
 
 	@Id
-	@DynamoDBHashKey(attributeName = HASH_KEY)
+	@DynamoDBAttribute(attributeName = RECORDID_ATTRIBUTE)
 	@DynamoDBMarshalling(marshallerClass = RawRecordIdMarshaller.class)
 	private RawRecordId recordId;
 
@@ -36,7 +44,7 @@ public class RawRecordEntity {
 		this.recordId = recordId;
 	}
 
-	@DynamoDBAttribute(attributeName = "device")
+	@DynamoDBHashKey(attributeName = HASH_KEY)
 	public String getDevice() {
 		return recordId != null ? recordId.getDevice() : null;
 	}
@@ -48,7 +56,7 @@ public class RawRecordEntity {
 		this.recordId.setDevice(device);
 	}
 
-	@DynamoDBAttribute(attributeName = "uuid")
+	@DynamoDBRangeKey(attributeName = RANGE_KEY)
 	public String getUUID() {
 		return recordId != null ? recordId.getUUID() : null;
 	}
@@ -61,7 +69,7 @@ public class RawRecordEntity {
 
 	}
 
-	@DynamoDBAttribute(attributeName = "timestamp")
+	@DynamoDBAttribute(attributeName = TIMESTAMP_ATTRIBUTE)
 	public String getTimestamp() {
 		return timestamp;
 	}
@@ -70,7 +78,7 @@ public class RawRecordEntity {
 		this.timestamp = timestamp;
 	}
 
-	@DynamoDBAttribute(attributeName = "duration")
+	@DynamoDBAttribute(attributeName = DURATION_ATTRIBUTE)
 	public float getDuration() {
 		return duration;
 	}
@@ -79,75 +87,75 @@ public class RawRecordEntity {
 		this.duration = duration;
 	}
 
-	@DynamoDBAttribute(attributeName = "circuit1")
-	public Float getCircuit1() {
+	@DynamoDBAttribute(attributeName = CIRCUIT_ATTRIBUTE_PREFIX + "1")
+	public float getCircuit1() {
 		return getCircuit(1);
 	}
 
-	public void setCircuit1(Float value) {
+	public void setCircuit1(float value) {
 		setCircuit(1, value);
 	}
 
-	@DynamoDBAttribute(attributeName = "circuit2")
-	public Float getCircuit2() {
+	@DynamoDBAttribute(attributeName = CIRCUIT_ATTRIBUTE_PREFIX + "2")
+	public float getCircuit2() {
 		return getCircuit(2);
 	}
 
-	public void setCircuit2(Float value) {
+	public void setCircuit2(float value) {
 		setCircuit(2, value);
 	}
 
-	@DynamoDBAttribute(attributeName = "circuit3")
-	public Float getCircuit3() {
+	@DynamoDBAttribute(attributeName = CIRCUIT_ATTRIBUTE_PREFIX + "3")
+	public float getCircuit3() {
 		return getCircuit(3);
 	}
 
-	public void setCircuit3(Float value) {
+	public void setCircuit3(float value) {
 		setCircuit(3, value);
 	}
 
-	@DynamoDBAttribute(attributeName = "circuit4")
-	public Float getCircuit4() {
+	@DynamoDBAttribute(attributeName = CIRCUIT_ATTRIBUTE_PREFIX + "4")
+	public float getCircuit4() {
 		return getCircuit(4);
 	}
 
-	public void setCircuit4(Float value) {
+	public void setCircuit4(float value) {
 		setCircuit(4, value);
 	}
 
-	@DynamoDBAttribute(attributeName = "circuit5")
-	public Float getCircuit5() {
+	@DynamoDBAttribute(attributeName = CIRCUIT_ATTRIBUTE_PREFIX + "5")
+	public float getCircuit5() {
 		return getCircuit(5);
 	}
 
-	public void setCircuit5(Float value) {
+	public void setCircuit5(float value) {
 		setCircuit(5, value);
 	}
 
-	@DynamoDBAttribute(attributeName = "circuit6")
-	public Float getCircuit6() {
+	@DynamoDBAttribute(attributeName = CIRCUIT_ATTRIBUTE_PREFIX + "6")
+	public float getCircuit6() {
 		return getCircuit(6);
 	}
 
-	public void setCircuit6(Float value) {
+	public void setCircuit6(float value) {
 		setCircuit(6, value);
 	}
 
-	@DynamoDBAttribute(attributeName = "circuit7")
-	public Float getCircuit7() {
+	@DynamoDBAttribute(attributeName = CIRCUIT_ATTRIBUTE_PREFIX + "7")
+	public float getCircuit7() {
 		return getCircuit(7);
 	}
 
-	public void setCircuit7(Float value) {
+	public void setCircuit7(float value) {
 		setCircuit(7, value);
 	}
 
-	@DynamoDBAttribute(attributeName = "circuit8")
-	public Float getCircuit8() {
+	@DynamoDBAttribute(attributeName = CIRCUIT_ATTRIBUTE_PREFIX + "8")
+	public float getCircuit8() {
 		return getCircuit(8);
 	}
 
-	public void setCircuit8(Float value) {
+	public void setCircuit8(float value) {
 		setCircuit(8, value);
 	}
 
