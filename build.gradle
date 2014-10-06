@@ -50,15 +50,30 @@ project(':rest') {
         }
 }
 
-project(':device-rest') {
+project(':device') { 
 	dependencies {
-		compile project(':rest')
+		compile project(':data')
+		compile project(':stream')
 	}
 }
 
-project(':app-rest') {
+project(':rest-device') {
 	dependencies {
 		compile project(':rest')
+		compile project(':device')
+	}
+}
+
+project(':app') {
+	dependencies {
+		compile project(':data')
+	}
+}
+
+project(':rest-app') {
+	dependencies {
+		compile project(':rest')
+		compile project(':app')
 	}
 }
 

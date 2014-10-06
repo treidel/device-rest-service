@@ -14,7 +14,7 @@ apply plugin: 'idea'
 apply plugin: 'spring-boot'
 
 jar {
-	baseName = 'app-service'
+	baseName = 'rest-device'
 	version =  '1.0.0'
 }
 

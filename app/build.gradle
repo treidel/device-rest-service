@@ -1,0 +1,12 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+jar {
+	baseName = 'app'
+	version =  '1.0.0'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}
