@@ -12,9 +12,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.fancypants.rest.domain.Device;
-import com.fancypants.rest.exception.AbstractServiceException;
-import com.fancypants.rest.service.DeviceService;
+import com.fancypants.common.exception.AbstractServiceException;
+import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
+import com.fancypants.device.service.DeviceService;
 
 @Service
 public class AppUserDetailsService implements UserDetailsService {
@@ -30,12 +30,12 @@ public class AppUserDetailsService implements UserDetailsService {
 				1);
 		try {
 			// lookup the device to be sure it exists
-			Device device = deviceService.getDevice(username);
+			DeviceEntity deviceEntity = deviceService.getDevice(username);
 			// provide the user authority
 			authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 			// create and return the user
-			UserDetails user = new User(username, device.getSerialNumber(),
-					authorities);
+			UserDetails user = new User(username,
+					deviceEntity.getSerialNumber(), authorities);
 			return user;
 		} catch (AbstractServiceException e) {
 			throw new UsernameNotFoundException("device=" + username

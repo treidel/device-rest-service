@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
+import com.fancypants.common.mapping.EntityMapper;
 import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
 import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
 import com.fancypants.data.device.dynamodb.entity.RawRecordEntity;

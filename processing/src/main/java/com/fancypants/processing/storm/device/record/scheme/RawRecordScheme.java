@@ -13,7 +13,7 @@ import backtype.storm.tuple.Fields;
 
 import com.amazonaws.services.kinesis.model.Record;
 import com.amazonaws.services.kinesis.stormspout.IKinesisRecordScheme;
-import com.fancypants.stream.device.kinesis.entity.RawRecord;
+import com.fancypants.stream.kinesis.entity.RawRecord;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RawRecordScheme implements IKinesisRecordScheme {

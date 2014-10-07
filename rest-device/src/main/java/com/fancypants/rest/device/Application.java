@@ -15,11 +15,11 @@ import org.springframework.core.io.Resource;
 
 import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe;
 import com.fancypants.rest.RestScanMe;
-import com.fancypants.stream.device.kinesis.StreamDeviceKinesisScanMe;
+import com.fancypants.stream.kinesis.StreamKinesisScanMe;
 
 @EnableAutoConfiguration
 @ComponentScan(basePackageClasses = { RestScanMe.class, RestDeviceScanMe.class,
-		StreamDeviceKinesisScanMe.class,
+		StreamKinesisScanMe.class,
 		DataDeviceDynamoDBScanMe.class })
 public class Application {
 

@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.fancypants.common.exception.BusinessLogicException;
+import com.fancypants.common.exception.DataValidationException;
 import com.fancypants.rest.domain.ErrorMessage;
-import com.fancypants.rest.exception.BusinessLogicException;
-import com.fancypants.rest.exception.DataValidationException;
 
 @ControllerAdvice()
 public class RESTControllerAdvice {

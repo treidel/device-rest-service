@@ -45,13 +45,20 @@ subprojects {
 
 project(':rest') {
         dependencies {
-                compile project(':data')
-		compile project(':stream')
+                compile project(':common')
+		compile project(':data')
         }
+}
+
+project(':stream') {	
+	dependencies {
+		compile project(':common')
+	}
 }
 
 project(':device') { 
 	dependencies {
+		compile project(':common')
 		compile project(':data')
 		compile project(':stream')
 	}
@@ -59,6 +66,7 @@ project(':device') {
 
 project(':rest-device') {
 	dependencies {
+		compile project(':common')
 		compile project(':rest')
 		compile project(':device')
 	}
@@ -66,19 +74,23 @@ project(':rest-device') {
 
 project(':app') {
 	dependencies {
+		compile project(':common')
 		compile project(':data')
 	}
 }
 
 project(':rest-app') {
 	dependencies {
+		compile project(':common')
 		compile project(':rest')
 		compile project(':app')
+		compile project(':device')
 	}
 }
 
 project(':processing') { 
 	dependencies { 
+		compile project(':common')
 		compile project(':data')
 		compile project(':stream')
 	}

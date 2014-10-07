@@ -12,9 +12,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.fancypants.rest.exception.AbstractServiceException;
+import com.fancypants.common.exception.AbstractServiceException;
+import com.fancypants.device.service.DeviceService;
 import com.fancypants.rest.mapping.DeviceMapper;
-import com.fancypants.rest.service.DeviceService;
 
 @Service
 public class DeviceUserDetailsService implements UserDetailsService {
