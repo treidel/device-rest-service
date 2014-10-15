@@ -21,18 +21,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fancypants.common.exception.AbstractServiceException;
-import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
-import com.fancypants.data.device.dynamodb.entity.RawRecordEntity;
+import com.fancypants.data.device.entity.DeviceEntity;
+import com.fancypants.data.device.entity.RawRecordEntity;
 import com.fancypants.device.container.DeviceContainer;
 import com.fancypants.device.service.DeviceService;
 import com.fancypants.device.service.RecordService;
 import com.fancypants.rest.device.assembler.CurrentRecordResourceAssembler;
 import com.fancypants.rest.device.resource.CurrentRecordResource;
 import com.fancypants.rest.domain.Device;
-import com.fancypants.rest.domain.CurrentRecord;
-import com.fancypants.rest.mapping.CurrentRecordMapper;
+import com.fancypants.rest.domain.RawRecord;
+import com.fancypants.rest.mapping.RawRecordMapper;
 import com.fancypants.rest.mapping.DeviceMapper;
-import com.fancypants.rest.mapping.RecordEntityMapper;
+import com.fancypants.rest.mapping.RawRecordEntityMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
@@ -53,9 +53,9 @@ public class RecordController {
 	@Autowired
 	private DeviceContainer deviceContainer;
 	@Autowired
-	private RecordEntityMapper recordEntityMapper;
+	private RawRecordEntityMapper recordEntityMapper;
 	@Autowired
-	private CurrentRecordMapper recordMapper;
+	private RawRecordMapper recordMapper;
 	@Autowired
 	private DeviceMapper deviceMapper;
 
@@ -68,16 +68,16 @@ public class RecordController {
 	@RequestMapping(value = "/records", method = RequestMethod.POST)
 	@ResponseBody
 	public HttpEntity<Collection<CurrentRecordResource>> putRecords(
-			@RequestBody Collection<CurrentRecord> records)
+			@RequestBody Collection<RawRecord> records)
 			throws AbstractServiceException {
 		// get the device
 		DeviceEntity deviceEntity = deviceContainer.getDeviceEntity();
 		// map the records into the internal format
 		Collection<RawRecordEntity> entities = new LinkedList<RawRecordEntity>();
-		for (CurrentRecord record : records) {
+		for (RawRecord record : records) {
 			// map the record
 			RawRecordEntity entity = recordEntityMapper
-					.convert(new ImmutablePair<DeviceEntity, CurrentRecord>(
+					.convert(new ImmutablePair<DeviceEntity, RawRecord>(
 							deviceEntity, record));
 			// add it
 			entities.add(entity);
@@ -89,9 +89,9 @@ public class RecordController {
 		// create the list of resources to be returned
 		Collection<CurrentRecordResource> resources = new LinkedList<CurrentRecordResource>();
 		// go through each record and create the resources
-		for (CurrentRecord record : records) {
+		for (RawRecord record : records) {
 			CurrentRecordResource resource = recordResourceAssembler
-					.toResource(new ImmutablePair<Device, CurrentRecord>(
+					.toResource(new ImmutablePair<Device, RawRecord>(
 							device, record));
 			resources.add(resource);
 		}
@@ -114,12 +114,12 @@ public class RecordController {
 		Collection<CurrentRecordResource> resources = new LinkedList<CurrentRecordResource>();
 		for (RawRecordEntity entity : entities) {
 			// map the record
-			CurrentRecord record = recordMapper
+			RawRecord record = recordMapper
 					.convert(new ImmutablePair<DeviceEntity, RawRecordEntity>(
 							deviceEntity, entity));
 			// create the resource
 			CurrentRecordResource resource = recordResourceAssembler
-					.toResource(new ImmutablePair<Device, CurrentRecord>(
+					.toResource(new ImmutablePair<Device, RawRecord>(
 							device, record));
 			resources.add(resource);
 		}
@@ -141,14 +141,14 @@ public class RecordController {
 					HttpStatus.NOT_FOUND);
 		}
 		// map the record
-		CurrentRecord record = recordMapper
+		RawRecord record = recordMapper
 				.convert(new ImmutablePair<DeviceEntity, RawRecordEntity>(
 						deviceEntity, entity));
 		// map the device
 		Device device = deviceMapper.convert(deviceEntity);
 		// create the resource
 		CurrentRecordResource resource = recordResourceAssembler
-				.toResource(new ImmutablePair<Device, CurrentRecord>(device,
+				.toResource(new ImmutablePair<Device, RawRecord>(device,
 						record));
 		return new ResponseEntity<CurrentRecordResource>(resource,
 				HttpStatus.OK);

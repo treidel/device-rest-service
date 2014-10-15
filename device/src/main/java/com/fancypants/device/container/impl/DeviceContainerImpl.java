@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
-import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
+import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.device.container.DeviceContainer;
 
 @Component

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fancypants.common.mapping.EntityMapper;
-import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
+import com.fancypants.data.device.entity.CircuitEntity;
 import com.fancypants.rest.domain.Circuit;
 
 @Component

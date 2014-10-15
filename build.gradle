@@ -7,9 +7,10 @@ def versionOverrides = [
 	"org.springframework:spring-test" : "4.0.6.RELEASE",
 	"org.springframework.data:spring-data-commons":"1.8.0.RELEASE",
 	"com.fasterxml.jackson.core:jackson-databind" : "2.4.1.2",
-	"com.amazonaws:aws-java-sdk" : "1.8.9",
+	"com.amazonaws:aws-java-sdk" : "1.9.0",
 	"org.apache.storm:storm-core" : "0.9.2-incubating",
 	"org.apache.curator:curator-framework" : "2.6.0",
+	"org.apache.commons:commons-lang3" : "3.3.2",
 	"com.esotericsoftware.kryo:kryo" : "2.24.0",
 	"org.clojars.reideltj:kinesis-storm-spout":"1.0.4-SNAPSHOT",
 	"commons-beanutils:commons-beanutils":"1.9.2",
@@ -43,6 +44,19 @@ subprojects {
    	}
 }
 
+project(':data') { 
+	dependencies {
+		compile project(':common')
+	}
+}
+
+project(':data-dynamodb') {
+	dependencies {
+		compile project(':common')
+		compile project(':data')
+	}
+}
+
 project(':rest') {
         dependencies {
                 compile project(':common')
@@ -53,6 +67,14 @@ project(':rest') {
 project(':stream') {	
 	dependencies {
 		compile project(':common')
+	}
+}
+
+project(':stream-kinesis') {
+	dependencies {
+		compile project(':common')
+		compile project(':stream')
+		compile project(':data')
 	}
 }
 
@@ -87,6 +109,7 @@ project(':rest-app') {
 		compile project(':device')
 	}
 }
+
 
 project(':processing') { 
 	dependencies { 

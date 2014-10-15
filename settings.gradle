@@ -1,1 +1,1 @@
-include 'common', 'data', 'rest', 'app', 'rest-app', 'device', 'rest-device', 'processing', 'stream'
+include 'common', 'data', 'data-dynamodb', 'rest', 'app', 'rest-app', 'device', 'rest-device', 'processing', 'stream', 'stream-kinesis'

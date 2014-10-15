@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fancypants.data.device.dynamodb.entity.PowerConsumptionRecordEntity;
-import com.fancypants.data.device.dynamodb.repository.HourlyRecordRepository;
+import com.fancypants.data.device.entity.PowerConsumptionRecordEntity;
+import com.fancypants.data.device.repository.HourlyRecordRepository;
 import com.fancypants.device.container.DeviceContainer;
 
 @Service

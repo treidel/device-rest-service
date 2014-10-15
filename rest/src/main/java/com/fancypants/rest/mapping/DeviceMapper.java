@@ -6,8 +6,8 @@ import java.util.TreeSet;
 import org.springframework.stereotype.Component;
 
 import com.fancypants.common.mapping.EntityMapper;
-import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
-import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
+import com.fancypants.data.device.entity.CircuitEntity;
+import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.rest.domain.Circuit;
 import com.fancypants.rest.domain.Device;
 

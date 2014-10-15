@@ -10,16 +10,14 @@ import org.springframework.stereotype.Service;
 import com.fancypants.common.exception.AbstractServiceException;
 import com.fancypants.common.exception.BusinessLogicException;
 import com.fancypants.common.exception.DataValidationException;
-import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
-import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
-import com.fancypants.data.device.dynamodb.entity.RawRecordEntity;
-import com.fancypants.data.device.dynamodb.entity.RawRecordId;
-import com.fancypants.data.device.dynamodb.repository.DeviceRepository;
-import com.fancypants.data.device.dynamodb.repository.RawRecordRepository;
+import com.fancypants.data.device.entity.CircuitEntity;
+import com.fancypants.data.device.entity.DeviceEntity;
+import com.fancypants.data.device.entity.RawRecordEntity;
+import com.fancypants.data.device.entity.RawRecordId;
+import com.fancypants.data.device.repository.DeviceRepository;
+import com.fancypants.data.device.repository.RawRecordRepository;
 import com.fancypants.device.container.DeviceContainer;
-import com.fancypants.device.mapping.RawRecordMapper;
-import com.fancypants.stream.kinesis.entity.RawRecord;
-import com.fancypants.stream.kinesis.writer.StreamWriter;
+import com.fancypants.stream.writer.StreamWriter;
 
 @Service
 public class RecordService {
@@ -31,16 +29,12 @@ public class RecordService {
 	@Autowired
 	private DeviceContainer deviceContainer;
 	@Autowired
-	private RawRecordMapper rawMapper;
-	@Autowired
-	private StreamWriter<RawRecord> streamWriter;
+	private StreamWriter<RawRecordEntity> streamWriter;
 
 	public RawRecordEntity findRecordForDevice(UUID uuid)
 			throws AbstractServiceException {
 		// create the record id for the query
-		RawRecordId recordId = new RawRecordId();
-		recordId.setDevice(deviceContainer.getDeviceEntity().getDevice());
-		recordId.setUUID(uuid.toString());
+		RawRecordId recordId = new RawRecordId(deviceContainer.getDeviceEntity().getDevice(), uuid);
 		// execute the query
 		RawRecordEntity recordEntity = recordRepository.findOne(recordId);
 		if (null == recordEntity) {
@@ -72,10 +66,8 @@ public class RecordService {
 			// try to create the record
 			boolean created = recordRepository.insert(recordEntity);
 			if (true == created) {
-				// map into a raw record
-				RawRecord rawRecord = rawMapper.convert(recordEntity);
 				// not a dup, insert it into the queue for more processing
-				streamWriter.putRecord(rawRecord);
+				streamWriter.putRecord(recordEntity.getDevice(), recordEntity);
 			}
 		}
 	}

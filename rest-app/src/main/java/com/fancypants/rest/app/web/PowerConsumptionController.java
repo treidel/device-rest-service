@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
-import com.fancypants.data.device.dynamodb.entity.PowerConsumptionRecordEntity;
+import com.fancypants.data.device.entity.DeviceEntity;
+import com.fancypants.data.device.entity.PowerConsumptionRecordEntity;
 import com.fancypants.device.container.DeviceContainer;
 import com.fancypants.device.service.UsageService;
 import com.fancypants.rest.app.assembler.PowerConsumptionResourceAssembler;

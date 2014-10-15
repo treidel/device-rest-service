@@ -1,6 +1,6 @@
 package com.fancypants.device.container;
 
-import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
+import com.fancypants.data.device.entity.DeviceEntity;
 
 public interface DeviceContainer {
 

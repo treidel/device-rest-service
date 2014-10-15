@@ -1,6 +1,5 @@
 package com.fancypants.rest.mapping;
 
-import java.sql.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -9,9 +8,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
 import com.fancypants.common.mapping.EntityMapper;
-import com.fancypants.data.device.dynamodb.entity.CircuitEntity;
-import com.fancypants.data.device.dynamodb.entity.DeviceEntity;
-import com.fancypants.data.device.dynamodb.entity.PowerConsumptionRecordEntity;
+import com.fancypants.data.device.entity.CircuitEntity;
+import com.fancypants.data.device.entity.DeviceEntity;
+import com.fancypants.data.device.entity.PowerConsumptionRecordEntity;
 import com.fancypants.rest.domain.PowerConsumptionMeasurement;
 import com.fancypants.rest.domain.PowerConsumptionRecord;
 
@@ -35,8 +34,8 @@ public class PowerConsumptionRecordMapper
 			measurements.add(measurement);
 		}
 		// create the record
-		PowerConsumptionRecord record = new PowerConsumptionRecord(
-				Date.valueOf(value.getValue().getDate()), measurements);
+		PowerConsumptionRecord record = new PowerConsumptionRecord(value
+				.getValue().getDate(), measurements);
 		// done
 		return record;
 	}

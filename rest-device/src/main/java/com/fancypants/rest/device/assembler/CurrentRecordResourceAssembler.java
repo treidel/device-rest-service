@@ -12,11 +12,11 @@ import com.fancypants.common.exception.AbstractServiceException;
 import com.fancypants.rest.device.resource.CurrentRecordResource;
 import com.fancypants.rest.device.web.RecordController;
 import com.fancypants.rest.domain.Device;
-import com.fancypants.rest.domain.CurrentRecord;
+import com.fancypants.rest.domain.RawRecord;
 
 @Component
 public class CurrentRecordResourceAssembler extends
-		ResourceAssemblerSupport<Pair<Device, CurrentRecord>, CurrentRecordResource> {
+		ResourceAssemblerSupport<Pair<Device, RawRecord>, CurrentRecordResource> {
 
 	private static final Logger LOG = Logger.getLogger(CurrentRecordResourceAssembler.class);
 	
@@ -25,7 +25,7 @@ public class CurrentRecordResourceAssembler extends
 	}
 
 	@Override
-	public CurrentRecordResource toResource(Pair<Device, CurrentRecord> entity) {
+	public CurrentRecordResource toResource(Pair<Device, RawRecord> entity) {
 		CurrentRecordResource resource = new CurrentRecordResource();
 		resource.record = entity.getRight();
 		try {

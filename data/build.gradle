@@ -3,14 +3,13 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 jar {
-	baseName = 'device-data'
+	baseName = 'data'
 	version =  '1.0.0'
 }
 
 dependencies {
 	compile("org.springframework.data:spring-data-commons")
-	compile("com.fasterxml.jackson.core:jackson-databind:2.3.3")
-	compile("org.socialsignin:spring-data-dynamodb:1.0.1-SNAPSHOT") 
+	compile("com.fasterxml.jackson.core:jackson-databind")
 	testCompile("org.springframework:spring-test")        	
 	testCompile("junit:junit:4.+")
 }
