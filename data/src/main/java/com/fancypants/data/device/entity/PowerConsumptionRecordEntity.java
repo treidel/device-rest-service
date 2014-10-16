@@ -46,10 +46,12 @@ public class PowerConsumptionRecordEntity {
 		return id;
 	}
 
+	@JsonProperty(DEVICE_ATTRIBUTE)
 	public String getDevice() {
 		return id.getDevice();
 	}
 
+	@JsonProperty(DATE_ATTRIBUTE)
 	public Date getDate() {
 		return id.getDate();
 	}
@@ -108,6 +110,11 @@ public class PowerConsumptionRecordEntity {
 		setEnergy(4, energyInKWH);
 	}
 
+	@JsonProperty(ENERGY_IN_KWH_ATTRIBUTE_PREFIX + "5")
+	public float getEnergy5() {
+		return getEnergy(5);
+	}
+
 	public void setEnergy5(float energyInKWH) {
 		setEnergy(5, energyInKWH);
 	}
@@ -137,5 +144,77 @@ public class PowerConsumptionRecordEntity {
 
 	public void setEnergy8(float energyInKWH) {
 		setEnergy(8, energyInKWH);
+	}
+
+	@JsonProperty(ENERGY_IN_KWH_ATTRIBUTE_PREFIX + "9")
+	public float getEnergy9() {
+		return getEnergy(9);
+	}
+
+	public void setEnergy9(float energyInKWH) {
+		setEnergy(9, energyInKWH);
+	}
+
+	@JsonProperty(ENERGY_IN_KWH_ATTRIBUTE_PREFIX + "10")
+	public float getEnergy10() {
+		return getEnergy(10);
+	}
+
+	public void setEnergy10(float energyInKWH) {
+		setEnergy(10, energyInKWH);
+	}
+
+	@JsonProperty(ENERGY_IN_KWH_ATTRIBUTE_PREFIX + "11")
+	public float getEnergy11() {
+		return getEnergy(11);
+	}
+
+	public void setEnergy11(float energyInKWH) {
+		setEnergy(11, energyInKWH);
+	}
+
+	@JsonProperty(ENERGY_IN_KWH_ATTRIBUTE_PREFIX + "12")
+	public float getEnergy12() {
+		return getEnergy(12);
+	}
+
+	public void setEnergy12(float energyInKWH) {
+		setEnergy(12, energyInKWH);
+	}
+
+	@JsonProperty(ENERGY_IN_KWH_ATTRIBUTE_PREFIX + "13")
+	public float getEnergy13() {
+		return getEnergy(13);
+	}
+
+	public void setEnergy13(float energyInKWH) {
+		setEnergy(13, energyInKWH);
+	}
+
+	@JsonProperty(ENERGY_IN_KWH_ATTRIBUTE_PREFIX + "14")
+	public float getEnergy14() {
+		return getEnergy(14);
+	}
+
+	public void setEnergy14(float energyInKWH) {
+		setEnergy(14, energyInKWH);
+	}
+
+	@JsonProperty(ENERGY_IN_KWH_ATTRIBUTE_PREFIX + "15")
+	public float getEnergy15() {
+		return getEnergy(15);
+	}
+
+	public void setEnergy15(float energyInKWH) {
+		setEnergy(15, energyInKWH);
+	}
+
+	@JsonProperty(ENERGY_IN_KWH_ATTRIBUTE_PREFIX + "16")
+	public float getEnergy16() {
+		return getEnergy(16);
+	}
+
+	public void setEnergy16(float energyInKWH) {
+		setEnergy(16, energyInKWH);
 	}
 }

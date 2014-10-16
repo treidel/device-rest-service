@@ -90,6 +90,12 @@ public class HourlyRecordTests extends AbstractTest {
 		createTest();
 		// now update 
 		repository.insertOrIncrement(RECORD1);
+		// now query the row
+		PowerConsumptionRecordEntity record = repository.findOne(RECORD1.getId());
+		// check the values - should be doubled
+		float value1 = RECORD1.getEnergy(1);
+		float value2 = record.getEnergy(1);		
+		Assert.isTrue(value1 == value2 / 2);
 	}
 
 	@Test
