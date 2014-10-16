@@ -47,18 +47,22 @@ public class RawRecordEntity {
 		return id;
 	}
 
+	@JsonProperty(DEVICE_ATTRIBUTE)
 	public String getDevice() {
 		return id.getDevice();
 	}
 
+	@JsonProperty(UUID_ATTRIBUTE)
 	public String getUUID() {
 		return id.getUUID().toString();
 	}
 
+	@JsonProperty(TIMESTAMP_ATTRIBUTE)
 	public Date getTimestamp() {
 		return timestamp;
 	}
 
+	@JsonProperty(CIRCUITS_ATTRIBUTE)
 	public Map<Integer, Float> getCircuits() {
 		return circuits;
 	}

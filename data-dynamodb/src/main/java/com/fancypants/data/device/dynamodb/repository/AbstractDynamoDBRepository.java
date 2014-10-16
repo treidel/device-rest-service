@@ -39,8 +39,7 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 
 	public AbstractDynamoDBRepository(AmazonDynamoDB amazonDynamoDB,
 			Class<T> clazz, String tableName, String hashAttribute) {
-		this(amazonDynamoDB, clazz, tableName, hashAttribute,
-				null);
+		this(amazonDynamoDB, clazz, tableName, hashAttribute, null);
 	}
 
 	public AbstractDynamoDBRepository(AmazonDynamoDB amazonDynamoDB,
@@ -53,10 +52,10 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 			LOG.error("invalid class", clazz);
 			throw new IllegalAccessError("can not serialize class=" + clazz);
 		}
-		
+
 		// configure the data serialization
 		objectMapper.setDateFormat(new ISO8601DateFormat());
-		
+
 		// store variables
 		this.dynamoDB = new DynamoDB(amazonDynamoDB);
 		this.table = dynamoDB.getTable(tableName);
@@ -123,7 +122,9 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 
 	@Override
 	public long count() {
-		ScanSpec spec = new ScanSpec().withSelect(Select.COUNT);
+		ScanSpec spec = new ScanSpec().withSelect(Select.COUNT)
+				.withSelect(Select.SPECIFIC_ATTRIBUTES)
+				.withAttributesToGet(hashAttribute);
 		ItemCollection<ScanOutcome> items = getTable().scan(spec);
 		long count = 0;
 		for (Page<Item, ScanOutcome> page : items.pages()) {
@@ -156,7 +157,7 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 	public T findOne(I id) {
 		PrimaryKey key = new PrimaryKey(hashAttribute, retrieveHashKey(id));
 		if (null != rangeAttribute) {
-			key.addComponent(hashAttribute, retrieveRangeKey(id));
+			key.addComponent(rangeAttribute, retrieveRangeKey(id));
 		}
 		Item item = getTable().getItem(key);
 		T entity = null;

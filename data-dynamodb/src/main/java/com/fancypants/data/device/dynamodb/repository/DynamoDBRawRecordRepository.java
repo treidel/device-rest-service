@@ -54,7 +54,7 @@ public class DynamoDBRawRecordRepository extends
 		// serialize the record
 		Item item = serialize(record);
 		// setup the expected value
-		Expected expected = new Expected(RawRecordEntity.HASH_KEY).exists();
+		Expected expected = new Expected(RawRecordEntity.HASH_KEY).notExist();
 		// run the query
 		try {
 			getTable().putItem(item, expected);
