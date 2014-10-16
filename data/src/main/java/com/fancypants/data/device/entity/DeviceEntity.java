@@ -41,18 +41,22 @@ public class DeviceEntity {
 		}
 	}
 
+	@JsonProperty(DEVICE_ATTRIBUTE)
 	public String getDevice() {
 		return device;
 	}
 
+	@JsonProperty(SERIALNUMBER_ATTRIBUTE)
 	public String getSerialNumber() {
 		return serialnumber;
 	}
 
+	@JsonProperty(CIRCUITS_ATTRIBUTE)
 	public Set<CircuitEntity> getCircuits() {
 		return circuits;
 	}
 
+	@JsonProperty(LASTMODIFIEDTIMESTAMP_ATTRIBUTE)
 	public Date getLastModifiedTimestamp() {
 		return lastModifiedTimestamp;
 	}

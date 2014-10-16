@@ -55,7 +55,7 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 		}
 		
 		// configure the data serialization
-		objectMapper.setDateFormat(ISO8601DateFormat.getDateInstance());
+		objectMapper.setDateFormat(new ISO8601DateFormat());
 		
 		// store variables
 		this.dynamoDB = new DynamoDB(amazonDynamoDB);
@@ -92,7 +92,7 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 	protected Item serialize(T entity) {
 		try {
 			String json = objectMapper.writeValueAsString(entity);
-			Item item = new Item().withJSON("document", json);
+			Item item = Item.fromJSON(json);
 			return item;
 		} catch (JsonProcessingException e) {
 			LOG.error("can't serialize", e);
