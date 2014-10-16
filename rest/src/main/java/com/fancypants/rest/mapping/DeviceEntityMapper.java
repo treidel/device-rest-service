@@ -1,6 +1,5 @@
 package com.fancypants.rest.mapping;
 
-import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,9 +19,6 @@ public class DeviceEntityMapper implements EntityMapper<DeviceEntity, Device> {
 
 	@Autowired
 	private CircuitEntityMapper circuitMapper;
-
-	@Autowired
-	private DateFormat iso8601Format;
 
 	@Override
 	public DeviceEntity convert(Device device) {

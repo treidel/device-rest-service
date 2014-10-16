@@ -1,6 +1,5 @@
 package com.fancypants.rest.mapping;
 
-import java.text.DateFormat;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -19,9 +18,6 @@ import com.fancypants.rest.domain.RawRecord;
 @Component
 public class RawRecordEntityMapper implements
 		EntityMapper<RawRecordEntity, Pair<DeviceEntity, RawRecord>> {
-
-	private @Autowired
-	DateFormat iso8601DateFormat;
 
 	private @Autowired
 	CircuitEntityMapper mapper;

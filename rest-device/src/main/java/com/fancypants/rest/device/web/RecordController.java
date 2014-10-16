@@ -1,6 +1,5 @@
 package com.fancypants.rest.device.web;
 
-import java.text.DateFormat;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.UUID;
@@ -30,26 +29,23 @@ import com.fancypants.rest.device.assembler.CurrentRecordResourceAssembler;
 import com.fancypants.rest.device.resource.CurrentRecordResource;
 import com.fancypants.rest.domain.Device;
 import com.fancypants.rest.domain.RawRecord;
-import com.fancypants.rest.mapping.RawRecordMapper;
 import com.fancypants.rest.mapping.DeviceMapper;
 import com.fancypants.rest.mapping.RawRecordEntityMapper;
+import com.fancypants.rest.mapping.RawRecordMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 @Controller
 @RequestMapping("/device")
 @Secured("ROLE_USER")
 public class RecordController {
-
+	
 	@Autowired
 	private CurrentRecordResourceAssembler recordResourceAssembler;
-	@Autowired
-	private ObjectMapper objectMapper;
 	@Autowired
 	private RecordService recordService;
 	@Autowired
 	private DeviceService deviceService;
-	@Autowired
-	private DateFormat iso8601DateFormat;
 	@Autowired
 	private DeviceContainer deviceContainer;
 	@Autowired
@@ -58,11 +54,13 @@ public class RecordController {
 	private RawRecordMapper recordMapper;
 	@Autowired
 	private DeviceMapper deviceMapper;
+	
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@PostConstruct
 	public void init() {
 		// tell Jackson to use the ISO8601 date format
-		objectMapper.setDateFormat(iso8601DateFormat);
+		objectMapper.setDateFormat(new ISO8601DateFormat());
 	}
 
 	@RequestMapping(value = "/records", method = RequestMethod.POST)

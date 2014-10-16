@@ -92,6 +92,8 @@ project(':rest-device') {
 		compile project(':common')
 		compile project(':rest')
 		compile project(':device')
+		compile project(':data-dynamodb')
+		compile project(':stream-kinesis')
 	}
 }
 

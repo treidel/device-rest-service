@@ -1,8 +1,5 @@
 package com.fancypants.rest.mapping;
 
-import java.text.DateFormat;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fancypants.common.mapping.EntityMapper;
@@ -12,9 +9,6 @@ import com.fancypants.rest.domain.Circuit;
 @Component
 public class CircuitMapper implements
 		EntityMapper<Circuit, CircuitEntity> {
-
-	@Autowired
-	private DateFormat iso8601Format;
 
 	@Override
 	public Circuit convert(CircuitEntity entity) {
