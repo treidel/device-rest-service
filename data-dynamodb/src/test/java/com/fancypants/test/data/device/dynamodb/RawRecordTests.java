@@ -1,4 +1,4 @@
-package com.fancypants.data.device.dynamodb.test.cases;
+package com.fancypants.test.data.device.dynamodb;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,9 +43,9 @@ public class RawRecordTests extends AbstractTest {
 			energy.put(i, 10.0f);
 		}
 		// setup the test records
-		RECORD1 = new RawRecordEntity("ABC1234", UUID.randomUUID().toString(), new Date(), energy);  
-		RECORD2 = new RawRecordEntity("ABC1234", UUID.randomUUID().toString(), new Date(), energy);
-		INVALID_RECORD_ID = new RawRecordId("XYZ789", UUID.randomUUID());
+		RECORD1 = new RawRecordEntity("ABCD1234", UUID.randomUUID().toString(), new Date(), energy);  
+		RECORD2 = new RawRecordEntity("ABCD1234", UUID.randomUUID().toString(), new Date(), energy);
+		INVALID_RECORD_ID = new RawRecordId("WXYZ7890", UUID.randomUUID());
 
 		// setup the list of records
 		RECORDS.add(RECORD1);

@@ -12,6 +12,8 @@ def versionOverrides = [
 	"org.apache.storm:storm-core" : "0.9.2-incubating",
 	"org.apache.curator:curator-framework" : "2.6.0",
 	"org.apache.commons:commons-lang3" : "3.3.2",
+	"org.apache.httpcomponents:httpclient" : "4.3.2",
+	"org.apache.httpcomponents:httpcore" : "4.3.2",
 	"com.esotericsoftware.kryo:kryo" : "2.24.0",
 	"org.clojars.reideltj:kinesis-storm-spout":"1.0.4-SNAPSHOT",
 	"commons-beanutils:commons-beanutils":"1.9.2",

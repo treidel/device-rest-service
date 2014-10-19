@@ -1,4 +1,4 @@
-package com.fancypants.data.device.dynamodb.test.cases;
+package com.fancypants.test.data.device.dynamodb;
 
 import java.util.Date;
 import java.util.Set;
@@ -36,7 +36,7 @@ public class DeviceTests extends AbstractTest {
 			CircuitEntity circuit = new CircuitEntity(i, String.valueOf(i), 120.0f, 30.0f);
 			circuits.add(circuit);
 		}
-		DEVICE1 = new DeviceEntity("ABC1234", "00000001", circuits, new Date());		
+		DEVICE1 = new DeviceEntity("ABCD1234", "00000001", circuits, new Date());		
 	}
 
 	@Before

@@ -1,4 +1,4 @@
-package com.fancypants.data.device.dynamodb.test.cases;
+package com.fancypants.test.data.device.dynamodb;
 
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;

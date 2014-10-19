@@ -1,4 +1,4 @@
-package com.fancypants.data.device.dynamodb.test.cases;
+package com.fancypants.test.data.device.dynamodb;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,11 +53,11 @@ public class HourlyRecordTests extends AbstractTest {
 		Date endOfHour = calendar.getTime();
 
 		// setup the test records
-		RECORD1 = new PowerConsumptionRecordEntity("ABC1234", startOfHour);
+		RECORD1 = new PowerConsumptionRecordEntity("ABCD1234", startOfHour);
 		for (int i = 1; i <= 16; i++) {
 			RECORD1.setEnergy(i, 10.0f);
 		}
-		RECORD2 = new PowerConsumptionRecordEntity("ABC1234", endOfHour);
+		RECORD2 = new PowerConsumptionRecordEntity("ABCD1234", endOfHour);
 		for (int i = 1; i <= 16; i++) {
 			RECORD2.setEnergy(i, 20.0f);
 		}
