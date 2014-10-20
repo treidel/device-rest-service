@@ -23,7 +23,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-				.x509().and().csrf().disable();
+				.x509().subjectPrincipalRegex("emailAddress=(.*?)(?:,|$)").and()
+				.csrf().disable();
 	}
 
 	@Override

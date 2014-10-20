@@ -8,7 +8,6 @@ import com.fancypants.common.exception.BusinessLogicException;
 import com.fancypants.common.exception.DataValidationException;
 import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.data.device.repository.DeviceRepository;
-import com.fancypants.device.container.DeviceContainer;
 
 @Service
 public class DeviceService {
@@ -18,9 +17,6 @@ public class DeviceService {
 	@Autowired
 	private DeviceRepository repository;
 
-	@Autowired
-	private DeviceContainer deviceContainer;
-
 	public DeviceEntity getDevice(String deviceId)
 			throws AbstractServiceException {
 		// find the device
@@ -28,8 +24,6 @@ public class DeviceService {
 		if (null == deviceEntity) {
 			throw new BusinessLogicException("device not found");
 		}
-		// cache the device object
-		deviceContainer.setDeviceEntity(deviceEntity);
 		// done
 		return deviceEntity;
 	}
@@ -55,13 +49,18 @@ public class DeviceService {
 
 	}
 
-	public void updateDevice(DeviceEntity deviceEntity)
+	public void updateDevice(String deviceId, DeviceEntity deviceEntity)
 			throws AbstractServiceException {
+		// find the current device entity
+		DeviceEntity currentEntity = repository.findOne(deviceId);
+		if (null == currentEntity) {
+
+			throw new BusinessLogicException("device not found");
+		}
 		// TBD: validate that the reported circuits has not changed
 
 		// ensure they are not trying to change the device id
-		if (false == deviceEntity.getDevice().equals(
-				deviceContainer.getDeviceEntity().getDevice())) {
+		if (false == deviceEntity.getDevice().equals(deviceId)) {
 			throw new DataValidationException(
 					"can not change device identifier");
 		}
@@ -71,4 +70,14 @@ public class DeviceService {
 
 	}
 
+	public void deleteDevice(String deviceId) throws AbstractServiceException {
+		// find the device entity
+		DeviceEntity currentEntity = repository.findOne(deviceId);
+		if (null == currentEntity) {
+
+			throw new BusinessLogicException("device not found");
+		}
+		// remove the device
+		repository.delete(deviceId);
+	}
 }

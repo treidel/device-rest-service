@@ -4,7 +4,7 @@ import org.springframework.hateoas.ResourceSupport;
 
 import com.fancypants.rest.domain.RawRecord;
 
-public class CurrentRecordResource extends ResourceSupport {
+public class PowerConsumptionRecordResource extends ResourceSupport {
 
 	public RawRecord record;
 }

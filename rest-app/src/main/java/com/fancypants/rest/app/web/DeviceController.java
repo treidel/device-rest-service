@@ -54,7 +54,7 @@ public class DeviceController {
 		// map the device
 		DeviceEntity deviceEntity = deviceEntityMapper.convert(device);
 		// do the update
-		deviceService.updateDevice(deviceEntity);
+		deviceService.updateDevice(deviceEntity.getDevice(), deviceEntity);
 		DeviceResource resource = deviceResourceAssembler.toResource(device);
 		return new ResponseEntity<DeviceResource>(resource, HttpStatus.OK);
 	}
