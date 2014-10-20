@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
@@ -31,9 +31,9 @@ import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.data.device.repository.DeviceRepository;
 import com.fancypants.data.device.repository.RawRecordRepository;
 import com.fancypants.rest.device.Application;
-import com.fancypants.rest.device.resource.PowerConsumptionRecordResource;
-import com.fancypants.rest.domain.PowerConsumptionMeasurement;
-import com.fancypants.rest.domain.PowerConsumptionRecord;
+import com.fancypants.rest.device.resource.RawRecordResource;
+import com.fancypants.rest.domain.RawMeasurement;
+import com.fancypants.rest.domain.RawRecord;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = { Application.class,
@@ -46,28 +46,29 @@ public class RecordRestTests {
 			.create("https://localhost:8443/device/records");
 
 	private static final DeviceEntity DEVICEENTITY;
-	private static final PowerConsumptionRecord RECORD1;
-	private static final PowerConsumptionRecord RECORD2;
-	private static final Collection<PowerConsumptionRecord> RECORDS = new ArrayList<PowerConsumptionRecord>(
+	private static final RawRecord RECORD1;
+	private static final RawRecord RECORD2;
+	private static final Collection<RawRecord> RECORDS = new ArrayList<RawRecord>(
 			2);
 
 	static {
 		// setup the circuits + test measurements
 		Set<CircuitEntity> circuits = new HashSet<CircuitEntity>();
-		Set<PowerConsumptionMeasurement> measurements = new TreeSet<PowerConsumptionMeasurement>();
+		Set<RawMeasurement> measurements = new HashSet<RawMeasurement>();
 		for (int i = 1; i <= DeviceEntity.MAX_CIRCUITS; i++) {
 			CircuitEntity circuit = new CircuitEntity(i, "1-" + i, 120.0f,
 					10.0f);
 			circuits.add(circuit);
-			PowerConsumptionMeasurement measurement = new PowerConsumptionMeasurement(
-					circuit.getName(), 0.1f);
+			RawMeasurement measurement = new RawMeasurement(circuit.getName(),
+					0.1f);
 			measurements.add(measurement);
 		}
 		// setup the device
-		DEVICEENTITY = new DeviceEntity("ABCD1234", "000000001", circuits, new Date());
+		DEVICEENTITY = new DeviceEntity("ABCD1234", "000000001", circuits,
+				new Date());
 		// setup the records
-		RECORD1 = new PowerConsumptionRecord(new Date(), measurements);
-		RECORD2 = new PowerConsumptionRecord(new Date(), measurements);
+		RECORD1 = new RawRecord(UUID.randomUUID(), new Date(), measurements);
+		RECORD2 = new RawRecord(UUID.randomUUID(), new Date(), measurements);
 		RECORDS.add(RECORD1);
 		RECORDS.add(RECORD2);
 	}
@@ -87,21 +88,44 @@ public class RecordRestTests {
 		// cleanup databases
 		deviceRepository.deleteAll();
 		recordRespitory.deleteAll();
-		// inject 
+		// inject
 		deviceRepository.save(DEVICEENTITY);
 	}
 
 	@Test
 	public void createRecordTest() {
-		HttpEntity<Collection<PowerConsumptionRecord>> entity = new HttpEntity<Collection<PowerConsumptionRecord>>(
+		HttpEntity<Collection<RawRecord>> entity = new HttpEntity<Collection<RawRecord>>(
 				RECORDS);
-		ResponseEntity<Collection<PowerConsumptionRecordResource>> resource = deviceRestTemplate
+		ResponseEntity<Collection<RawRecordResource>> response = deviceRestTemplate
 				.exchange(
 						BASE_URL,
 						HttpMethod.POST,
 						entity,
-						new ParameterizedTypeReference<Collection<PowerConsumptionRecordResource>>() {
+						new ParameterizedTypeReference<Collection<RawRecordResource>>() {
 						});
-		Assert.assertTrue(HttpStatus.ACCEPTED.equals(resource.getStatusCode()));
+		Assert.assertTrue(HttpStatus.CREATED.equals(response.getStatusCode()));
 	}
+	
+	@Test
+	public void duplicateRecordTest() {
+		HttpEntity<Collection<RawRecord>> entity = new HttpEntity<Collection<RawRecord>>(
+				RECORDS);
+		// create once
+		ResponseEntity<Collection<RawRecordResource>> response = deviceRestTemplate
+				.exchange(
+						BASE_URL,
+						HttpMethod.POST,
+						entity,
+						new ParameterizedTypeReference<Collection<RawRecordResource>>() {
+						});
+		Assert.assertTrue(HttpStatus.CREATED.equals(response.getStatusCode()));
+		// create again
+		response = deviceRestTemplate
+				.exchange(
+						BASE_URL,
+						HttpMethod.POST,
+						entity,
+						new ParameterizedTypeReference<Collection<RawRecordResource>>() {
+						});
+	}	
 }

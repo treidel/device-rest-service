@@ -9,6 +9,7 @@ jar {
 
 dependencies {
 	compile("com.fasterxml.jackson.core:jackson-databind")
+	compile("com.fasterxml.jackson.datatype:jackson-datatype-joda")
 	compile("org.springframework.hateoas:spring-hateoas") 
 	compile("org.springframework.plugin:spring-plugin-core")
 	compile("org.springframework.security:spring-security-config")

@@ -6,26 +6,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class PowerConsumptionMeasurement implements
 		Comparable<PowerConsumptionMeasurement> {
 
+	public static final String CIRCUIT_ATTRIBUTE = "circuit";
+	public static final String POWERINKWH_ATTRIBUTE = "power-in-kwh";
+	
 	private final String circuit;
-	private float value;
+	private float powerInKWH;
 
 	@JsonCreator
-	public PowerConsumptionMeasurement(@JsonProperty("circuit") String circuit,
-			@JsonProperty("value") float value) {
+	public PowerConsumptionMeasurement(@JsonProperty(CIRCUIT_ATTRIBUTE) String circuit,
+			@JsonProperty(POWERINKWH_ATTRIBUTE) float powerInKWH) {
 		this.circuit = circuit;
-		this.value = value;
+		this.powerInKWH = powerInKWH;
 	}
 
+	@JsonProperty(CIRCUIT_ATTRIBUTE)
 	public String getCircuit() {
 		return circuit;
 	}
 
-	public float getValue() {
-		return value;
+	@JsonProperty(POWERINKWH_ATTRIBUTE)
+	public float getPowerInKWH() {
+		return powerInKWH;
 	}
 
-	public void setValue(float value) {
-		this.value = value;
+	public void setPowerInKWH(float powerInKWH) {
+		this.powerInKWH = powerInKWH;
 	}
 
 	@Override

@@ -8,6 +8,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
@@ -25,8 +27,18 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.Resource;
+import org.springframework.hateoas.hal.Jackson2HalModule;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 @EnableAutoConfiguration
 @ComponentScan(basePackageClasses = { TestConfiguration.class })
@@ -100,16 +112,14 @@ public class TestConfiguration {
 	@Autowired
 	public RestTemplate deviceRestTemplate(
 			@Qualifier("deviceHttpClientFactory") HttpComponentsClientHttpRequestFactory factory) {
-		RestTemplate restTemplate = new RestTemplate(factory);
-		return restTemplate;
+		return configureRestTemplate(factory);
 	}
 
 	@Bean
 	@Autowired
 	public RestTemplate adminRestTemplate(
 			@Qualifier("adminHttpClientFactory") HttpComponentsClientHttpRequestFactory factory) {
-		RestTemplate restTemplate = new RestTemplate(factory);
-		return restTemplate;
+		return configureRestTemplate(factory);
 	}
 
 	private SSLContext configureSSLContext(Resource keystoreFile,
@@ -128,6 +138,30 @@ public class TestConfiguration {
 				.loadTrustMaterial(keystore)
 				.loadKeyMaterial(keystore, keystorePass.toCharArray()).build();
 		return sslContext;
+	}
+
+	private RestTemplate configureRestTemplate(
+			HttpComponentsClientHttpRequestFactory factory) {
+		RestTemplate restTemplate = new RestTemplate(factory);
+		MappingJackson2HttpMessageConverter jsonMessageConverter = new MappingJackson2HttpMessageConverter();
+		jsonMessageConverter.setObjectMapper(createObjectMapper());
+		jsonMessageConverter.setSupportedMediaTypes(MediaType
+				.parseMediaTypes("application/hal+json,application/json"));
+		List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>(
+				1);
+		messageConverters.add(jsonMessageConverter);
+		restTemplate.setMessageConverters(messageConverters);
+		return restTemplate;
+	}
+
+	private ObjectMapper createObjectMapper() {
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JodaModule());
+		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		objectMapper.setDateFormat(new ISO8601DateFormat());
+		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+		objectMapper.registerModule(new Jackson2HalModule());
+		return objectMapper;
 	}
 
 	private static class CustomX509HostnameVerifier implements

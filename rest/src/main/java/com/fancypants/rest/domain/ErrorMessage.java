@@ -4,14 +4,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ErrorMessage {
+
+	public static final String ERRORS_ATTRIBUTE = "errors";
 
 	private List<String> errors;
 
 	public ErrorMessage() {
 	}
 
-	public ErrorMessage(List<String> errors) {
+	@JsonCreator
+	public ErrorMessage(@JsonProperty(ERRORS_ATTRIBUTE) List<String> errors) {
 		this.errors = errors;
 	}
 
@@ -23,6 +29,7 @@ public class ErrorMessage {
 		this(Arrays.asList(errors));
 	}
 
+	@JsonProperty(ERRORS_ATTRIBUTE)
 	public List<String> getErrors() {
 		return errors;
 	}

@@ -26,7 +26,7 @@ import com.fancypants.device.container.DeviceContainer;
 import com.fancypants.device.service.DeviceService;
 import com.fancypants.device.service.RecordService;
 import com.fancypants.rest.device.assembler.CurrentRecordResourceAssembler;
-import com.fancypants.rest.device.resource.PowerConsumptionRecordResource;
+import com.fancypants.rest.device.resource.RawRecordResource;
 import com.fancypants.rest.domain.Device;
 import com.fancypants.rest.domain.RawRecord;
 import com.fancypants.rest.mapping.DeviceMapper;
@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 @RequestMapping("/device")
 @Secured("ROLE_USER")
 public class RecordController {
-	
+
 	@Autowired
 	private CurrentRecordResourceAssembler recordResourceAssembler;
 	@Autowired
@@ -54,7 +54,7 @@ public class RecordController {
 	private RawRecordMapper recordMapper;
 	@Autowired
 	private DeviceMapper deviceMapper;
-	
+
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@PostConstruct
@@ -65,7 +65,7 @@ public class RecordController {
 
 	@RequestMapping(value = "/records", method = RequestMethod.POST)
 	@ResponseBody
-	public HttpEntity<Collection<PowerConsumptionRecordResource>> putRecords(
+	public HttpEntity<Collection<RawRecordResource>> putRecords(
 			@RequestBody Collection<RawRecord> records)
 			throws AbstractServiceException {
 		// get the device
@@ -85,22 +85,22 @@ public class RecordController {
 		// map the device
 		Device device = deviceMapper.convert(deviceEntity);
 		// create the list of resources to be returned
-		Collection<PowerConsumptionRecordResource> resources = new LinkedList<PowerConsumptionRecordResource>();
+		Collection<RawRecordResource> resources = new LinkedList<RawRecordResource>();
 		// go through each record and create the resources
 		for (RawRecord record : records) {
-			PowerConsumptionRecordResource resource = recordResourceAssembler
-					.toResource(new ImmutablePair<Device, RawRecord>(
-							device, record));
+			RawRecordResource resource = recordResourceAssembler
+					.toResource(new ImmutablePair<Device, RawRecord>(device,
+							record));
 			resources.add(resource);
 		}
-		ResponseEntity<Collection<PowerConsumptionRecordResource>> response = new ResponseEntity<Collection<PowerConsumptionRecordResource>>(
+		ResponseEntity<Collection<RawRecordResource>> response = new ResponseEntity<Collection<RawRecordResource>>(
 				resources, HttpStatus.CREATED);
 		return response;
 	}
 
 	@RequestMapping(value = "/records", method = RequestMethod.GET)
 	@ResponseBody
-	public HttpEntity<Collection<PowerConsumptionRecordResource>> getRecords() {
+	public HttpEntity<Collection<RawRecordResource>> getRecords() {
 		// get the device
 		DeviceEntity deviceEntity = deviceContainer.getDeviceEntity();
 		// map the device
@@ -109,25 +109,25 @@ public class RecordController {
 		Collection<RawRecordEntity> entities = recordService
 				.findRecordsForDevice();
 		// create the return list
-		Collection<PowerConsumptionRecordResource> resources = new LinkedList<PowerConsumptionRecordResource>();
+		Collection<RawRecordResource> resources = new LinkedList<RawRecordResource>();
 		for (RawRecordEntity entity : entities) {
 			// map the record
 			RawRecord record = recordMapper
 					.convert(new ImmutablePair<DeviceEntity, RawRecordEntity>(
 							deviceEntity, entity));
 			// create the resource
-			PowerConsumptionRecordResource resource = recordResourceAssembler
-					.toResource(new ImmutablePair<Device, RawRecord>(
-							device, record));
+			RawRecordResource resource = recordResourceAssembler
+					.toResource(new ImmutablePair<Device, RawRecord>(device,
+							record));
 			resources.add(resource);
 		}
-		return new ResponseEntity<Collection<PowerConsumptionRecordResource>>(resources,
+		return new ResponseEntity<Collection<RawRecordResource>>(resources,
 				HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/records/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
-	public HttpEntity<PowerConsumptionRecordResource> getRecord(
+	public HttpEntity<RawRecordResource> getRecord(
 			@PathVariable("uuid") String uuid) throws AbstractServiceException {
 		// get the device
 		DeviceEntity deviceEntity = deviceContainer.getDeviceEntity();
@@ -135,8 +135,7 @@ public class RecordController {
 		RawRecordEntity entity = recordService.findRecordForDevice(UUID
 				.fromString(uuid));
 		if (null == entity) {
-			return new ResponseEntity<PowerConsumptionRecordResource>(
-					HttpStatus.NOT_FOUND);
+			return new ResponseEntity<RawRecordResource>(HttpStatus.NOT_FOUND);
 		}
 		// map the record
 		RawRecord record = recordMapper
@@ -145,11 +144,9 @@ public class RecordController {
 		// map the device
 		Device device = deviceMapper.convert(deviceEntity);
 		// create the resource
-		PowerConsumptionRecordResource resource = recordResourceAssembler
-				.toResource(new ImmutablePair<Device, RawRecord>(device,
-						record));
-		return new ResponseEntity<PowerConsumptionRecordResource>(resource,
-				HttpStatus.OK);
+		RawRecordResource resource = recordResourceAssembler
+				.toResource(new ImmutablePair<Device, RawRecord>(device, record));
+		return new ResponseEntity<RawRecordResource>(resource, HttpStatus.OK);
 	}
 
 }

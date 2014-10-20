@@ -39,7 +39,7 @@ public class AdminController {
 	@Autowired
 	private DeviceEntityMapper deviceEntityMapper;
 
-	@RequestMapping(method = RequestMethod.POST, value = "/device")
+	@RequestMapping(method = RequestMethod.POST, value = "/devices")
 	@ResponseBody
 	public ResponseEntity<Void> postDevice(@RequestBody Device device)
 			throws AbstractServiceException {
@@ -54,7 +54,7 @@ public class AdminController {
 		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/device/{deviceId}")
+	@RequestMapping(method = RequestMethod.GET, value = "/devices/{deviceId}")
 	@ResponseBody
 	public HttpEntity<DeviceResource> getDevice(
 			@PathVariable("deviceId") String deviceId)
@@ -68,7 +68,7 @@ public class AdminController {
 		return new ResponseEntity<DeviceResource>(resource, HttpStatus.OK);
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/device/{deviceId}")
+	@RequestMapping(method = RequestMethod.PUT, value = "/devices/{deviceId}")
 	@ResponseBody
 	public HttpEntity<DeviceResource> putDevice(
 			@PathVariable("deviceId") String deviceId,
@@ -82,7 +82,7 @@ public class AdminController {
 		return new ResponseEntity<DeviceResource>(resource, HttpStatus.OK);
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/device/{deviceId}")
+	@RequestMapping(method = RequestMethod.DELETE, value = "/devices/{deviceId}")
 	@ResponseBody
 	public ResponseEntity<Void> putDevice(
 			@PathVariable("deviceId") String deviceId)
