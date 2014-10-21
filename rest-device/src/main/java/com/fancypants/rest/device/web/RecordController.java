@@ -24,7 +24,7 @@ import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.data.device.entity.RawRecordEntity;
 import com.fancypants.device.container.DeviceContainer;
 import com.fancypants.device.service.DeviceService;
-import com.fancypants.device.service.RecordService;
+import com.fancypants.records.service.RecordService;
 import com.fancypants.rest.device.assembler.CurrentRecordResourceAssembler;
 import com.fancypants.rest.device.resource.RawRecordResource;
 import com.fancypants.rest.domain.Device;
@@ -81,7 +81,7 @@ public class RecordController {
 			entities.add(entity);
 		}
 		// bulk create the records
-		recordService.bulkCreateRecords(entities);
+		recordService.bulkCreateRecords(deviceEntity, entities);
 		// map the device
 		Device device = deviceMapper.convert(deviceEntity);
 		// create the list of resources to be returned
@@ -107,7 +107,7 @@ public class RecordController {
 		Device device = deviceMapper.convert(deviceEntity);
 		// find all records
 		Collection<RawRecordEntity> entities = recordService
-				.findRecordsForDevice();
+				.findRecordsForDevice(deviceEntity);
 		// create the return list
 		Collection<RawRecordResource> resources = new LinkedList<RawRecordResource>();
 		for (RawRecordEntity entity : entities) {
@@ -132,7 +132,7 @@ public class RecordController {
 		// get the device
 		DeviceEntity deviceEntity = deviceContainer.getDeviceEntity();
 		// find the record
-		RawRecordEntity entity = recordService.findRecordForDevice(UUID
+		RawRecordEntity entity = recordService.findRecordForDevice(deviceEntity, UUID
 				.fromString(uuid));
 		if (null == entity) {
 			return new ResponseEntity<RawRecordResource>(HttpStatus.NOT_FOUND);

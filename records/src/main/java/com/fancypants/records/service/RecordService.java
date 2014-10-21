@@ -1,4 +1,4 @@
-package com.fancypants.device.service;
+package com.fancypants.records.service;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,7 +18,6 @@ import com.fancypants.data.device.entity.RawRecordEntity;
 import com.fancypants.data.device.entity.RawRecordId;
 import com.fancypants.data.device.repository.DeviceRepository;
 import com.fancypants.data.device.repository.RawRecordRepository;
-import com.fancypants.device.container.DeviceContainer;
 import com.fancypants.stream.writer.StreamWriter;
 
 @Service
@@ -32,16 +31,13 @@ public class RecordService {
 	@Autowired
 	private DeviceRepository deviceRepository;
 	@Autowired
-	private DeviceContainer deviceContainer;
-	@Autowired
 	private StreamWriter<RawRecordEntity> streamWriter;
 
-	public RawRecordEntity findRecordForDevice(UUID uuid)
+	public RawRecordEntity findRecordForDevice(DeviceEntity deviceEntity, UUID uuid)
 			throws AbstractServiceException {
 		LOG.trace("findRecordForDevice entry", uuid);
 		// create the record id for the query
-		RawRecordId recordId = new RawRecordId(deviceContainer
-				.getDeviceEntity().getDevice(), uuid);
+		RawRecordId recordId = new RawRecordId(deviceEntity.getDevice(), uuid);
 		// execute the query
 		RawRecordEntity recordEntity = recordRepository.findOne(recordId);
 		if (null == recordEntity) {
@@ -53,19 +49,17 @@ public class RecordService {
 		return recordEntity;
 	}
 
-	public Collection<RawRecordEntity> findRecordsForDevice() {
+	public Collection<RawRecordEntity> findRecordsForDevice(DeviceEntity deviceEntity) {
 		LOG.trace("findRecordsForDevice entry");
 		List<RawRecordEntity> entities = recordRepository
-				.findAllForDevice(deviceContainer.getDeviceEntity().getDevice());
+				.findAllForDevice(deviceEntity.getDevice());
 		LOG.trace("findRecordsForDevice exit", entities);
 		return entities;
 	}
 
-	public void bulkCreateRecords(Collection<RawRecordEntity> entities)
+	public void bulkCreateRecords(DeviceEntity deviceEntity, Collection<RawRecordEntity> entities)
 			throws AbstractServiceException {
 		LOG.trace("bulkCreateRecords entry", entities);
-		// find the device
-		DeviceEntity deviceEntity = deviceContainer.getDeviceEntity();
 		for (RawRecordEntity recordEntity : entities) {
 			// data validation rule: record must contain data for all circuits
 			for (CircuitEntity circuitEntity : deviceEntity.getCircuits()) {

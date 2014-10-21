@@ -19,7 +19,7 @@ import com.fancypants.data.device.entity.PowerConsumptionRecordEntity;
 import com.fancypants.device.container.DeviceContainer;
 import com.fancypants.device.service.UsageService;
 import com.fancypants.rest.app.assembler.PowerConsumptionResourceAssembler;
-import com.fancypants.rest.app.resource.PowerConsumptionResource;
+import com.fancypants.rest.app.resource.PowerConsumptionRecordResource;
 import com.fancypants.rest.domain.PowerConsumptionRecord;
 import com.fancypants.rest.mapping.PowerConsumptionRecordMapper;
 
@@ -38,14 +38,14 @@ public class PowerConsumptionController {
 
 	@RequestMapping(value = "/hourly", method = RequestMethod.GET)
 	@ResponseBody
-	public HttpEntity<List<PowerConsumptionResource>> getHourlyData() {
+	public HttpEntity<List<PowerConsumptionRecordResource>> getHourlyData() {
 		// get the device
 		DeviceEntity deviceEntity = deviceContainer.getDeviceEntity();
 		// query all records for this device
 		List<PowerConsumptionRecordEntity> entities = usageService
 				.getHourlyRecords();
 		// create resources
-		List<PowerConsumptionResource> resources = new ArrayList<PowerConsumptionResource>(
+		List<PowerConsumptionRecordResource> resources = new ArrayList<PowerConsumptionRecordResource>(
 				entities.size());
 		for (PowerConsumptionRecordEntity entity : entities) {
 			// map the record
@@ -53,10 +53,10 @@ public class PowerConsumptionController {
 					.convert(new ImmutablePair<DeviceEntity, PowerConsumptionRecordEntity>(
 							deviceEntity, entity));
 			// wrap as a resource
-			PowerConsumptionResource resource = assembler.toResource(record);
+			PowerConsumptionRecordResource resource = assembler.toResource(record);
 			resources.add(resource);
 		}
-		return new ResponseEntity<List<PowerConsumptionResource>>(resources,
+		return new ResponseEntity<List<PowerConsumptionRecordResource>>(resources,
 				HttpStatus.OK);
 	}
 }

@@ -16,6 +16,7 @@ import org.springframework.core.io.Resource;
 import com.fancypants.data.device.DataDeviceScanMe;
 import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe;
 import com.fancypants.device.DeviceScanMe;
+import com.fancypants.records.RecordsScanMe;
 import com.fancypants.rest.RestScanMe;
 import com.fancypants.stream.StreamScanMe;
 import com.fancypants.stream.kinesis.StreamKinesisScanMe;
@@ -23,7 +24,7 @@ import com.fancypants.stream.kinesis.StreamKinesisScanMe;
 @EnableAutoConfiguration
 @ComponentScan(basePackageClasses = { RestScanMe.class, RestDeviceScanMe.class,
 		StreamScanMe.class, StreamKinesisScanMe.class, DataDeviceScanMe.class,
-		DataDeviceDynamoDBScanMe.class, DeviceScanMe.class})
+		DataDeviceDynamoDBScanMe.class, DeviceScanMe.class, RecordsScanMe.class})
 public class Application {
 
 	public static void main(String[] args) {
