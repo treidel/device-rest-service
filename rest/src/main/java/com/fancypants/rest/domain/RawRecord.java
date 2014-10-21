@@ -1,9 +1,12 @@
 package com.fancypants.rest.domain;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import com.fancypants.data.device.entity.CircuitEntity;
+import com.fancypants.data.device.entity.DeviceEntity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -40,5 +43,30 @@ public class RawRecord {
 	@JsonProperty(MEASUREMENTS_ATTRIBUTE)
 	public Set<RawMeasurement> getMeasurements() {
 		return measurements;
+	}
+
+	public static class TEST {
+		public static final RawRecord RECORD1;
+		public static final RawRecord RECORD2;
+		public static final RawRecord RECORDS[];
+
+		static {
+			// setup the circuits + test measurements
+			Set<CircuitEntity> circuits = new HashSet<CircuitEntity>();
+			Set<RawMeasurement> measurements = new HashSet<RawMeasurement>();
+			for (int i = 1; i <= DeviceEntity.MAX_CIRCUITS; i++) {
+				CircuitEntity circuit = new CircuitEntity(i, "1-" + i, 120.0f,
+						10.0f);
+				circuits.add(circuit);
+				RawMeasurement measurement = new RawMeasurement(
+						circuit.getName(), 0.1f);
+				measurements.add(measurement);
+			}
+			// setup the records
+			RECORD1 = new RawRecord(UUID.randomUUID(), new Date(), measurements);
+			RECORD2 = new RawRecord(UUID.randomUUID(), new Date(), measurements);
+			RECORDS = new RawRecord[] { RECORD1, RECORD2 };
+		}
+
 	}
 }

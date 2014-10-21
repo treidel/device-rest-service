@@ -1,4 +1,4 @@
-package com.fancypants.device.usage;
+package com.fancypants.usage.generators;
 
 import java.util.Date;
 

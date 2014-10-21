@@ -2,6 +2,7 @@ package com.fancypants.data.device.dynamodb.repository;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -74,6 +75,19 @@ public class DynamoDBRawRecordRepository extends
 			records.add(record);
 		}
 		return records;
+	}
+
+	@Override
+	public void deleteAllForDevice(String device) {
+		KeyAttribute key = new KeyAttribute(RawRecordEntity.HASH_KEY, device);
+		ItemCollection<QueryOutcome> items = getTable().query(key);
+		for (Item item : items) {
+			RawRecordId id = new RawRecordId(
+					item.getString(RawRecordEntity.DEVICE_ATTRIBUTE),
+					UUID.fromString(item
+							.getString(RawRecordEntity.UUID_ATTRIBUTE)));
+			delete(id);
+		}
 	}
 
 }

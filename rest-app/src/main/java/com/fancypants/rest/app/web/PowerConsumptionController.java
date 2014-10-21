@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.data.device.entity.PowerConsumptionRecordEntity;
 import com.fancypants.device.container.DeviceContainer;
-import com.fancypants.device.service.UsageService;
 import com.fancypants.rest.app.assembler.PowerConsumptionResourceAssembler;
 import com.fancypants.rest.app.resource.PowerConsumptionRecordResource;
 import com.fancypants.rest.domain.PowerConsumptionRecord;
 import com.fancypants.rest.mapping.PowerConsumptionRecordMapper;
+import com.fancypants.usage.service.UsageService;
 
 @Controller
 @RequestMapping("/app/usage")
@@ -43,7 +43,7 @@ public class PowerConsumptionController {
 		DeviceEntity deviceEntity = deviceContainer.getDeviceEntity();
 		// query all records for this device
 		List<PowerConsumptionRecordEntity> entities = usageService
-				.getHourlyRecords();
+				.getHourlyRecords(deviceEntity);
 		// create resources
 		List<PowerConsumptionRecordResource> resources = new ArrayList<PowerConsumptionRecordResource>(
 				entities.size());
@@ -53,10 +53,11 @@ public class PowerConsumptionController {
 					.convert(new ImmutablePair<DeviceEntity, PowerConsumptionRecordEntity>(
 							deviceEntity, entity));
 			// wrap as a resource
-			PowerConsumptionRecordResource resource = assembler.toResource(record);
+			PowerConsumptionRecordResource resource = assembler
+					.toResource(record);
 			resources.add(resource);
 		}
-		return new ResponseEntity<List<PowerConsumptionRecordResource>>(resources,
-				HttpStatus.OK);
+		return new ResponseEntity<List<PowerConsumptionRecordResource>>(
+				resources, HttpStatus.OK);
 	}
 }

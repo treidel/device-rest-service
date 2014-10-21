@@ -9,10 +9,12 @@ import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe;
 import com.fancypants.device.DeviceScanMe;
 import com.fancypants.rest.RestScanMe;
 import com.fancypants.rest.app.RestAppScanMe;
+import com.fancypants.usage.UsageScanMe;
 
 @EnableAutoConfiguration
 @ComponentScan(basePackageClasses = { RestScanMe.class, RestAppScanMe.class,
-		DataDeviceScanMe.class, DataDeviceDynamoDBScanMe.class , DeviceScanMe.class})
+		DataDeviceScanMe.class, DataDeviceDynamoDBScanMe.class,
+		DeviceScanMe.class, UsageScanMe.class })
 public class Application {
 
 	public static void main(String[] args) {

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.fancypants.common.exception.AbstractServiceException;
 import com.fancypants.data.device.entity.DeviceEntity;
+import com.fancypants.device.container.DeviceContainer;
 import com.fancypants.device.service.DeviceService;
 
 @Service
@@ -21,6 +22,9 @@ public class AppUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	private DeviceService deviceService;
+	
+	@Autowired
+	private DeviceContainer deviceContainer;
 
 	@Override
 	public UserDetails loadUserByUsername(String username)
@@ -31,6 +35,8 @@ public class AppUserDetailsService implements UserDetailsService {
 		try {
 			// lookup the device to be sure it exists
 			DeviceEntity deviceEntity = deviceService.getDevice(username);
+			// store the device 
+			deviceContainer.setDeviceEntity(deviceEntity);
 			// provide the user authority
 			authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 			// create and return the user

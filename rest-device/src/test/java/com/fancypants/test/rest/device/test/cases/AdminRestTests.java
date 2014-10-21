@@ -1,8 +1,6 @@
 package com.fancypants.test.rest.device.test.cases;
 
 import java.net.URI;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,7 +19,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fancypants.data.device.repository.DeviceRepository;
 import com.fancypants.rest.device.Application;
 import com.fancypants.rest.device.resource.DeviceResource;
-import com.fancypants.rest.domain.Circuit;
 import com.fancypants.rest.domain.Device;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -36,19 +33,6 @@ public class AdminRestTests {
 	private static final URI DEVICE_URL = URI.create(BASE_URL.toString()
 			+ "/devices");
 
-	private static final Device DEVICE1;
-
-	static {
-		// setup the test records
-		SortedSet<Circuit> circuits = new TreeSet<Circuit>();
-		for (int i = 1; i <= 16; i++) {
-			Circuit circuit = new Circuit(String.valueOf(i) + "-1", 120.0f,
-					30.0f);
-			circuits.add(circuit);
-		}
-		DEVICE1 = new Device("ABCD1234", "00000001", circuits);
-	}
-
 	@Autowired
 	@Qualifier("adminRestTemplate")
 	private RestTemplate adminRestTemplate;
@@ -58,14 +42,14 @@ public class AdminRestTests {
 
 	@Before
 	public void cleanup() {
-		deviceRepository.deleteAll();
+		deviceRepository.delete(Device.TEST.DEVICE.getName());
 	}
 
 	@Test
 	public void createDeviceTest() {
 		// send the creation request
 		ResponseEntity<Void> response = adminRestTemplate.postForEntity(
-				DEVICE_URL, DEVICE1, Void.class);
+				DEVICE_URL, Device.TEST.DEVICE, Void.class);
 		Assert.assertTrue(HttpStatus.CREATED.equals(response.getStatusCode()));
 	}
 
@@ -73,7 +57,7 @@ public class AdminRestTests {
 	public void queryDeviceTest() {
 		// first create
 		ResponseEntity<Void> response = adminRestTemplate.postForEntity(
-				DEVICE_URL, DEVICE1, Void.class);
+				DEVICE_URL, Device.TEST.DEVICE, Void.class);
 		// now query for the location provided in the response
 		ResponseEntity<DeviceResource> resource = adminRestTemplate
 				.getForEntity(response.getHeaders().getLocation(),
@@ -85,7 +69,7 @@ public class AdminRestTests {
 	public void deleteDeviceTest() {
 		// first create
 		ResponseEntity<Void> response = adminRestTemplate.postForEntity(
-				DEVICE_URL, DEVICE1, Void.class);
+				DEVICE_URL, Device.TEST.DEVICE, Void.class);
 		// now delete the location provided in the response
 		adminRestTemplate.delete(response.getHeaders().getLocation());
 	}
@@ -94,7 +78,7 @@ public class AdminRestTests {
 	public void updateDeviceTest() {
 		// first create
 		ResponseEntity<Void> response = adminRestTemplate.postForEntity(
-				DEVICE_URL, DEVICE1, Void.class);
+				DEVICE_URL, Device.TEST.DEVICE, Void.class);
 		// now query for the location provided in the response
 		ResponseEntity<DeviceResource> resource = adminRestTemplate
 				.getForEntity(response.getHeaders().getLocation(),

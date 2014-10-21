@@ -2,6 +2,7 @@ package com.fancypants.data.device.entity;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -27,7 +28,8 @@ public class DeviceEntity {
 	private final Map<String, CircuitEntity> circuitLookupByName = new HashMap<String, CircuitEntity>();
 
 	@JsonCreator
-	public DeviceEntity(@JsonProperty(DEVICE_ATTRIBUTE) String device,
+	public DeviceEntity(
+			@JsonProperty(DEVICE_ATTRIBUTE) String device,
 			@JsonProperty(SERIALNUMBER_ATTRIBUTE) String serialnumber,
 			@JsonProperty(CIRCUITS_ATTRIBUTE) Set<CircuitEntity> circuits,
 			@JsonProperty(LASTMODIFIEDTIMESTAMP_ATTRIBUTE) Date lastModifiedTimestamp) {
@@ -69,5 +71,22 @@ public class DeviceEntity {
 	@JsonIgnore
 	public CircuitEntity getCircuitByName(String name) {
 		return this.circuitLookupByName.get(name);
+	}
+
+	public static class TEST {
+		public static final DeviceEntity DEVICEENTITY;
+
+		static {
+			// setup the circuits
+			Set<CircuitEntity> circuits = new HashSet<CircuitEntity>();
+			for (int i = 1; i <= DeviceEntity.MAX_CIRCUITS; i++) {
+				CircuitEntity circuit = new CircuitEntity(i, "1-" + i, 120.0f,
+						10.0f);
+				circuits.add(circuit);
+			}
+			// setup the device
+			DEVICEENTITY = new DeviceEntity("ABCD1234", "000000001", circuits,
+					new Date());
+		}
 	}
 }

@@ -105,12 +105,20 @@ project(':records') {
 	}
 }
 
+project(':usage') {
+	dependencies {
+		compile project(':common')
+		compile project(':device')
+	}
+}
+
 project(':rest-device') {
 	dependencies {
 		compile project(':common')
 		compile project(':rest')
 		compile project(':device')
 		compile project(':records')
+		compile project(':usage')
 		compile project(':data-dynamodb')
 		compile project(':stream-kinesis')
 	}
@@ -129,6 +137,7 @@ project(':rest-app') {
 		compile project(':rest')
 		compile project(':app')
 		compile project(':device')
+		compile project(':usage')
 		compile project(':data-dynamodb')
 	}
 }
@@ -138,6 +147,7 @@ project(':processing') {
 	dependencies { 
 		compile project(':common')
 		compile project(':data')
-		compile project(':stream')
+		compile project(':stream-kinesis')
+		compile project(':usage')
 	}
 }

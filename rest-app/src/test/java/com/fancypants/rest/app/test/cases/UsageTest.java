@@ -1,6 +1,7 @@
-package com.fancypants.test.rest.device.test.cases;
+package com.fancypants.rest.app.test.cases;
 
 import java.net.URI;
+import java.util.Collection;
 
 import javax.annotation.PostConstruct;
 
@@ -8,7 +9,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.core.ParameterizedTypeReference;
@@ -21,52 +21,42 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.data.device.repository.DeviceRepository;
-import com.fancypants.rest.device.Application;
-import com.fancypants.rest.device.resource.DeviceResource;
+import com.fancypants.data.device.repository.HourlyRecordRepository;
+import com.fancypants.rest.app.application.Application;
+import com.fancypants.rest.app.resource.PowerConsumptionRecordResource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { Application.class,
-		TestConfiguration.class })
+@SpringApplicationConfiguration(classes = { Application.class })
 @WebAppConfiguration
 @IntegrationTest
-public class DeviceRestTests {
-
-	private static final URI BASE_URL = URI
-			.create("https://localhost:8443/device");
-
-	@Autowired
-	@Qualifier("deviceRestTemplate")
-	private RestTemplate deviceRestTemplate;
+public class UsageTest {
+	private static final URI BASE_URL = URI.create("http://localhost:8080/app/usage");
+	private static final URI HOURLY_URL = URI.create(BASE_URL + "/hourly");
 
 	@Autowired
 	private DeviceRepository deviceRepository;
+	
+	@Autowired
+	private HourlyRecordRepository usageRepository;
+
+	@Autowired
+	private RestTemplate restTemplate;
 
 	@PostConstruct
 	public void init() {
-		// start clean
 		deviceRepository.delete(DeviceEntity.TEST.DEVICEENTITY.getDevice());
-		// pre-create test device
 		deviceRepository.save(DeviceEntity.TEST.DEVICEENTITY);
 	}
 
 	@Test
-	public void queryDevice() {
-		// now query for the device
-		ResponseEntity<DeviceResource> response = deviceRestTemplate.exchange(
-				BASE_URL, HttpMethod.GET, null,
-				new ParameterizedTypeReference<DeviceResource>() {
-				});
+	public void queryHourlyTest() {
+		ResponseEntity<Collection<PowerConsumptionRecordResource>> response = restTemplate
+				.exchange(
+						HOURLY_URL,
+						HttpMethod.GET,
+						null,
+						new ParameterizedTypeReference<Collection<PowerConsumptionRecordResource>>() {
+						});
 		Assert.assertTrue(HttpStatus.OK.equals(response.getStatusCode()));
-	}
-
-	@Test
-	public void updateDevice() {
-		// now query for the device
-		ResponseEntity<DeviceResource> response = deviceRestTemplate.exchange(
-				BASE_URL, HttpMethod.GET, null,
-				new ParameterizedTypeReference<DeviceResource>() {
-				});
-		// now update using the same device
-		deviceRestTemplate.put(BASE_URL, response.getBody().device);
 	}
 }

@@ -27,5 +27,6 @@ public interface RawRecordRepository extends
 
 	public boolean insert(RawRecordEntity record);
 	public List<RawRecordEntity> findAllForDevice(String device);
+	public void deleteAllForDevice(String device);
 
 }

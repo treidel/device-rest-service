@@ -23,7 +23,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-				.httpBasic().and().csrf().disable();
+				.userDetailsService(userDetailsService).httpBasic().and()
+				.csrf().disable();
 	}
 
 	@Override

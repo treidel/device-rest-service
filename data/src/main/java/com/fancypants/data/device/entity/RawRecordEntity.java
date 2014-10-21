@@ -2,6 +2,7 @@ package com.fancypants.data.device.entity;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
@@ -70,5 +71,28 @@ public class RawRecordEntity {
 	@JsonIgnore
 	public Float getCircuit(int index) {
 		return circuits.get(index);
+	}
+	
+	public static class TEST {
+		public static final RawRecordEntity RECORD1; 
+		public static final RawRecordEntity RECORD2; 
+		public  static final RawRecordId INVALID_RECORD_ID;
+		public  static final RawRecordEntity RECORDS[];
+		
+		static {
+			// setup test data
+			Map<Integer, Float> energy = new TreeMap<Integer, Float>();
+			for (int i = 1; i <= 16; i++) {
+				energy.put(i, 10.0f);
+			}
+			// setup the test records
+			RECORD1 = new RawRecordEntity("ABCD1234", UUID.randomUUID().toString(), new Date(), energy);  
+			RECORD2 = new RawRecordEntity("ABCD1234", UUID.randomUUID().toString(), new Date(), energy);
+			INVALID_RECORD_ID = new RawRecordId("WXYZ7890", UUID.randomUUID());
+
+			// setup the list of records
+			RECORDS = new RawRecordEntity[] {RECORD1, RECORD2 };
+		}
+
 	}
 }

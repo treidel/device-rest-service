@@ -1,7 +1,9 @@
 package com.fancypants.data.device.entity;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 import org.springframework.data.annotation.Id;
@@ -216,5 +218,43 @@ public class PowerConsumptionRecordEntity {
 
 	public void setEnergy16(float energyInKWH) {
 		setEnergy(16, energyInKWH);
+	}
+
+	public static class TEST {
+		public static final PowerConsumptionRecordEntity RECORD1;
+		public static final PowerConsumptionRecordEntity RECORD2;
+		public static final PowerConsumptionRecordEntity RECORDS[];
+
+		static {
+			// get the current time
+			Date currentTime = new Date();
+			// use GMT time
+			Calendar calendar = Calendar.getInstance(TimeZone
+					.getTimeZone("GMT"));
+			// populate the current time
+			calendar.setTime(currentTime);
+			// want times on hour boundary
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MILLISECOND, 0);
+			// find the start time of the hour
+			Date startOfHour = calendar.getTime();
+			// find the nextday of the next
+			calendar.add(Calendar.HOUR, 1);
+			Date endOfHour = calendar.getTime();
+
+			// setup the test records
+			RECORD1 = new PowerConsumptionRecordEntity("ABCD1234", startOfHour);
+			for (int i = 1; i <= 16; i++) {
+				RECORD1.setEnergy(i, 10.0f);
+			}
+			RECORD2 = new PowerConsumptionRecordEntity("ABCD1234", endOfHour);
+			for (int i = 1; i <= 16; i++) {
+				RECORD2.setEnergy(i, 20.0f);
+			}
+
+			// setup the list of records
+			RECORDS = new PowerConsumptionRecordEntity[] { RECORD1, RECORD2 };
+		}
 	}
 }

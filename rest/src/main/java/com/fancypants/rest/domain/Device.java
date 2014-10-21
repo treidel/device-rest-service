@@ -1,6 +1,7 @@
 package com.fancypants.rest.domain;
 
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,5 +38,21 @@ public class Device {
 	@JsonProperty(CIRCUITS_ATTRIBUTE)
 	public SortedSet<Circuit> getCircuits() {
 		return circuits;
+	}
+
+	public static class TEST {
+		public static final Device DEVICE;
+
+		static {
+			// setup the test records
+			SortedSet<Circuit> circuits = new TreeSet<Circuit>();
+			for (int i = 1; i <= 16; i++) {
+				Circuit circuit = new Circuit(String.valueOf(i) + "-1", 120.0f,
+						30.0f);
+				circuits.add(circuit);
+			}
+			DEVICE = new Device("ABCD1234", "00000001", circuits);
+		}
+
 	}
 }
