@@ -20,7 +20,6 @@ public class RawRecordEntity {
 	public static final String CIRCUITS_ATTRIBUTE = "circuits";
 	public static final String HASH_KEY = DEVICE_ATTRIBUTE;
 	public static final String RANGE_KEY = UUID_ATTRIBUTE;
-	public static final String[] FIXED_FIELDS = {DEVICE_ATTRIBUTE, UUID_ATTRIBUTE, TIMESTAMP_ATTRIBUTE};
 	
 	private final RawRecordId id;
 	private final Date timestamp;

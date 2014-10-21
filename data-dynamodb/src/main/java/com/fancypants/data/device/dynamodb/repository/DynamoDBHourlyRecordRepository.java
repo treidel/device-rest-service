@@ -37,7 +37,7 @@ public class DynamoDBHourlyRecordRepository
 	protected String retrieveHashKey(PowerConsumptionRecordEntity entity) {
 		return entity.getDevice();
 	}
-	
+
 	@Override
 	protected String retrieveHashKey(PowerConsumptionRecordId id) {
 		return id.getDevice();
@@ -48,7 +48,7 @@ public class DynamoDBHourlyRecordRepository
 		return getObjectMapper().getDeserializationConfig().getDateFormat()
 				.format(entity.getDate());
 	}
-	
+
 	@Override
 	protected String retrieveRangeKey(PowerConsumptionRecordId id) {
 		return getObjectMapper().getDeserializationConfig().getDateFormat()
@@ -67,23 +67,12 @@ public class DynamoDBHourlyRecordRepository
 		}
 		return entities;
 	}
-	
-	@Override
-	public void deleteAllForDevice(String device) {
-		KeyAttribute key = new KeyAttribute(
-				PowerConsumptionRecordEntity.DEVICE_ATTRIBUTE, device);
-		ItemCollection<QueryOutcome> items = getTable().query(key);
-		for (Item item : items) {
-			PowerConsumptionRecordEntity entity = deserialize(item);
-			delete(entity);
-		}
-	}
 
 	@Override
 	public void insertOrIncrement(PowerConsumptionRecordEntity record) {
 		// create the primary key
 		PrimaryKey key = new PrimaryKey(PowerConsumptionRecordEntity.HASH_KEY,
-				record.getId().getDevice(), 
+				record.getId().getDevice(),
 				PowerConsumptionRecordEntity.RANGE_KEY, getObjectMapper()
 						.getSerializationConfig().getDateFormat()
 						.format(record.getId().getDate()));
@@ -99,5 +88,16 @@ public class DynamoDBHourlyRecordRepository
 		}
 		// do the update
 		getTable().updateItem(spec);
+	}
+
+	@Override
+	public void deleteAllForDevice(String device) {
+		KeyAttribute key = new KeyAttribute(
+				PowerConsumptionRecordEntity.DEVICE_ATTRIBUTE, device);
+		ItemCollection<QueryOutcome> items = getTable().query(key);
+		for (Item item : items) {
+			PowerConsumptionRecordEntity entity = deserialize(item);
+			delete(entity);
+		}
 	}
 }

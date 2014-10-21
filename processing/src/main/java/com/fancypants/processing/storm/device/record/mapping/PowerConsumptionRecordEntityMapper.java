@@ -1,5 +1,6 @@
 package com.fancypants.processing.storm.device.record.mapping;
 
+import java.io.Serializable;
 import java.text.ParsePosition;
 
 import org.slf4j.Logger;
@@ -13,8 +14,9 @@ import com.fancypants.data.device.entity.PowerConsumptionRecordId;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 
 public class PowerConsumptionRecordEntityMapper implements
-		EntityMapper<PowerConsumptionRecordEntity, TridentTuple> {
+		EntityMapper<PowerConsumptionRecordEntity, TridentTuple>, Serializable {
 
+	private static final long serialVersionUID = -2803119007375752938L;
 	private static final Logger LOG = LoggerFactory
 			.getLogger(PowerConsumptionRecordEntityMapper.class);
 

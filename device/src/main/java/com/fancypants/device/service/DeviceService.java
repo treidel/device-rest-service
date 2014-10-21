@@ -1,5 +1,7 @@
 package com.fancypants.device.service;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,6 +66,9 @@ public class DeviceService {
 			throw new DataValidationException(
 					"can not change device identifier");
 		}
+
+		// set the last updated timestamp
+		deviceEntity.setLastModifiedTimestamp(new Date());
 
 		// write the device to the database
 		repository.save(deviceEntity);

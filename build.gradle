@@ -11,7 +11,9 @@ def versionOverrides = [
 	"org.springframework.plugin:spring-plugin-core":"1.1.0.RELEASE",
 	"org.springframework.security:spring-security-config":"3.2.4.RELEASE",
 	"org.springframework.security:spring-security-web":"3.2.4.RELEASE",	
-	"org.springframework.boot:spring-boot-starter-test":"1.1.4.RELEASE",
+	"org.springframework.boot:spring-boot-starter-test":"1.1.8.RELEASE",
+	"org.springframework.boot:spring-boot-gradle-plugin":"1.1.8.RELEASE",
+	"org.springframework.boot:spring-boot-starter":"1.1.8.RELEASE",
 	"com.fasterxml.jackson.core:jackson-databind" : "2.4.3",
 	"com.fasterxml.jackson.datatype:jackson-datatype-joda" : "2.4.3",
 	"com.jayway.jsonpath:json-path":"0.9.1",	
@@ -146,7 +148,7 @@ project(':rest-app') {
 project(':processing') { 
 	dependencies { 
 		compile project(':common')
-		compile project(':data')
+		compile project(':data-dynamodb')
 		compile project(':stream-kinesis')
 		compile project(':usage')
 	}

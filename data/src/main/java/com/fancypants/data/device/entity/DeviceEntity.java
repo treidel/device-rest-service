@@ -23,7 +23,7 @@ public class DeviceEntity {
 	private final String device;
 	private final String serialnumber;
 	private final Set<CircuitEntity> circuits;
-	private final Date lastModifiedTimestamp;
+	private Date lastModifiedTimestamp;
 	private final Map<Integer, CircuitEntity> circuitLookupByIndex = new TreeMap<Integer, CircuitEntity>();
 	private final Map<String, CircuitEntity> circuitLookupByName = new HashMap<String, CircuitEntity>();
 
@@ -61,6 +61,10 @@ public class DeviceEntity {
 	@JsonProperty(LASTMODIFIEDTIMESTAMP_ATTRIBUTE)
 	public Date getLastModifiedTimestamp() {
 		return lastModifiedTimestamp;
+	}
+
+	public void setLastModifiedTimestamp(Date lastModifiedTimestamp) {
+		this.lastModifiedTimestamp = lastModifiedTimestamp;
 	}
 
 	@JsonIgnore

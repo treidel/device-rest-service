@@ -1,13 +1,10 @@
 package com.fancypants.processing.storm.device.record.scheme;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +21,7 @@ public class RawRecordScheme implements IKinesisRecordScheme {
 	private static final long serialVersionUID = 2503650846905961717L;
 	private static final Logger LOG = LoggerFactory
 			.getLogger(RawRecordScheme.class);
+	private static final int FIXED_FIELDS_COUNT = 3;
 
 	private final ObjectMapper objectMapper;
 
@@ -37,20 +35,20 @@ public class RawRecordScheme implements IKinesisRecordScheme {
 		try {
 			RawRecordEntity entity = objectMapper.readValue(record.getData()
 					.array(), RawRecordEntity.class);
-			List<Object> values = new ArrayList<Object>(
-					RawRecordEntity.FIXED_FIELDS.length
-							+ entity.getCircuits().size());
-			for (String field : RawRecordEntity.FIXED_FIELDS) {
-				values.add(BeanUtils.getProperty(entity, field));
-			}
+			List<Object> values = new ArrayList<Object>(FIXED_FIELDS_COUNT
+					+ entity.getCircuits().size());
+			// add the fixed fields
+			values.add(entity.getDevice());
+			values.add(entity.getUUID());
+			values.add(entity.getTimestamp().getTime());
+			// add the circuits
 			for (Map.Entry<Integer, Float> entry : entity.getCircuits()
 					.entrySet()) {
 				values.add(entry.getValue().toString());
 			}
 			LOG.trace("deserialize exit values=", values);
 			return values;
-		} catch (IOException | IllegalAccessException
-				| InvocationTargetException | NoSuchMethodException e) {
+		} catch (IOException e) {
 			LOG.error("unable to deserialize record", record, e);
 			return null;
 		}
@@ -58,9 +56,11 @@ public class RawRecordScheme implements IKinesisRecordScheme {
 
 	@Override
 	public Fields getOutputFields() {
-		List<String> fields = new ArrayList<String>(
-				RawRecordEntity.FIXED_FIELDS.length + DeviceEntity.MAX_CIRCUITS);
-		fields.addAll(Arrays.asList(RawRecordEntity.FIXED_FIELDS));
+		List<String> fields = new ArrayList<String>(FIXED_FIELDS_COUNT
+				+ DeviceEntity.MAX_CIRCUITS);
+		fields.add(RawRecordEntity.DEVICE_ATTRIBUTE);
+		fields.add(RawRecordEntity.UUID_ATTRIBUTE);
+		fields.add(RawRecordEntity.TIMESTAMP_ATTRIBUTE);
 		for (int i = 1; i <= DeviceEntity.MAX_CIRCUITS; i++) {
 			String field = "circuit" + String.valueOf(i);
 			fields.add(field);
