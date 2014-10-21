@@ -18,7 +18,7 @@ public class DeviceEntity {
 	public static final String CIRCUITS_ATTRIBUTE = "circuits";
 	public static final String LASTMODIFIEDTIMESTAMP_ATTRIBUTE = "last-modified-timestamp";
 	public static final String HASH_ATTRIBUTE = DEVICE_ATTRIBUTE;
-	public static final int MAX_CIRCUITS = 8;
+	public static final int MAX_CIRCUITS = 16;
 
 	private final String device;
 	private final String serialnumber;

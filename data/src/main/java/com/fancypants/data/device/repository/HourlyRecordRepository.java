@@ -25,6 +25,8 @@ import com.fancypants.data.device.entity.PowerConsumptionRecordId;
 public interface HourlyRecordRepository extends CrudRepository<PowerConsumptionRecordEntity, PowerConsumptionRecordId>{
 
 	public List<PowerConsumptionRecordEntity> findByDevice(String device);
+	
+	public void deleteAllForDevice(String device);
 
 	public void insertOrIncrement(PowerConsumptionRecordEntity record);
 

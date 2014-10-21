@@ -245,11 +245,11 @@ public class PowerConsumptionRecordEntity {
 
 			// setup the test records
 			RECORD1 = new PowerConsumptionRecordEntity("ABCD1234", startOfHour);
-			for (int i = 1; i <= 16; i++) {
+			for (int i = 1; i <= DeviceEntity.MAX_CIRCUITS; i++) {
 				RECORD1.setEnergy(i, 10.0f);
 			}
 			RECORD2 = new PowerConsumptionRecordEntity("ABCD1234", endOfHour);
-			for (int i = 1; i <= 16; i++) {
+			for (int i = 1; i <= DeviceEntity.MAX_CIRCUITS; i++) {
 				RECORD2.setEnergy(i, 20.0f);
 			}
 

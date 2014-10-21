@@ -67,6 +67,17 @@ public class DynamoDBHourlyRecordRepository
 		}
 		return entities;
 	}
+	
+	@Override
+	public void deleteAllForDevice(String device) {
+		KeyAttribute key = new KeyAttribute(
+				PowerConsumptionRecordEntity.DEVICE_ATTRIBUTE, device);
+		ItemCollection<QueryOutcome> items = getTable().query(key);
+		for (Item item : items) {
+			PowerConsumptionRecordEntity entity = deserialize(item);
+			delete(entity);
+		}
+	}
 
 	@Override
 	public void insertOrIncrement(PowerConsumptionRecordEntity record) {
