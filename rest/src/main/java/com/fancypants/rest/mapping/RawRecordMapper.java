@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.fancypants.common.mapping.EntityMapper;
 import com.fancypants.data.device.entity.CircuitEntity;
 import com.fancypants.data.device.entity.DeviceEntity;
+import com.fancypants.data.device.entity.RawMeasurementEntity;
 import com.fancypants.data.device.entity.RawRecordEntity;
 import com.fancypants.rest.domain.RawMeasurement;
 import com.fancypants.rest.domain.RawRecord;
@@ -27,14 +28,17 @@ public class RawRecordMapper implements
 		// create the set for the measurements
 		Set<RawMeasurement> measurements = new HashSet<RawMeasurement>(
 				recordEntity.getCircuits().size());
-		for (Map.Entry<Integer, Float> entry : recordEntity.getCircuits()
-				.entrySet()) {
+		for (Map.Entry<Integer, RawMeasurementEntity> entry : recordEntity
+				.getCircuits().entrySet()) {
 			// pull out the circuit
 			CircuitEntity circuit = deviceEntity.getCircuitByIndex(entry
 					.getKey());
+			RawMeasurementEntity measurementEntity = entry.getValue();
 			// create the measurement and add it to the set
 			RawMeasurement measurement = new RawMeasurement(circuit.getName(),
-					entry.getValue());
+					measurementEntity.getVoltageInVolts(),
+					measurementEntity.getAmperageInAmps(),
+					measurementEntity.getDurationInSeconds());
 			measurements.add(measurement);
 		}
 		// create + return the record
@@ -43,5 +47,4 @@ public class RawRecordMapper implements
 				recordEntity.getTimestamp(), measurements);
 		return domain;
 	}
-
 }

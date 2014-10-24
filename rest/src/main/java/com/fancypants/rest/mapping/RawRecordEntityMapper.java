@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.fancypants.common.mapping.EntityMapper;
 import com.fancypants.data.device.entity.CircuitEntity;
 import com.fancypants.data.device.entity.DeviceEntity;
+import com.fancypants.data.device.entity.RawMeasurementEntity;
 import com.fancypants.data.device.entity.RawRecordEntity;
 import com.fancypants.data.device.entity.RawRecordId;
 import com.fancypants.rest.domain.RawMeasurement;
@@ -28,13 +29,15 @@ public class RawRecordEntityMapper implements
 		DeviceEntity deviceEntity = entity.getLeft();
 		RawRecord record = entity.getRight();
 		// create the list of circuits
-		Map<Integer, Float> circuits = new TreeMap<Integer, Float>();
+		Map<Integer, RawMeasurementEntity> circuits = new TreeMap<Integer, RawMeasurementEntity>();
 		for (RawMeasurement measurement : record.getMeasurements()) {
 			CircuitEntity circuitEntity = deviceEntity
 					.getCircuitByName(measurement.getCircuit());
 			if (null != circuitEntity) {
-				circuits.put(circuitEntity.getIndex(),
-						measurement.getPowerInKWh());
+				RawMeasurementEntity measurementEntity = new RawMeasurementEntity(
+						circuitEntity.getIndex(), measurement.getVoltageInVolts(),
+						measurement.getAmperageInAmps(), measurement.getDurationInSeconds());
+				circuits.put(circuitEntity.getIndex(), measurementEntity);
 			}
 		}
 		// create the entity

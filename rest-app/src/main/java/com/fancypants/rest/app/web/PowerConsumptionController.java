@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fancypants.common.exception.AbstractServiceException;
 import com.fancypants.common.exception.DataValidationException;
 import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.entity.PowerConsumptionRecordEntity;
+import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.device.container.DeviceContainer;
 import com.fancypants.rest.app.assembler.PowerConsumptionResourceAssembler;
 import com.fancypants.rest.app.resource.PowerConsumptionRecordResource;
@@ -50,15 +50,15 @@ public class PowerConsumptionController {
 		// get the device
 		DeviceEntity deviceEntity = deviceContainer.getDeviceEntity();
 		// query all records for this device
-		List<PowerConsumptionRecordEntity> entities = usageService
+		List<EnergyConsumptionRecordEntity> entities = usageService
 				.getHourlyRecords(deviceEntity);
 		// create resources
 		List<PowerConsumptionRecordResource> resources = new ArrayList<PowerConsumptionRecordResource>(
 				entities.size());
-		for (PowerConsumptionRecordEntity entity : entities) {
+		for (EnergyConsumptionRecordEntity entity : entities) {
 			// map the record
 			PowerConsumptionRecord record = recordMapper
-					.convert(new ImmutablePair<DeviceEntity, PowerConsumptionRecordEntity>(
+					.convert(new ImmutablePair<DeviceEntity, EnergyConsumptionRecordEntity>(
 							deviceEntity, entity));
 			// wrap as a resource
 			PowerConsumptionRecordResource resource = assembler
@@ -80,11 +80,11 @@ public class PowerConsumptionController {
 			// get the device
 			DeviceEntity deviceEntity = deviceContainer.getDeviceEntity();
 			// query for specific record for this device
-			PowerConsumptionRecordEntity entity = usageService.getHourlyRecord(
+			EnergyConsumptionRecordEntity entity = usageService.getHourlyRecord(
 					deviceEntity, date);
 			// map the record
 			PowerConsumptionRecord record = recordMapper
-					.convert(new ImmutablePair<DeviceEntity, PowerConsumptionRecordEntity>(
+					.convert(new ImmutablePair<DeviceEntity, EnergyConsumptionRecordEntity>(
 							deviceEntity, entity));
 			// wrap as a resource
 			PowerConsumptionRecordResource resource = assembler

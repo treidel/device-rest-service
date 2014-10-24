@@ -18,14 +18,14 @@ package com.fancypants.data.device.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-public class PowerConsumptionRecordId implements Serializable {
+public class EnergyConsumptionRecordId implements Serializable {
 
 	private static final long serialVersionUID = -3881765744413590343L;
 
 	private final String device;
 	private final Date date;
 	
-	public PowerConsumptionRecordId(String device, Date date) {
+	public EnergyConsumptionRecordId(String device, Date date) {
 		this.device = device;
 		this.date = date;
 	}

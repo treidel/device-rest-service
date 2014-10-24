@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PowerConsumptionRecordEntity {
+public class EnergyConsumptionRecordEntity {
 	public static final String TABLE_NAME = "hourly";
 	public static final String DEVICE_ATTRIBUTE = "device";
 	public static final String DATE_ATTRIBUTE = "date";
@@ -20,31 +20,31 @@ public class PowerConsumptionRecordEntity {
 	public static final String HASH_KEY = DEVICE_ATTRIBUTE;
 	public static final String RANGE_KEY = DATE_ATTRIBUTE;
 
-	private final PowerConsumptionRecordId id;
+	private final EnergyConsumptionRecordId id;
 	private final Map<Integer, Float> energyMap;
 
 	@JsonCreator
-	public PowerConsumptionRecordEntity(
+	public EnergyConsumptionRecordEntity(
 			@JsonProperty(DEVICE_ATTRIBUTE) String device,
 			@JsonProperty(DATE_ATTRIBUTE) Date date) {
-		this.id = new PowerConsumptionRecordId(device, date);
+		this.id = new EnergyConsumptionRecordId(device, date);
 		this.energyMap = new TreeMap<Integer, Float>();
 	}
 
-	public PowerConsumptionRecordEntity(PowerConsumptionRecordId id,
+	public EnergyConsumptionRecordEntity(EnergyConsumptionRecordId id,
 			Map<Integer, Float> energy) {
 		this.id = id;
 		this.energyMap = energy;
 	}
 
-	public PowerConsumptionRecordEntity(PowerConsumptionRecordId id) {
+	public EnergyConsumptionRecordEntity(EnergyConsumptionRecordId id) {
 		this.id = id;
 		this.energyMap = new TreeMap<Integer, Float>();
 	}
 
 	@Id
 	@JsonIgnore
-	public PowerConsumptionRecordId getId() {
+	public EnergyConsumptionRecordId getId() {
 		return id;
 	}
 
@@ -221,9 +221,9 @@ public class PowerConsumptionRecordEntity {
 	}
 
 	public static class TEST {
-		public static final PowerConsumptionRecordEntity RECORD1;
-		public static final PowerConsumptionRecordEntity RECORD2;
-		public static final PowerConsumptionRecordEntity RECORDS[];
+		public static final EnergyConsumptionRecordEntity RECORD1;
+		public static final EnergyConsumptionRecordEntity RECORD2;
+		public static final EnergyConsumptionRecordEntity RECORDS[];
 
 		static {
 			// get the current time
@@ -244,17 +244,17 @@ public class PowerConsumptionRecordEntity {
 			Date endOfHour = calendar.getTime();
 
 			// setup the test records
-			RECORD1 = new PowerConsumptionRecordEntity("ABCD1234", startOfHour);
+			RECORD1 = new EnergyConsumptionRecordEntity("ABCD1234", startOfHour);
 			for (int i = 1; i <= DeviceEntity.MAX_CIRCUITS; i++) {
 				RECORD1.setEnergy(i, 10.0f);
 			}
-			RECORD2 = new PowerConsumptionRecordEntity("ABCD1234", endOfHour);
+			RECORD2 = new EnergyConsumptionRecordEntity("ABCD1234", endOfHour);
 			for (int i = 1; i <= DeviceEntity.MAX_CIRCUITS; i++) {
 				RECORD2.setEnergy(i, 20.0f);
 			}
 
 			// setup the list of records
-			RECORDS = new PowerConsumptionRecordEntity[] { RECORD1, RECORD2 };
+			RECORDS = new EnergyConsumptionRecordEntity[] { RECORD1, RECORD2 };
 		}
 	}
 }

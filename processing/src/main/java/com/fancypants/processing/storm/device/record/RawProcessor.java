@@ -13,14 +13,20 @@ import backtype.storm.LocalCluster;
 import backtype.storm.tuple.Fields;
 
 import com.amazonaws.ClientConfiguration;
+import com.amazonaws.services.kinesis.stormspout.InitialPositionInStream;
 import com.amazonaws.services.kinesis.stormspout.KinesisSpout;
 import com.amazonaws.services.kinesis.stormspout.KinesisSpoutConfig;
 import com.fancypants.data.device.DataDeviceScanMe;
 import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe;
+import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.device.entity.RawRecordEntity;
 import com.fancypants.data.device.repository.HourlyRecordRepository;
 import com.fancypants.device.DeviceScanMe;
+import com.fancypants.processing.storm.device.record.aggregate.UsageAggregator;
 import com.fancypants.processing.storm.device.record.auth.CustomAWSCredentialsProvider;
+import com.fancypants.processing.storm.device.record.filter.PrintFilter;
 import com.fancypants.processing.storm.device.record.function.TimeGroupingFunction;
+import com.fancypants.processing.storm.device.record.mapping.EnergyConsumptionEntityMapper;
 import com.fancypants.processing.storm.device.record.scheme.RawRecordScheme;
 import com.fancypants.processing.storm.device.record.state.UsageStateFactory;
 import com.fancypants.processing.storm.device.record.state.UsageStateUpdater;
@@ -46,23 +52,41 @@ public class RawProcessor {
 
 	@PostConstruct
 	public void init() throws Exception {
+		// create the amazon credentials
+		CustomAWSCredentialsProvider credentialProvider = new CustomAWSCredentialsProvider();
 		// create the topology
 		TridentTopology topology = new TridentTopology();
 		// setup the spout config
 		final KinesisSpoutConfig config = new KinesisSpoutConfig(STREAM,
-				ZOOKEEPER_ENDPOINT).withZookeeperPrefix(ZOOKEEPER_PREFIX)
-				.withKinesisRecordScheme(new RawRecordScheme(objectMapper));
+				ZOOKEEPER_ENDPOINT)
+				.withZookeeperPrefix(ZOOKEEPER_PREFIX)
+				.withKinesisRecordScheme(new RawRecordScheme(objectMapper))
+				.withInitialPositionInStream(
+						InitialPositionInStream.TRIM_HORIZON);
 		// create the spout
-		final KinesisSpout spout = new KinesisSpout(config,
-				new CustomAWSCredentialsProvider(), new ClientConfiguration());
+		final KinesisSpout spout = new KinesisSpout(config, credentialProvider,
+				new ClientConfiguration());
 		// setup the stream
 		topology.newStream(TXID, spout)
-				.each(new Fields("timestamp"),
+				.partitionBy(new Fields(RawRecordEntity.DEVICE_ATTRIBUTE))
+				.each(new Fields(RawRecordEntity.TIMESTAMP_ATTRIBUTE),
 						new TimeGroupingFunction(
 								new HourlyDateIntervalGenerator()),
-						new Fields("date"))
-				.partitionPersist(new UsageStateFactory(),
-						new UsageStateUpdater());
+						new Fields(EnergyConsumptionRecordEntity.DATE_ATTRIBUTE))
+				.each(new Fields("device", "uuid", "timestamp", "date"),
+						new PrintFilter())
+				.groupBy(
+						new Fields(
+								EnergyConsumptionRecordEntity.DEVICE_ATTRIBUTE,
+								EnergyConsumptionRecordEntity.DATE_ATTRIBUTE))
+				.aggregate(
+						new Fields(
+								EnergyConsumptionEntityMapper.ATTRIBUTES),
+						new UsageAggregator(), new Fields("result"))
+				.each(new Fields("result"), new PrintFilter())
+				.partitionPersist(new UsageStateFactory(credentialProvider),
+						new Fields("result"), new UsageStateUpdater());
+
 		// create the config
 		Config conf = new Config();
 		// for now create a local cluster

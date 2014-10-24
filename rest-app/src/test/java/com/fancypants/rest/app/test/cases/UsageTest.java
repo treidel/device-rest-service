@@ -21,7 +21,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.entity.PowerConsumptionRecordEntity;
+import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.data.device.repository.DeviceRepository;
 import com.fancypants.data.device.repository.HourlyRecordRepository;
 import com.fancypants.rest.app.application.Application;
@@ -53,7 +53,7 @@ public class UsageTest {
 				.getDevice());
 		deviceRepository.save(DeviceEntity.TEST.DEVICEENTITY);
 		usageRepository.save(Arrays
-				.asList(PowerConsumptionRecordEntity.TEST.RECORDS));
+				.asList(EnergyConsumptionRecordEntity.TEST.RECORDS));
 	}
 
 	@Test
@@ -67,7 +67,7 @@ public class UsageTest {
 						new ParameterizedTypeReference<Collection<PowerConsumptionRecordResource>>() {
 						});
 		Assert.assertTrue(HttpStatus.OK.equals(recordsResponse.getStatusCode()));
-		Assert.assertTrue(recordsResponse.getBody().size() == PowerConsumptionRecordEntity.TEST.RECORDS.length);
+		Assert.assertTrue(recordsResponse.getBody().size() == EnergyConsumptionRecordEntity.TEST.RECORDS.length);
 		// read each individual record too
 		for (PowerConsumptionRecordResource resource : recordsResponse
 				.getBody()) {

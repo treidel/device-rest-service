@@ -14,7 +14,7 @@ import org.springframework.util.Assert;
 
 import com.fancypants.data.device.dynamodb.config.DynamoDBConfig;
 import com.fancypants.data.device.dynamodb.repository.DynamoDBHourlyRecordRepository;
-import com.fancypants.data.device.entity.PowerConsumptionRecordEntity;
+import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.data.device.repository.HourlyRecordRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -39,7 +39,7 @@ public class HourlyRecordTests extends AbstractTest {
 
 	@Test
 	public void createTest() {
-		repository.insertOrIncrement(PowerConsumptionRecordEntity.TEST.RECORD1);
+		repository.insertOrIncrement(EnergyConsumptionRecordEntity.TEST.RECORD1);
 	}
 
 	@Test
@@ -47,12 +47,12 @@ public class HourlyRecordTests extends AbstractTest {
 		// pre-create
 		createTest();
 		// now update
-		repository.insertOrIncrement(PowerConsumptionRecordEntity.TEST.RECORD1);
+		repository.insertOrIncrement(EnergyConsumptionRecordEntity.TEST.RECORD1);
 		// now query the row
-		PowerConsumptionRecordEntity record = repository
-				.findOne(PowerConsumptionRecordEntity.TEST.RECORD1.getId());
+		EnergyConsumptionRecordEntity record = repository
+				.findOne(EnergyConsumptionRecordEntity.TEST.RECORD1.getId());
 		// check the values - should be doubled
-		float value1 = PowerConsumptionRecordEntity.TEST.RECORD1.getEnergy(1);
+		float value1 = EnergyConsumptionRecordEntity.TEST.RECORD1.getEnergy(1);
 		float value2 = record.getEnergy(1);
 		Assert.isTrue(value1 == value2 / 2);
 	}
@@ -62,19 +62,19 @@ public class HourlyRecordTests extends AbstractTest {
 		// run the create test to create a record
 		bulkInsertTest();
 		// query for all records
-		List<PowerConsumptionRecordEntity> records = repository
-				.findByDevice(PowerConsumptionRecordEntity.TEST.RECORD1
+		List<EnergyConsumptionRecordEntity> records = repository
+				.findByDevice(EnergyConsumptionRecordEntity.TEST.RECORD1
 						.getDevice());
-		Assert.isTrue(PowerConsumptionRecordEntity.TEST.RECORDS.length == records
+		Assert.isTrue(EnergyConsumptionRecordEntity.TEST.RECORDS.length == records
 				.size());
 	}
 
 	@Test
 	public void bulkInsertTest() {
-		for (PowerConsumptionRecordEntity record : PowerConsumptionRecordEntity.TEST.RECORDS) {
+		for (EnergyConsumptionRecordEntity record : EnergyConsumptionRecordEntity.TEST.RECORDS) {
 			repository.insertOrIncrement(record);
 		}
-		Assert.isTrue(PowerConsumptionRecordEntity.TEST.RECORDS.length == repository
+		Assert.isTrue(EnergyConsumptionRecordEntity.TEST.RECORDS.length == repository
 				.count());
 	}
 

@@ -19,15 +19,15 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.fancypants.data.device.entity.PowerConsumptionRecordEntity;
-import com.fancypants.data.device.entity.PowerConsumptionRecordId;
+import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.device.entity.EnergyConsumptionRecordId;
 
-public interface HourlyRecordRepository extends CrudRepository<PowerConsumptionRecordEntity, PowerConsumptionRecordId>{
+public interface HourlyRecordRepository extends CrudRepository<EnergyConsumptionRecordEntity, EnergyConsumptionRecordId>{
 
-	public List<PowerConsumptionRecordEntity> findByDevice(String device);
+	public List<EnergyConsumptionRecordEntity> findByDevice(String device);
 	
 	public void deleteAllForDevice(String device);
 
-	public void insertOrIncrement(PowerConsumptionRecordEntity record);
+	public void insertOrIncrement(EnergyConsumptionRecordEntity record);
 
 }

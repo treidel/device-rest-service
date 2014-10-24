@@ -1,13 +1,13 @@
 package com.fancypants.processing.storm.device.record.state;
 
-import com.fancypants.data.device.entity.PowerConsumptionRecordEntity;
-import com.fancypants.data.device.repository.HourlyRecordRepository;
-
 import storm.trident.state.State;
 import storm.trident.state.ValueUpdater;
 
+import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.device.repository.HourlyRecordRepository;
+
 public class UsageState implements State,
-		ValueUpdater<PowerConsumptionRecordEntity> {
+		ValueUpdater<EnergyConsumptionRecordEntity> {
 
 	private final HourlyRecordRepository repository;
 
@@ -17,17 +17,23 @@ public class UsageState implements State,
 
 	@Override
 	public void beginCommit(Long txid) {
-		// TBD: log
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void commit(Long txid) {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
-	public PowerConsumptionRecordEntity update(
-			PowerConsumptionRecordEntity stored) {
+	public EnergyConsumptionRecordEntity update(
+			EnergyConsumptionRecordEntity stored) {
+		// update the counts in the database
 		repository.insertOrIncrement(stored);
-		return stored;
+		// don't emit anything
+		return null;
 	}
+
 }

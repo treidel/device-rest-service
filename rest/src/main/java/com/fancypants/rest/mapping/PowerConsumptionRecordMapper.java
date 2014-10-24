@@ -10,18 +10,18 @@ import org.springframework.stereotype.Component;
 import com.fancypants.common.mapping.EntityMapper;
 import com.fancypants.data.device.entity.CircuitEntity;
 import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.entity.PowerConsumptionRecordEntity;
+import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.rest.domain.PowerConsumptionMeasurement;
 import com.fancypants.rest.domain.PowerConsumptionRecord;
 
 @Component
 public class PowerConsumptionRecordMapper
 		implements
-		EntityMapper<PowerConsumptionRecord, Pair<DeviceEntity, PowerConsumptionRecordEntity>> {
+		EntityMapper<PowerConsumptionRecord, Pair<DeviceEntity, EnergyConsumptionRecordEntity>> {
 
 	@Override
 	public PowerConsumptionRecord convert(
-			Pair<DeviceEntity, PowerConsumptionRecordEntity> value) {
+			Pair<DeviceEntity, EnergyConsumptionRecordEntity> value) {
 
 		Set<PowerConsumptionMeasurement> measurements = new HashSet<PowerConsumptionMeasurement>(
 				value.getValue().getEnergy().size());

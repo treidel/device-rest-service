@@ -15,65 +15,65 @@ import com.amazonaws.services.dynamodbv2.document.KeyAttribute;
 import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
 import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
-import com.fancypants.data.device.entity.PowerConsumptionRecordEntity;
-import com.fancypants.data.device.entity.PowerConsumptionRecordId;
+import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.device.entity.EnergyConsumptionRecordId;
 import com.fancypants.data.device.repository.HourlyRecordRepository;
 
 @Component
 public class DynamoDBHourlyRecordRepository
 		extends
-		AbstractDynamoDBRepository<PowerConsumptionRecordEntity, PowerConsumptionRecordId>
+		AbstractDynamoDBRepository<EnergyConsumptionRecordEntity, EnergyConsumptionRecordId>
 		implements HourlyRecordRepository {
 
 	@Autowired
 	public DynamoDBHourlyRecordRepository(AmazonDynamoDB amazonDynamoDB) {
-		super(amazonDynamoDB, PowerConsumptionRecordEntity.class,
-				PowerConsumptionRecordEntity.TABLE_NAME,
-				PowerConsumptionRecordEntity.HASH_KEY,
-				PowerConsumptionRecordEntity.RANGE_KEY);
+		super(amazonDynamoDB, EnergyConsumptionRecordEntity.class,
+				EnergyConsumptionRecordEntity.TABLE_NAME,
+				EnergyConsumptionRecordEntity.HASH_KEY,
+				EnergyConsumptionRecordEntity.RANGE_KEY);
 	}
 
 	@Override
-	protected String retrieveHashKey(PowerConsumptionRecordEntity entity) {
+	protected String retrieveHashKey(EnergyConsumptionRecordEntity entity) {
 		return entity.getDevice();
 	}
 
 	@Override
-	protected String retrieveHashKey(PowerConsumptionRecordId id) {
+	protected String retrieveHashKey(EnergyConsumptionRecordId id) {
 		return id.getDevice();
 	}
 
 	@Override
-	protected String retrieveRangeKey(PowerConsumptionRecordEntity entity) {
+	protected String retrieveRangeKey(EnergyConsumptionRecordEntity entity) {
 		return getObjectMapper().getDeserializationConfig().getDateFormat()
 				.format(entity.getDate());
 	}
 
 	@Override
-	protected String retrieveRangeKey(PowerConsumptionRecordId id) {
+	protected String retrieveRangeKey(EnergyConsumptionRecordId id) {
 		return getObjectMapper().getDeserializationConfig().getDateFormat()
 				.format(id.getDate());
 	}
 
 	@Override
-	public List<PowerConsumptionRecordEntity> findByDevice(String device) {
+	public List<EnergyConsumptionRecordEntity> findByDevice(String device) {
 		KeyAttribute key = new KeyAttribute(
-				PowerConsumptionRecordEntity.DEVICE_ATTRIBUTE, device);
+				EnergyConsumptionRecordEntity.DEVICE_ATTRIBUTE, device);
 		ItemCollection<QueryOutcome> items = getTable().query(key);
-		List<PowerConsumptionRecordEntity> entities = new LinkedList<PowerConsumptionRecordEntity>();
+		List<EnergyConsumptionRecordEntity> entities = new LinkedList<EnergyConsumptionRecordEntity>();
 		for (Item item : items) {
-			PowerConsumptionRecordEntity entity = deserialize(item);
+			EnergyConsumptionRecordEntity entity = deserialize(item);
 			entities.add(entity);
 		}
 		return entities;
 	}
 
 	@Override
-	public void insertOrIncrement(PowerConsumptionRecordEntity record) {
+	public void insertOrIncrement(EnergyConsumptionRecordEntity record) {
 		// create the primary key
-		PrimaryKey key = new PrimaryKey(PowerConsumptionRecordEntity.HASH_KEY,
+		PrimaryKey key = new PrimaryKey(EnergyConsumptionRecordEntity.HASH_KEY,
 				record.getId().getDevice(),
-				PowerConsumptionRecordEntity.RANGE_KEY, getObjectMapper()
+				EnergyConsumptionRecordEntity.RANGE_KEY, getObjectMapper()
 						.getSerializationConfig().getDateFormat()
 						.format(record.getId().getDate()));
 		// create the update
@@ -81,7 +81,7 @@ public class DynamoDBHourlyRecordRepository
 		// populate the measurement attributes
 		for (Map.Entry<Integer, Float> entry : record.getEnergy().entrySet()) {
 			AttributeUpdate update = new AttributeUpdate(
-					PowerConsumptionRecordEntity.ENERGY_IN_KWH_ATTRIBUTE_PREFIX
+					EnergyConsumptionRecordEntity.ENERGY_IN_KWH_ATTRIBUTE_PREFIX
 							+ entry.getKey());
 			update.addNumeric(entry.getValue());
 			spec.addAttributeUpdate(update);
@@ -93,10 +93,10 @@ public class DynamoDBHourlyRecordRepository
 	@Override
 	public void deleteAllForDevice(String device) {
 		KeyAttribute key = new KeyAttribute(
-				PowerConsumptionRecordEntity.DEVICE_ATTRIBUTE, device);
+				EnergyConsumptionRecordEntity.DEVICE_ATTRIBUTE, device);
 		ItemCollection<QueryOutcome> items = getTable().query(key);
 		for (Item item : items) {
-			PowerConsumptionRecordEntity entity = deserialize(item);
+			EnergyConsumptionRecordEntity entity = deserialize(item);
 			delete(entity);
 		}
 	}
