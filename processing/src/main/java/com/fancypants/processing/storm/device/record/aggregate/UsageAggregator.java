@@ -8,7 +8,7 @@ import com.fancypants.processing.storm.device.record.mapping.EnergyConsumptionEn
 import com.fancypants.usage.summarizer.PowerConsumptionSummarizer;
 
 public class UsageAggregator implements
-		ReducerAggregator<EnergyConsumptionRecordEntity> {
+ReducerAggregator<EnergyConsumptionRecordEntity> {
 
 	/**
 	 * 
