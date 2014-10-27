@@ -7,7 +7,7 @@ import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.data.device.entity.EnergyConsumptionRecordId;
 
-public class PowerConsumptionSummarizer implements
+public class EnergyConsumptionSummarizer implements
 		Summarizer<EnergyConsumptionRecordId, EnergyConsumptionRecordEntity> {
 
 	@Override

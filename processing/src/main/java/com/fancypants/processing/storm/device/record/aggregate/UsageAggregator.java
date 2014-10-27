@@ -5,19 +5,18 @@ import storm.trident.tuple.TridentTuple;
 
 import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.processing.storm.device.record.mapping.EnergyConsumptionEntityMapper;
-import com.fancypants.usage.summarizer.PowerConsumptionSummarizer;
+import com.fancypants.usage.summarizer.EnergyConsumptionSummarizer;
 
 public class UsageAggregator implements
-ReducerAggregator<EnergyConsumptionRecordEntity> {
+		ReducerAggregator<EnergyConsumptionRecordEntity> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -313154810699858938L;
 
-
 	private static final EnergyConsumptionEntityMapper mapper = new EnergyConsumptionEntityMapper();
-	private static final PowerConsumptionSummarizer summarizer = new PowerConsumptionSummarizer();
+	private static final EnergyConsumptionSummarizer summarizer = new EnergyConsumptionSummarizer();
 
 	@Override
 	public EnergyConsumptionRecordEntity init() {

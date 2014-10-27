@@ -1,5 +1,6 @@
 package com.fancypants.processing.storm.device.record.mapping;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +13,12 @@ import com.fancypants.data.device.entity.RawMeasurementEntity;
 import com.fancypants.data.device.entity.RawRecordEntity;
 
 public class RawRecordTupleMapper implements
-		EntityMapper<List<Object>, RawRecordEntity> {
+		EntityMapper<List<Object>, RawRecordEntity>, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1640649516827260935L;
 	private static final int FIXED_FIELDS_COUNT = 4;
 
 	@Override
@@ -48,6 +53,7 @@ public class RawRecordTupleMapper implements
 		fields.add(RawRecordEntity.DEVICE_ATTRIBUTE);
 		fields.add(RawRecordEntity.UUID_ATTRIBUTE);
 		fields.add(RawRecordEntity.TIMESTAMP_ATTRIBUTE);
+		fields.add(RawRecordEntity.DURATION_ATTRIBUTE);
 		for (int i = 1; i <= DeviceEntity.MAX_CIRCUITS; i++) {
 			String voltageField = RawMeasurementEntity.VOLTAGE_ATTRIBUTE + i;
 			fields.add(voltageField);

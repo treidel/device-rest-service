@@ -8,20 +8,16 @@ public class RawMeasurement implements Comparable<RawMeasurement> {
 	public final static String CIRCUIT_ATTRIBUTE = "circuit";
 	public final static String VOLTAGE_ATTRIBUTE = "voltage-in-v";
 	public final static String AMPERAGE_ATTRIBUTE = "amperage-in-a";
-	public final static String DURATION_ATTRIBUTE = "duration-in-s";
 
 	private final String circuit;
 	private final float voltageInVolts;
 	private final float amperageInAmps;
-	private final float durationInSeconds;
 
 	@JsonCreator
 	public RawMeasurement(@JsonProperty(CIRCUIT_ATTRIBUTE) String circuit,
 			@JsonProperty(VOLTAGE_ATTRIBUTE) float voltageInVolts,
-			@JsonProperty(AMPERAGE_ATTRIBUTE) float amperageInAmps,
-			@JsonProperty(DURATION_ATTRIBUTE) float durationInSeconds) {
+			@JsonProperty(AMPERAGE_ATTRIBUTE) float amperageInAmps) {
 		this.circuit = circuit;
-		this.durationInSeconds = durationInSeconds;
 		this.voltageInVolts = voltageInVolts;
 		this.amperageInAmps = amperageInAmps;
 	}
@@ -29,11 +25,6 @@ public class RawMeasurement implements Comparable<RawMeasurement> {
 	@JsonProperty(CIRCUIT_ATTRIBUTE)
 	public String getCircuit() {
 		return circuit;
-	}
-
-	@JsonProperty(DURATION_ATTRIBUTE)
-	public Float getDurationInSeconds() {
-		return durationInSeconds;
 	}
 
 	@JsonProperty(VOLTAGE_ATTRIBUTE)

@@ -37,14 +37,14 @@ public class RawRecordMapper implements
 			// create the measurement and add it to the set
 			RawMeasurement measurement = new RawMeasurement(circuit.getName(),
 					measurementEntity.getVoltageInVolts(),
-					measurementEntity.getAmperageInAmps(),
-					measurementEntity.getDurationInSeconds());
+					measurementEntity.getAmperageInAmps());
 			measurements.add(measurement);
 		}
 		// create + return the record
 		RawRecord domain = new RawRecord(
 				UUID.fromString(recordEntity.getUUID()),
-				recordEntity.getTimestamp(), measurements);
+				recordEntity.getTimestamp(),
+				recordEntity.getDurationInSeconds(), measurements);
 		return domain;
 	}
 }

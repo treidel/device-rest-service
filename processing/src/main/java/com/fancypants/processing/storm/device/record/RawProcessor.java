@@ -22,11 +22,13 @@ import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.data.device.entity.RawRecordEntity;
 import com.fancypants.data.device.repository.HourlyRecordRepository;
 import com.fancypants.device.DeviceScanMe;
+import com.fancypants.processing.storm.device.record.aggregate.EnergyCalculationAggregator;
 import com.fancypants.processing.storm.device.record.aggregate.UsageAggregator;
 import com.fancypants.processing.storm.device.record.auth.CustomAWSCredentialsProvider;
 import com.fancypants.processing.storm.device.record.filter.PrintFilter;
-import com.fancypants.processing.storm.device.record.function.TimeGroupingFunction;
 import com.fancypants.processing.storm.device.record.mapping.EnergyConsumptionEntityMapper;
+import com.fancypants.processing.storm.device.record.mapping.EnergyConsumptionTupleMapper;
+import com.fancypants.processing.storm.device.record.mapping.RawRecordTupleMapper;
 import com.fancypants.processing.storm.device.record.scheme.RawRecordScheme;
 import com.fancypants.processing.storm.device.record.state.UsageStateFactory;
 import com.fancypants.processing.storm.device.record.state.UsageStateUpdater;
@@ -69,19 +71,22 @@ public class RawProcessor {
 		// setup the stream
 		topology.newStream(TXID, spout)
 				.partitionBy(new Fields(RawRecordEntity.DEVICE_ATTRIBUTE))
-				.each(new Fields(RawRecordEntity.TIMESTAMP_ATTRIBUTE),
-						new TimeGroupingFunction(
+				.each(RawRecordTupleMapper.getOutputFields(), new PrintFilter())
+				.aggregate(
+						RawRecordTupleMapper.getOutputFields(),
+						new EnergyCalculationAggregator(
 								new HourlyDateIntervalGenerator()),
-						new Fields(EnergyConsumptionRecordEntity.DATE_ATTRIBUTE))
-				.each(new Fields("device", "uuid", "timestamp", "date"),
+						EnergyConsumptionTupleMapper.getOutputFields())
+				.each(EnergyConsumptionTupleMapper.getOutputFields(),
+						new PrintFilter())
+				.each(EnergyConsumptionTupleMapper.getOutputFields(),
 						new PrintFilter())
 				.groupBy(
 						new Fields(
 								EnergyConsumptionRecordEntity.DEVICE_ATTRIBUTE,
 								EnergyConsumptionRecordEntity.DATE_ATTRIBUTE))
 				.aggregate(
-						new Fields(
-								EnergyConsumptionEntityMapper.ATTRIBUTES),
+						new Fields(EnergyConsumptionEntityMapper.ATTRIBUTES),
 						new UsageAggregator(), new Fields("result"))
 				.each(new Fields("result"), new PrintFilter())
 				.partitionPersist(new UsageStateFactory(credentialProvider),

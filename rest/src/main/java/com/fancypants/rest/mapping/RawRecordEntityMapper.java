@@ -35,15 +35,16 @@ public class RawRecordEntityMapper implements
 					.getCircuitByName(measurement.getCircuit());
 			if (null != circuitEntity) {
 				RawMeasurementEntity measurementEntity = new RawMeasurementEntity(
-						circuitEntity.getIndex(), measurement.getVoltageInVolts(),
-						measurement.getAmperageInAmps(), measurement.getDurationInSeconds());
+						circuitEntity.getIndex(),
+						measurement.getVoltageInVolts(),
+						measurement.getAmperageInAmps());
 				circuits.put(circuitEntity.getIndex(), measurementEntity);
 			}
 		}
 		// create the entity
 		RawRecordEntity recordEntity = new RawRecordEntity(new RawRecordId(
 				deviceEntity.getDevice(), record.getUUID()),
-				record.getTimestamp(), circuits);
+				record.getTimestamp(), record.getDurationInSeconds(), circuits);
 		// done
 		return recordEntity;
 	}

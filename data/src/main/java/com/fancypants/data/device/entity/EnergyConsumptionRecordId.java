@@ -24,7 +24,7 @@ public class EnergyConsumptionRecordId implements Serializable {
 
 	private final String device;
 	private final Date date;
-	
+
 	public EnergyConsumptionRecordId(String device, Date date) {
 		this.device = device;
 		this.date = date;
@@ -33,7 +33,6 @@ public class EnergyConsumptionRecordId implements Serializable {
 	public String getDevice() {
 		return device;
 	}
-
 
 	public Date getDate() {
 		return date;
