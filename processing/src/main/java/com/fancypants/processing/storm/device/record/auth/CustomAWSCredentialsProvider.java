@@ -4,11 +4,13 @@ import java.io.Serializable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 
+@Component
 public class CustomAWSCredentialsProvider implements AWSCredentialsProvider,
 		Serializable {
 
@@ -20,8 +22,8 @@ public class CustomAWSCredentialsProvider implements AWSCredentialsProvider,
 	private final String secretKey;
 
 	public CustomAWSCredentialsProvider() {
-		this.accessKey = getAmazonAWSAccessKey();
-		this.secretKey = getAmazonAWSSecretKey();
+		this.accessKey = System.getProperty("amazon.aws.accesskey");
+		this.secretKey = System.getProperty("amazon.aws.secretkey");
 	}
 
 	@Override
@@ -38,14 +40,6 @@ public class CustomAWSCredentialsProvider implements AWSCredentialsProvider,
 		LOG.trace(this + " refresh() enter");
 		// nothing to do
 		LOG.trace(this + " refresh() exit");
-	}
-
-	private static String getAmazonAWSAccessKey() {
-		return System.getProperty("amazon.aws.accesskey");
-	}
-
-	private static String getAmazonAWSSecretKey() {
-		return System.getProperty("amazon.aws.secretkey");
 	}
 
 }

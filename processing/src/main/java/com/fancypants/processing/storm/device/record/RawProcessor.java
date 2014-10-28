@@ -3,6 +3,7 @@ package com.fancypants.processing.storm.device.record;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
@@ -38,12 +39,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @EnableAutoConfiguration
 @ComponentScan(basePackageClasses = { DataDeviceScanMe.class,
-		DataDeviceDynamoDBScanMe.class, DeviceScanMe.class, UsageScanMe.class })
+		DataDeviceDynamoDBScanMe.class, DeviceScanMe.class, UsageScanMe.class,
+		RawProcessor.class })
 public class RawProcessor {
 
 	private final static String TOPOLOGY = "raw_records";
 	private final static String TXID = "records";
-	private final static String STREAM = "raw";
 	private final static String ZOOKEEPER_ENDPOINT = "localhost:2000";
 	private final static String ZOOKEEPER_PREFIX = "kinesis_spout";
 
@@ -52,22 +53,29 @@ public class RawProcessor {
 	@Autowired
 	private HourlyRecordRepository hourlyRepository;
 
+	@Autowired
+	private CustomAWSCredentialsProvider credentialsProvider;
+
+	@Autowired(required = false)
+	@Qualifier("streamInitialization")
+	private Void streamInitialization;
+
 	@PostConstruct
 	public void init() throws Exception {
-		// create the amazon credentials
-		CustomAWSCredentialsProvider credentialProvider = new CustomAWSCredentialsProvider();
+		// fetch the stream name
+		String streamName = System.getProperty("amazon.kinesis.stream.rawrecord");
 		// create the topology
 		TridentTopology topology = new TridentTopology();
 		// setup the spout config
-		final KinesisSpoutConfig config = new KinesisSpoutConfig(STREAM,
+		final KinesisSpoutConfig config = new KinesisSpoutConfig(streamName,
 				ZOOKEEPER_ENDPOINT)
 				.withZookeeperPrefix(ZOOKEEPER_PREFIX)
 				.withKinesisRecordScheme(new RawRecordScheme(objectMapper))
 				.withInitialPositionInStream(
 						InitialPositionInStream.TRIM_HORIZON);
 		// create the spout
-		final KinesisSpout spout = new KinesisSpout(config, credentialProvider,
-				new ClientConfiguration());
+		final KinesisSpout spout = new KinesisSpout(config,
+				credentialsProvider, new ClientConfiguration());
 		// setup the stream
 		topology.newStream(TXID, spout)
 				.partitionBy(new Fields(RawRecordEntity.DEVICE_ATTRIBUTE))
@@ -89,7 +97,7 @@ public class RawProcessor {
 						new Fields(EnergyConsumptionEntityMapper.ATTRIBUTES),
 						new UsageAggregator(), new Fields("result"))
 				.each(new Fields("result"), new PrintFilter())
-				.partitionPersist(new UsageStateFactory(credentialProvider),
+				.partitionPersist(new UsageStateFactory(credentialsProvider),
 						new Fields("result"), new UsageStateUpdater());
 
 		// create the config
