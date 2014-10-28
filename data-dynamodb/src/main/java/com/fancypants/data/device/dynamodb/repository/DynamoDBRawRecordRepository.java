@@ -23,11 +23,18 @@ public class DynamoDBRawRecordRepository extends
 		AbstractDynamoDBRepository<RawRecordEntity, RawRecordId> implements
 		RawRecordRepository {
 
+	private static final long serialVersionUID = -6669041689916234705L;
+	private static final String TABLE_NAME = "raw";
+
 	@Autowired
 	public DynamoDBRawRecordRepository(AmazonDynamoDB amazonDynamoDB) {
-		super(amazonDynamoDB, RawRecordEntity.class,
-				RawRecordEntity.TABLE_NAME, RawRecordEntity.HASH_KEY,
+		super(amazonDynamoDB, RawRecordEntity.class, RawRecordEntity.HASH_KEY,
 				RawRecordEntity.RANGE_KEY);
+	}
+
+	@Override
+	protected String retrieveTableName() {
+		return TABLE_NAME;
 	}
 
 	@Override

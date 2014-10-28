@@ -8,13 +8,21 @@ import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.data.device.repository.DeviceRepository;
 
 @Component
-public class DynamodBDeviceRepository extends
+public class DynamoDBDeviceRepository extends
 		AbstractDynamoDBRepository<DeviceEntity, String> implements
 		DeviceRepository {
 
+	private static final long serialVersionUID = 5702619783287693597L;
+	private static final String TABLE_NAME = "devices";
+
 	@Autowired
-	public DynamodBDeviceRepository(AmazonDynamoDB amazonDynamoDB) {
-		super(amazonDynamoDB, DeviceEntity.class, DeviceEntity.TABLE_NAME, DeviceEntity.HASH_ATTRIBUTE);
+	public DynamoDBDeviceRepository(AmazonDynamoDB amazonDynamoDB) {
+		super(amazonDynamoDB, DeviceEntity.class, DeviceEntity.HASH_ATTRIBUTE);
+	}
+
+	@Override
+	protected String retrieveTableName() {
+		return TABLE_NAME;
 	}
 
 	@Override
@@ -35,6 +43,6 @@ public class DynamodBDeviceRepository extends
 	@Override
 	protected String retrieveRangeKey(String id) {
 		return null;
-	}	
+	}
 
 }

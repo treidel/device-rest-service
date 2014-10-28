@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DeviceEntity {
-	public static final String TABLE_NAME = "devices";
 	public static final String DEVICE_ATTRIBUTE = "device";
 	public static final String SERIALNUMBER_ATTRIBUTE = "serial-number";
 	public static final String CIRCUITS_ATTRIBUTE = "circuits";

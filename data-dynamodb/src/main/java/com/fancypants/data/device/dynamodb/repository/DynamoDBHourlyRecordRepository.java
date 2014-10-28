@@ -25,12 +25,19 @@ public class DynamoDBHourlyRecordRepository
 		AbstractDynamoDBRepository<EnergyConsumptionRecordEntity, EnergyConsumptionRecordId>
 		implements HourlyRecordRepository {
 
+	private static final long serialVersionUID = -1966466045228650857L;
+	private static final String TABLE_NAME = "hourly";
+
 	@Autowired
 	public DynamoDBHourlyRecordRepository(AmazonDynamoDB amazonDynamoDB) {
 		super(amazonDynamoDB, EnergyConsumptionRecordEntity.class,
-				EnergyConsumptionRecordEntity.TABLE_NAME,
 				EnergyConsumptionRecordEntity.HASH_KEY,
 				EnergyConsumptionRecordEntity.RANGE_KEY);
+	}
+
+	@Override
+	protected String retrieveTableName() {
+		return TABLE_NAME;
 	}
 
 	@Override

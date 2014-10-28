@@ -29,6 +29,11 @@ public class TestConfiguration {
 		return null;
 	}
 
+	@Bean
+	public String tablePrefix() {
+		return "test";
+	}
+
 	private void blockingDeleteStream(String streamName) {
 		try {
 			// call to delete

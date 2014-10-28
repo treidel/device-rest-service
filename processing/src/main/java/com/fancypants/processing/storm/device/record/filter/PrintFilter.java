@@ -3,10 +3,13 @@ package com.fancypants.processing.storm.device.record.filter;
 import java.util.Map;
 import java.util.logging.LogRecord;
 
+import org.springframework.stereotype.Component;
+
 import storm.trident.operation.Filter;
 import storm.trident.operation.TridentOperationContext;
 import storm.trident.tuple.TridentTuple;
 
+@Component
 public class PrintFilter implements Filter, java.util.logging.Filter {
 
 	private static final long serialVersionUID = -1314812632170324414L;

@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class EnergyConsumptionRecordEntity {
-	public static final String TABLE_NAME = "hourly";
 	public static final String DEVICE_ATTRIBUTE = "device";
 	public static final String DATE_ATTRIBUTE = "date";
 	public static final String ENERGY_IN_KWH_ATTRIBUTE_PREFIX = "energy-in-kwh-";

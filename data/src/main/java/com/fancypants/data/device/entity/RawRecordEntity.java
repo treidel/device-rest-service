@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RawRecordEntity {
 
-	public static final String TABLE_NAME = "raw";
 	public static final String DEVICE_ATTRIBUTE = "device";
 	public static final String UUID_ATTRIBUTE = "uuid";
 	public static final String TIMESTAMP_ATTRIBUTE = "timestamp";

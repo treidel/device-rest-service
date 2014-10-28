@@ -20,7 +20,8 @@ import com.fancypants.processing.storm.device.record.mapping.EnergyConsumptionTu
 import com.fancypants.processing.storm.device.record.mapping.RawRecordEntityMapper;
 import com.fancypants.usage.generators.DateIntervalGenerator;
 
-public class EnergyCalculationAggregator implements
+
+public abstract class EnergyCalculationAggregator implements
 		Aggregator<RawRecordEntity>, java.util.logging.Filter {
 
 	private static final long serialVersionUID = 1821000328362632362L;
@@ -33,7 +34,7 @@ public class EnergyCalculationAggregator implements
 
 	private final DateIntervalGenerator generator;
 
-	public EnergyCalculationAggregator(DateIntervalGenerator generator) {
+	protected EnergyCalculationAggregator(DateIntervalGenerator generator) {
 		this.generator = generator;
 	}
 

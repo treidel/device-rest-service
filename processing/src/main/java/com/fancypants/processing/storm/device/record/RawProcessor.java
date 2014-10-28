@@ -23,7 +23,7 @@ import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.data.device.entity.RawRecordEntity;
 import com.fancypants.data.device.repository.HourlyRecordRepository;
 import com.fancypants.device.DeviceScanMe;
-import com.fancypants.processing.storm.device.record.aggregate.EnergyCalculationAggregator;
+import com.fancypants.processing.storm.device.record.aggregate.HourlyEnergyCalculationAggregator;
 import com.fancypants.processing.storm.device.record.aggregate.UsageAggregator;
 import com.fancypants.processing.storm.device.record.auth.CustomAWSCredentialsProvider;
 import com.fancypants.processing.storm.device.record.filter.PrintFilter;
@@ -34,7 +34,6 @@ import com.fancypants.processing.storm.device.record.scheme.RawRecordScheme;
 import com.fancypants.processing.storm.device.record.state.UsageStateFactory;
 import com.fancypants.processing.storm.device.record.state.UsageStateUpdater;
 import com.fancypants.usage.UsageScanMe;
-import com.fancypants.usage.generators.HourlyDateIntervalGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @EnableAutoConfiguration
@@ -56,6 +55,21 @@ public class RawProcessor {
 	@Autowired
 	private CustomAWSCredentialsProvider credentialsProvider;
 
+	@Autowired
+	private UsageStateFactory usageStateFactory;
+
+	@Autowired
+	private UsageStateUpdater usageStateUpdater;
+
+	@Autowired
+	private HourlyEnergyCalculationAggregator hourlyEnergyCalculationAggregator;
+
+	@Autowired
+	private UsageAggregator usageAggregator;
+
+	@Autowired
+	private PrintFilter printFilter;
+
 	@Autowired(required = false)
 	@Qualifier("streamInitialization")
 	private Void streamInitialization;
@@ -63,7 +77,8 @@ public class RawProcessor {
 	@PostConstruct
 	public void init() throws Exception {
 		// fetch the stream name
-		String streamName = System.getProperty("amazon.kinesis.stream.rawrecord");
+		String streamName = System
+				.getProperty("amazon.kinesis.stream.rawrecord");
 		// create the topology
 		TridentTopology topology = new TridentTopology();
 		// setup the spout config
@@ -79,11 +94,9 @@ public class RawProcessor {
 		// setup the stream
 		topology.newStream(TXID, spout)
 				.partitionBy(new Fields(RawRecordEntity.DEVICE_ATTRIBUTE))
-				.each(RawRecordTupleMapper.getOutputFields(), new PrintFilter())
-				.aggregate(
-						RawRecordTupleMapper.getOutputFields(),
-						new EnergyCalculationAggregator(
-								new HourlyDateIntervalGenerator()),
+				.each(RawRecordTupleMapper.getOutputFields(), printFilter)
+				.aggregate(RawRecordTupleMapper.getOutputFields(),
+						hourlyEnergyCalculationAggregator,
 						EnergyConsumptionTupleMapper.getOutputFields())
 				.each(EnergyConsumptionTupleMapper.getOutputFields(),
 						new PrintFilter())
@@ -95,10 +108,10 @@ public class RawProcessor {
 								EnergyConsumptionRecordEntity.DATE_ATTRIBUTE))
 				.aggregate(
 						new Fields(EnergyConsumptionEntityMapper.ATTRIBUTES),
-						new UsageAggregator(), new Fields("result"))
+						usageAggregator, new Fields("result"))
 				.each(new Fields("result"), new PrintFilter())
-				.partitionPersist(new UsageStateFactory(credentialsProvider),
-						new Fields("result"), new UsageStateUpdater());
+				.partitionPersist(usageStateFactory, new Fields("result"),
+						new UsageStateUpdater());
 
 		// create the config
 		Config conf = new Config();

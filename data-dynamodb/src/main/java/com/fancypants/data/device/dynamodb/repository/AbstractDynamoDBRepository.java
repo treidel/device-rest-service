@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.repository.CrudRepository;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
@@ -25,26 +27,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
-		implements CrudRepository<T, I> {
+		implements CrudRepository<T, I>, Serializable {
+
+	private static final long serialVersionUID = -3291793409692029613L;
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(AbstractDynamoDBRepository.class);
 
-	private final DynamoDB dynamoDB;
-	private final Table table;
+	private transient DynamoDB dynamoDB;
 	private final Class<T> clazz;
 	private final String hashAttribute;
 	private final String rangeAttribute;
 	private final ObjectMapper objectMapper = new ObjectMapper();
+	
+	@Autowired(required = false)
+	@Qualifier("tablePrefix")
+	private String tablePrefix;
 
 	public AbstractDynamoDBRepository(AmazonDynamoDB amazonDynamoDB,
-			Class<T> clazz, String tableName, String hashAttribute) {
-		this(amazonDynamoDB, clazz, tableName, hashAttribute, null);
+			Class<T> clazz, String hashAttribute) {
+		this(amazonDynamoDB, clazz, hashAttribute, null);
 	}
 
 	public AbstractDynamoDBRepository(AmazonDynamoDB amazonDynamoDB,
-			Class<T> clazz, String tableName, String hashAttribute,
-			String rangeAttribute) {
+			Class<T> clazz, String hashAttribute, String rangeAttribute) {
 		LOG.trace("AbstractDynamoDBRepository entry");
 
 		// make sure this object is serializable
@@ -58,11 +64,14 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 
 		// store variables
 		this.dynamoDB = new DynamoDB(amazonDynamoDB);
-		this.table = dynamoDB.getTable(tableName);
 		this.clazz = clazz;
 		this.hashAttribute = hashAttribute;
 		this.rangeAttribute = rangeAttribute;
 		LOG.trace("AbstractDynamoDBRepository entry");
+	}
+
+	public void setDynamoDB(DynamoDB dynamoDB) {
+		this.dynamoDB = dynamoDB;
 	}
 
 	protected DynamoDB getDynamoDB() {
@@ -70,7 +79,14 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 	}
 
 	protected Table getTable() {
-		return table;
+		// get the base table name
+		String baseTableName = retrieveTableName();
+
+		if (null != tablePrefix) {
+			return dynamoDB.getTable(tablePrefix + "_" + baseTableName);
+		} else {
+			return dynamoDB.getTable(baseTableName);
+		}
 	}
 
 	protected ObjectMapper getObjectMapper() {
@@ -99,6 +115,8 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 		}
 	}
 
+	protected abstract String retrieveTableName();
+
 	protected abstract String retrieveHashKey(T entity);
 
 	protected abstract String retrieveHashKey(I id);
@@ -109,7 +127,8 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 
 	@Override
 	public void deleteAll() {
-		ItemCollection<ScanOutcome> items = getTable().scan();
+		Table table = getTable();
+		ItemCollection<ScanOutcome> items = table.scan();
 		for (Item item : items) {
 			PrimaryKey key = new PrimaryKey(hashAttribute,
 					item.getString(hashAttribute));

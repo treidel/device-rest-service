@@ -1,5 +1,7 @@
 package com.fancypants.processing.storm.device.record.aggregate;
 
+import org.springframework.stereotype.Component;
+
 import storm.trident.operation.ReducerAggregator;
 import storm.trident.tuple.TridentTuple;
 
@@ -7,6 +9,7 @@ import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.processing.storm.device.record.mapping.EnergyConsumptionEntityMapper;
 import com.fancypants.usage.summarizer.EnergyConsumptionSummarizer;
 
+@Component
 public class UsageAggregator implements
 		ReducerAggregator<EnergyConsumptionRecordEntity> {
 
