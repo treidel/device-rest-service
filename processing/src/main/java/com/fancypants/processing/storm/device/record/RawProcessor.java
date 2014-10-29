@@ -100,8 +100,6 @@ public class RawProcessor {
 						EnergyConsumptionTupleMapper.getOutputFields())
 				.each(EnergyConsumptionTupleMapper.getOutputFields(),
 						new PrintFilter())
-				.each(EnergyConsumptionTupleMapper.getOutputFields(),
-						new PrintFilter())
 				.groupBy(
 						new Fields(
 								EnergyConsumptionRecordEntity.DEVICE_ATTRIBUTE,
@@ -113,7 +111,7 @@ public class RawProcessor {
 				.partitionPersist(usageStateFactory, new Fields("result"),
 						new UsageStateUpdater());
 
-		// create the config
+		// create the config 
 		Config conf = new Config();
 		// for now create a local cluster
 		LocalCluster cluster = new LocalCluster();

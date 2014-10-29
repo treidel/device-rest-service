@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,9 +67,14 @@ public class ProcessingTests {
 	private AmazonKinesis amazonKinesis;
 
 	@Before
-	public void cleanup() {
+	public void reset() {
 		repository.deleteAllForDevice(DeviceEntity.TEST.DEVICEENTITY
 				.getDevice());
+	}
+
+	@AfterClass
+	public static void cleanup() {
+		TestConfiguration.nonblockingDeleteStream();
 	}
 
 	@Test
