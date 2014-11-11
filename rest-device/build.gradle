@@ -21,6 +21,7 @@ jar {
 dependencies {
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.apache.james:apache-mime4j")
+	testCompile("com.beust:jcommander")
 }
 
 task wrapper(type: Wrapper) {

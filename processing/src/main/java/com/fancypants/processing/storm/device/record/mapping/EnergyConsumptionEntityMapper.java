@@ -53,7 +53,7 @@ public class EnergyConsumptionEntityMapper implements
 		EnergyConsumptionRecordEntity entity = new EnergyConsumptionRecordEntity(
 				id);
 		// populate the data
-		for (int i = 1; i < DeviceEntity.MAX_CIRCUITS; i++) {
+		for (int i = 1; i <= DeviceEntity.MAX_CIRCUITS; i++) {
 			String field = EnergyConsumptionRecordEntity.ENERGY_IN_KWH_ATTRIBUTE_PREFIX
 					+ i;
 			float value = tuple.getFloatByField(field);

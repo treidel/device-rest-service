@@ -26,6 +26,7 @@ def versionOverrides = [
 	"com.esotericsoftware.kryo:kryo" : "2.24.0",
 	"org.clojars.reideltj:kinesis-storm-spout":"1.0.4-SNAPSHOT",
 	"commons-beanutils:commons-beanutils":"1.9.2",
+	"com.beust:jcommander":"1.35",
 	"org.slf4j:slf4j-api":"1.7.7",
 	"org.apache.james:apache-mime4j":"0.7.2"
 	

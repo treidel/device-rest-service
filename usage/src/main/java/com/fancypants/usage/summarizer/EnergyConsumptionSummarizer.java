@@ -17,7 +17,7 @@ public class EnergyConsumptionSummarizer implements
 		// create the set to hold the new usage
 		Map<Integer, Float> usage = new TreeMap<Integer, Float>();
 		// go through all possible circuits and sum their usage
-		for (int i = 1; i < DeviceEntity.MAX_CIRCUITS; i++) {
+		for (int i = 1; i <= DeviceEntity.MAX_CIRCUITS; i++) {
 			Float usage1 = entity1.getEnergy(i);
 			Float usage2 = entity2.getEnergy(i);
 			// paranoia here - both usage should normally be available

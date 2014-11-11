@@ -1,8 +1,8 @@
 package com.fancypants.rest.mapping;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +23,7 @@ public class DeviceEntityMapper implements EntityMapper<DeviceEntity, Device> {
 	@Override
 	public DeviceEntity convert(Device device) {
 		// create the set for the circuits
-		Set<CircuitEntity> circuitEntities = new HashSet<CircuitEntity>(device
-				.getCircuits().size());
+		Set<CircuitEntity> circuitEntities = new TreeSet<CircuitEntity>();
 		int count = 1;
 		// this will iterate in the sorted order
 		for (Circuit circuit : device.getCircuits()) {
