@@ -1,4 +1,4 @@
-package com.fancypants.rest.app.test.cases;
+package com.fancypants.test.rest.device.cases;
 
 import java.net.URI;
 
@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.core.ParameterizedTypeReference;
@@ -20,54 +21,52 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.data.device.repository.DeviceRepository;
-import com.fancypants.rest.app.application.Application;
-import com.fancypants.rest.app.resource.DeviceResource;
+import com.fancypants.rest.device.Application;
+import com.fancypants.rest.device.resource.DeviceResource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = { Application.class,
 		TestConfiguration.class })
 @WebAppConfiguration
 @IntegrationTest
-public class DeviceTest {
+public class DeviceRestTests {
+
 	private static final URI BASE_URL = URI
-			.create("http://localhost:8080/app/device");
+			.create("https://localhost:8443/device");
+
+	@Autowired
+	@Qualifier("deviceRestTemplate")
+	private RestTemplate deviceRestTemplate;
+
 	@Autowired
 	private DeviceRepository deviceRepository;
 
-	@Autowired
-	private RestTemplate restTemplate;
-
 	@PostConstruct
 	public void init() {
+		// start clean
 		deviceRepository.delete(DeviceEntity.TEST.DEVICEENTITY.getDevice());
+		// pre-create test device
 		deviceRepository.save(DeviceEntity.TEST.DEVICEENTITY);
 	}
 
 	@Test
-	public void queryDeviceTest() {
-		// query the device
-		ResponseEntity<DeviceResource> response = restTemplate
-				.exchange(
-						BASE_URL,
-						HttpMethod.GET,
-						null,
-						new ParameterizedTypeReference<DeviceResource>() {
-						});
+	public void queryDevice() {
+		// now query for the device
+		ResponseEntity<DeviceResource> response = deviceRestTemplate.exchange(
+				BASE_URL, HttpMethod.GET, null,
+				new ParameterizedTypeReference<DeviceResource>() {
+				});
 		Assert.assertTrue(HttpStatus.OK.equals(response.getStatusCode()));
 	}
-	
+
 	@Test
-	public void updateDeviceTest() {
-		// query the device
-		ResponseEntity<DeviceResource> response = restTemplate
-				.exchange(
-						BASE_URL,
-						HttpMethod.GET,
-						null,
-						new ParameterizedTypeReference<DeviceResource>() {
-						});
-		Assert.assertTrue(HttpStatus.OK.equals(response.getStatusCode()));
-		// update the device
-		restTemplate.put(BASE_URL, response.getBody().device);
+	public void updateDevice() {
+		// now query for the device
+		ResponseEntity<DeviceResource> response = deviceRestTemplate.exchange(
+				BASE_URL, HttpMethod.GET, null,
+				new ParameterizedTypeReference<DeviceResource>() {
+				});
+		// now update using the same device
+		deviceRestTemplate.put(BASE_URL, response.getBody().device);
 	}
 }

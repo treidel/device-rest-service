@@ -1,4 +1,4 @@
-package com.fancypants.rest.app.test.cases;
+package com.fancypants.test.rest.app.cases;
 
 import java.net.URI;
 import java.util.Arrays;

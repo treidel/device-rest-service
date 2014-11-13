@@ -1,4 +1,4 @@
-package com.fancypants.rest.device.test.cases;
+package com.fancypants.test.rest.device.cases;
 
 import java.io.IOException;
 import java.security.KeyManagementException;

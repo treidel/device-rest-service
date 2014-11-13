@@ -1,4 +1,4 @@
-package com.fancypants.rest.device.test.tools;
+package com.fancypants.test.rest.device.tools;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,9 +22,9 @@ import org.springframework.web.client.RestTemplate;
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import com.fancypants.rest.device.test.cases.TestConfiguration;
 import com.fancypants.rest.domain.Circuit;
 import com.fancypants.rest.domain.Device;
+import com.fancypants.test.rest.device.cases.TestConfiguration;
 
 public class DeviceCreator {
 
