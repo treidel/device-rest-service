@@ -9,8 +9,8 @@ jar {
 
 dependencies {
 	compile("com.amazonaws:aws-java-sdk")
+	compile("org.springframework:spring-context")	
 	testCompile("org.springframework:spring-test")        	
-	testCompile("org.springframework:spring-context")
 	testCompile("junit:junit:4.+")
 }
 
