@@ -1,19 +1,23 @@
 def versionOverrides = [
-	"org.springframework:spring-core": "4.0.6.RELEASE",
-	"org.springframework:spring-tx": "4.0.6.RELEASE",
-	"org.springframework:spring-aop": "4.0.6.RELEASE",
-	"org.springframework:spring-context": "4.0.6.RELEASE",
-	"org.springframework:spring-webmvc": "4.0.6.RELEASE",
-	"org.springframework:spring-test" : "4.0.6.RELEASE",
-	"org.springframework:spring-beans": "4.0.6.RELEASE",	
+	"org.springframework:spring-core": "4.1.2.RELEASE",
+	"org.springframework:spring-tx": "4.1.2.RELEASE",
+	"org.springframework:spring-aop": "4.1.2.RELEASE",
+	"org.springframework:spring-context": "4.1.2.RELEASE",
+    "org.springframework:spring-web": "4.1.2.RELEASE",
+	"org.springframework:spring-webmvc": "4.1.2.RELEASE",
+	"org.springframework:spring-test" : "4.1.2.RELEASE",
+	"org.springframework:spring-beans": "4.1.2.RELEASE",	
+	"org.springframework:spring-websocket": "4.1.2.RELEASE",	
+	"org.springframework:spring-messaging": "4.1.2.RELEASE",
 	"org.springframework.data:spring-data-commons":"1.8.0.RELEASE",
 	"org.springframework.hateoas:spring-hateoas":"0.16.0.RELEASE",
 	"org.springframework.plugin:spring-plugin-core":"1.1.0.RELEASE",
 	"org.springframework.security:spring-security-config":"3.2.4.RELEASE",
 	"org.springframework.security:spring-security-web":"3.2.4.RELEASE",	
-	"org.springframework.boot:spring-boot-starter-test":"1.1.8.RELEASE",
 	"org.springframework.boot:spring-boot-gradle-plugin":"1.1.8.RELEASE",
 	"org.springframework.boot:spring-boot-starter":"1.1.8.RELEASE",
+	"org.springframework.boot:spring-boot-starter-test":"1.1.8.RELEASE",
+    "org.springframework.boot:spring-boot-starter-websocket":"1.1.8.RELEASE", 
 	"com.fasterxml.jackson.core:jackson-databind" : "2.4.3",
 	"com.fasterxml.jackson.datatype:jackson-datatype-joda" : "2.4.3",
 	"com.jayway.jsonpath:json-path":"0.9.1",	
@@ -152,5 +156,11 @@ project(':processing') {
 		compile project(':data-dynamodb')
 		compile project(':stream-kinesis')
 		compile project(':usage')
+	}
+}
+
+project(':websocket') {
+	dependencies {
+		compile project(':common')
 	}
 }
