@@ -9,8 +9,8 @@ import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import com.fancypants.common.exception.AbstractServiceException;
+import com.fancypants.rest.device.controller.RecordController;
 import com.fancypants.rest.device.resource.RawRecordResource;
-import com.fancypants.rest.device.web.RecordController;
 import com.fancypants.rest.domain.Device;
 import com.fancypants.rest.domain.RawRecord;
 

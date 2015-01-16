@@ -1,4 +1,4 @@
-package com.fancypants.websockets;
+package com.fancypants.websocket;
 
 public interface WebSocketScanMe {
 

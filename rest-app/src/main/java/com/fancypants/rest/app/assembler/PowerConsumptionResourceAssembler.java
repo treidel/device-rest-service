@@ -8,8 +8,8 @@ import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import com.fancypants.common.exception.AbstractServiceException;
+import com.fancypants.rest.app.controller.PowerConsumptionController;
 import com.fancypants.rest.app.resource.PowerConsumptionRecordResource;
-import com.fancypants.rest.app.web.PowerConsumptionController;
 import com.fancypants.rest.domain.PowerConsumptionRecord;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 

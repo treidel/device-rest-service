@@ -1,4 +1,4 @@
-package com.fancypants.rest.device.web;
+package com.fancypants.rest.device.controller;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;

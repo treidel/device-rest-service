@@ -1,4 +1,4 @@
-package com.fancypants.rest.app.web;
+package com.fancypants.rest.app.controller;
 
 import java.text.ParseException;
 import java.text.ParsePosition;

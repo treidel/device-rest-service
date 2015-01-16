@@ -1,4 +1,4 @@
-package com.fancypants.rest.device.web;
+package com.fancypants.rest.device.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;

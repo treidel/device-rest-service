@@ -1,4 +1,4 @@
-package com.fancypants.websockets.application;
+package com.fancypants.websocket.application;
 
 import javax.annotation.PostConstruct;
 
@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
-import com.fancypants.websockets.WebSocketScanMe;
+import com.fancypants.websocket.WebSocketScanMe;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 @EnableAutoConfiguration

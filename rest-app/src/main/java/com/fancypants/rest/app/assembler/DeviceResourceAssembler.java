@@ -3,8 +3,8 @@ package com.fancypants.rest.app.assembler;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.fancypants.rest.app.controller.DeviceController;
 import com.fancypants.rest.app.resource.DeviceResource;
-import com.fancypants.rest.app.web.DeviceController;
 import com.fancypants.rest.domain.Device;
 
 @Component
