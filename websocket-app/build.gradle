@@ -1,0 +1,28 @@
+buildscript {
+    repositories {
+        maven { url "http://repo.spring.io/libs-release" }
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.8.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+jar {
+	baseName = 'websocket-app'
+	version =  '1.0.0'
+}
+
+dependencies {
+	compile("org.springframework.boot:spring-boot-starter-websocket")
+	testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}

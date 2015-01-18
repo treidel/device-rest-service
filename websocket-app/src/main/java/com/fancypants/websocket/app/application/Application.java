@@ -1,4 +1,4 @@
-package com.fancypants.websocket.application;
+package com.fancypants.websocket.app.application;
 
 import javax.annotation.PostConstruct;
 
@@ -8,11 +8,17 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
+import com.fancypants.data.device.DataDeviceScanMe;
+import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe;
+import com.fancypants.device.DeviceScanMe;
 import com.fancypants.websocket.WebSocketScanMe;
+import com.fancypants.websocket.app.WebSocketAppScanMe;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 @EnableAutoConfiguration
-@ComponentScan(basePackageClasses = { WebSocketScanMe.class})
+@ComponentScan(basePackageClasses = { WebSocketAppScanMe.class,
+		WebSocketScanMe.class, DataDeviceScanMe.class,
+		DataDeviceDynamoDBScanMe.class, DeviceScanMe.class})
 public class Application {
 
 	@Autowired
