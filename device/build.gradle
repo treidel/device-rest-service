@@ -7,6 +7,11 @@ jar {
 	version =  '1.0.0'
 }
 
+dependencies {
+	compile("org.springframework.security:spring-security-web")
+	compile("org.apache.james:apache-mime4j")
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '1.11'
 }

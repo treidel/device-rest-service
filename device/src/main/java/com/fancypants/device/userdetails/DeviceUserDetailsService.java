@@ -1,4 +1,4 @@
-package com.fancypants.rest.device.userdetails;
+package com.fancypants.device.userdetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +21,6 @@ import com.fancypants.common.exception.AbstractServiceException;
 import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.device.container.DeviceContainer;
 import com.fancypants.device.service.DeviceService;
-import com.fancypants.rest.mapping.DeviceMapper;
 
 @Service
 public class DeviceUserDetailsService implements UserDetailsService {
@@ -37,8 +36,6 @@ public class DeviceUserDetailsService implements UserDetailsService {
 	@Autowired
 	private DeviceContainer deviceContainer;
 	
-	@Autowired
-	private DeviceMapper mapper;
 
 	@Override
 	public UserDetails loadUserByUsername(String username)

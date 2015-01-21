@@ -14,13 +14,13 @@ apply plugin: 'idea'
 apply plugin: 'spring-boot'
 
 jar {
-	baseName = 'rest-device'
+	baseName = 'websocket-device'
 	version =  '1.0.0'
 }
 
 dependencies {
-	compile("org.springframework.boot:spring-boot-starter-web")
-	testCompile("com.beust:jcommander")
+	compile("org.springframework.boot:spring-boot-starter-websocket")
+	testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
 task wrapper(type: Wrapper) {

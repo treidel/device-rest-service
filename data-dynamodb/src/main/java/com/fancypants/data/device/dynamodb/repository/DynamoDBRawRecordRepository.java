@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
@@ -19,6 +20,7 @@ import com.fancypants.data.device.entity.RawRecordId;
 import com.fancypants.data.device.repository.RawRecordRepository;
 
 @Component
+@Lazy
 public class DynamoDBRawRecordRepository extends
 		AbstractDynamoDBRepository<RawRecordEntity, RawRecordId> implements
 		RawRecordRepository {

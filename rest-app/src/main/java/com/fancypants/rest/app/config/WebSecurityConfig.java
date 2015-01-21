@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import com.fancypants.rest.app.userdetails.AppUserDetailsService;
+import com.fancypants.app.userdetails.AppUserDetailsService;
 
 @Configuration
 @EnableWebSecurity

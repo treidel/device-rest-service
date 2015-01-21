@@ -1,4 +1,4 @@
-package com.fancypants.rest.device.config;
+package com.fancypants.websocket.device.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -16,15 +16,14 @@ import com.fancypants.device.userdetails.DeviceUserDetailsService;
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private @Autowired
-	DeviceUserDetailsService userDetailsService;
+	@Autowired
+	private DeviceUserDetailsService userDetailsService;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-				.x509().subjectPrincipalRegex("emailAddress=(.*?)(?:,|$)").and()
-				.csrf().disable();
+		http.authorizeRequests().anyRequest().authenticated().and().sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
+				.x509().subjectPrincipalRegex("emailAddress=(.*?)(?:,|$)");
 	}
 
 	@Override

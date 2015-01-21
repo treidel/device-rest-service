@@ -8,7 +8,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
 import com.fancypants.websocket.app.container.WebsocketSessionContainer;
-import com.fancypants.websocket.app.message.RegistrationMessage;
+import com.fancypants.websocket.app.domain.ClientInfo;
 
 @Controller
 public class AppController {
@@ -19,7 +19,7 @@ public class AppController {
 	private WebsocketSessionContainer sessionContainer;
 		
 	@MessageMapping("/registration")
-	public void handleRegistration(Principal user, RegistrationMessage message) {
+	public void handleRegistration(Principal user, ClientInfo message) {
 		LOG.trace("DeviceController.handleRegistration enter" + " user" + user + " message" + message);
 		// now registered
 		sessionContainer.setRegistered(true);

@@ -19,9 +19,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
+import com.fancypants.common.application.Application;
 import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.data.device.repository.DeviceRepository;
-import com.fancypants.rest.device.Application;
 import com.fancypants.rest.device.resource.DeviceResource;
 
 @RunWith(SpringJUnit4ClassRunner.class)

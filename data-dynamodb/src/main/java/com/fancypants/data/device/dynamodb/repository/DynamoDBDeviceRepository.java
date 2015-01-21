@@ -1,6 +1,7 @@
 package com.fancypants.data.device.dynamodb.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
@@ -8,6 +9,7 @@ import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.data.device.repository.DeviceRepository;
 
 @Component
+@Lazy
 public class DynamoDBDeviceRepository extends
 		AbstractDynamoDBRepository<DeviceEntity, String> implements
 		DeviceRepository {

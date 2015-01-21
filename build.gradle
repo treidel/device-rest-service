@@ -84,6 +84,7 @@ project(':rest') {
         dependencies {
                 compile project(':common')
 		compile project(':data')
+		compile project(':device')
         }
 }
 
@@ -127,7 +128,6 @@ project(':rest-device') {
 	dependencies {
 		compile project(':common')
 		compile project(':rest')
-		compile project(':device')
 		compile project(':records')
 		compile project(':usage')
 		compile project(':data-dynamodb')
@@ -148,7 +148,6 @@ project(':rest-app') {
 		compile project(':common')
 		compile project(':rest')
 		compile project(':app')
-		compile project(':device')
 		compile project(':usage')
 		compile project(':data-dynamodb')
 	}
@@ -167,6 +166,7 @@ project(':processing') {
 project(':websocket') {
 	dependencies {
 		compile project(':common')
+		compile project(':rest')
 	}
 }
 
@@ -175,8 +175,16 @@ project(':websocket-app') {
 		compile project(':common')
 		compile project(':websocket')
 		compile project(':app')
-		compile project(':device')
 		compile project(':data-dynamodb')
 	}
 }
 
+project(':websocket-device') {
+	dependencies {
+		compile project(':common')
+		compile project(':websocket')
+		compile project(':device')
+		compile project(':records')
+		compile project(':usage')
+	}
+}

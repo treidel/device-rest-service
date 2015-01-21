@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
+import com.fancypants.app.AppScanMe;
 import com.fancypants.data.device.DataDeviceScanMe;
 import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe;
 import com.fancypants.device.DeviceScanMe;
@@ -19,7 +20,7 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 @EnableAutoConfiguration
 @ComponentScan(basePackageClasses = { RestScanMe.class, RestAppScanMe.class,
 		DataDeviceScanMe.class, DataDeviceDynamoDBScanMe.class,
-		DeviceScanMe.class, UsageScanMe.class })
+		DeviceScanMe.class, AppScanMe.class, UsageScanMe.class })
 public class Application {
 
 	@Autowired

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
@@ -20,6 +21,7 @@ import com.fancypants.data.device.entity.EnergyConsumptionRecordId;
 import com.fancypants.data.device.repository.HourlyRecordRepository;
 
 @Component
+@Lazy
 public class DynamoDBHourlyRecordRepository
 		extends
 		AbstractDynamoDBRepository<EnergyConsumptionRecordEntity, EnergyConsumptionRecordId>

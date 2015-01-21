@@ -1,0 +1,10 @@
+com.fancypants.data.device.DataDeviceScanMe
+com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe
+com.fancypants.device.DeviceScanMe
+com.fancypants.records.RecordsScanMe
+com.fancypants.stream.StreamScanMe
+com.fancypants.rest.RestScanMe
+com.fancypants.websocket.WebSocketScanMe
+com.fancypants.websocket.device.WebSocketDeviceScanMe
+com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe
+com.fancypants.stream.kinesis.StreamKinesisScanMe
