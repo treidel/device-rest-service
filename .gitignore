@@ -1,5 +1,7 @@
-**/reports
-**/build
+**/reports/**
+**/build/**
 **/.settings
-**/.gradle
+**/.gradle/**
 **/.project
+**/.classpath
+**/bin/**
