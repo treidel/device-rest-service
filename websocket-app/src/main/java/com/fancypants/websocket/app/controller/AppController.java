@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
-import com.fancypants.websocket.app.container.WebsocketSessionContainer;
 import com.fancypants.websocket.app.domain.ClientInfo;
+import com.fancypants.websocket.container.SessionContainer;
 
 @Controller
 public class AppController {
@@ -16,7 +16,7 @@ public class AppController {
 	private static final Logger LOG = Logger.getLogger(AppController.class);
 	
 	@Autowired
-	private WebsocketSessionContainer sessionContainer;
+	private SessionContainer sessionContainer;
 		
 	@MessageMapping("/registration")
 	public void handleRegistration(Principal user, ClientInfo message) {

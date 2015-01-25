@@ -22,11 +22,13 @@ public class SessionDisconnectedListener implements
 		// extract the stomp headers
 		StompHeaderAccessor headers = StompHeaderAccessor.wrap(event
 				.getMessage());
-		// get the user and cache it in the session container
+		// get the user 
 		Principal user = headers.getUser();
+		
+		LOG.info("disconnection for device=" + user.getName());
+		
 		// TBD: remove from session database
-		if (user != null)
-			;
+
 		LOG.trace("SessionDisconnectedListener.onApplicationEvent exit");
 	}
 

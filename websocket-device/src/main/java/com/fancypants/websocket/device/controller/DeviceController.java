@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 
 import com.fancypants.common.exception.AbstractServiceException;
 import com.fancypants.rest.domain.ErrorMessage;
-import com.fancypants.websocket.device.container.DeviceSessionContainer;
+import com.fancypants.websocket.container.SessionContainer;
 import com.fancypants.websocket.device.domain.DeviceInfo;
 
 @Controller
@@ -17,7 +17,7 @@ public class DeviceController {
 	private static final Logger LOG = Logger.getLogger(DeviceController.class);
 
 	@Autowired
-	private DeviceSessionContainer sessionContainer;
+	private SessionContainer sessionContainer;
 
 	@MessageMapping("/registration")
 	public void handleDeviceRegistration(DeviceInfo deviceInfo)

@@ -1,4 +1,4 @@
-package com.fancypants.websocket.config;
+package com.fancypants.websocket.app.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

@@ -9,7 +9,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
-import com.fancypants.websocket.app.container.WebsocketSessionContainer;
+import com.fancypants.websocket.container.SessionContainer;
 
 @Controller
 public class DeviceController {
@@ -17,7 +17,7 @@ public class DeviceController {
 	private static final Logger LOG = Logger.getLogger(DeviceController.class);
 	
 	@Autowired
-	private WebsocketSessionContainer sessionContainer;
+	private SessionContainer sessionContainer;
 	
 	@Autowired
 	private SimpMessagingTemplate template; 
@@ -30,7 +30,7 @@ public class DeviceController {
 			throw new IllegalAccessError("must be registered to subscribe to notifications");
 		}
 		// map subscriptions to the actual device topic
-		this.template.convertAndSend("/topic/device." + user.getName(), message);
+		this.template.convertAndSend("/topic/device." + user.getName(), message.getPayload(), message.getHeaders());
 		LOG.trace("DeviceController.handleNotificationSubscription exit");
 	}
 }

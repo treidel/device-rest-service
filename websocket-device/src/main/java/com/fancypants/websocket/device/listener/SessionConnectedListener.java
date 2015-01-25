@@ -9,7 +9,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 
-import com.fancypants.websocket.device.container.DeviceSessionContainer;
+import com.fancypants.websocket.container.SessionContainer;
 
 @Component
 public class SessionConnectedListener implements ApplicationListener<SessionConnectedEvent> {
@@ -17,7 +17,7 @@ public class SessionConnectedListener implements ApplicationListener<SessionConn
 	private static final Logger LOG = Logger.getLogger(SessionConnectedListener.class);
 	
 	@Autowired
-	private DeviceSessionContainer sessionContainer;
+	private SessionContainer sessionContainer;
 
 	@Override
 	public void onApplicationEvent(SessionConnectedEvent event) {
@@ -26,7 +26,9 @@ public class SessionConnectedListener implements ApplicationListener<SessionConn
 		StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
 		// get the user and cache it in the session container
 		Principal user = headers.getUser();
-		sessionContainer.setUser(user);
+		
+		LOG.info("connection received from device=" + user.getName());
+		
 		// TBD: store in session database
 		
 		LOG.trace("SessionConnectedListener.onApplicationEvent exit");

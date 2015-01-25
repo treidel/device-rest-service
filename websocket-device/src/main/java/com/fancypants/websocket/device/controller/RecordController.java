@@ -1,5 +1,6 @@
 package com.fancypants.websocket.device.controller;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,11 +16,12 @@ import com.fancypants.common.exception.AbstractServiceException;
 import com.fancypants.common.exception.BusinessLogicException;
 import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.data.device.entity.RawRecordEntity;
+import com.fancypants.device.service.DeviceService;
 import com.fancypants.records.service.RecordService;
 import com.fancypants.rest.domain.ErrorMessage;
 import com.fancypants.rest.domain.RawRecord;
 import com.fancypants.rest.mapping.RawRecordEntityMapper;
-import com.fancypants.websocket.device.container.DeviceSessionContainer;
+import com.fancypants.websocket.container.SessionContainer;
 
 @Controller
 public class RecordController {
@@ -27,16 +29,19 @@ public class RecordController {
 	private static final Logger LOG = Logger.getLogger(RecordController.class);
 
 	@Autowired
+	private DeviceService deviceService;
+	
+	@Autowired
 	private RecordService recordService;
 
 	@Autowired
-	private DeviceSessionContainer sessionContainer;
+	private SessionContainer sessionContainer;
 
 	@Autowired
 	private RawRecordEntityMapper recordEntityMapper;
 
 	@MessageMapping("/records")
-	public void handleRecords(List<RawRecord> records)
+	public void handleRecords(Principal user, List<RawRecord> records)
 			throws AbstractServiceException {
 		LOG.trace("RecordsController.handleRecords enter" + " records"
 				+ records);
@@ -47,7 +52,7 @@ public class RecordController {
 		}
 		
 		// get the device
-		DeviceEntity deviceEntity = sessionContainer.getDeviceEntity();
+		DeviceEntity deviceEntity = deviceService.getDevice(user.getName());
 		// map the records into the internal format
 		Collection<RawRecordEntity> entities = new LinkedList<RawRecordEntity>();
 		for (RawRecord record : records) {

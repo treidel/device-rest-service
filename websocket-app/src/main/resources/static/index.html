@@ -20,6 +20,8 @@
             stompClient.connect({}, function(frame) {
                 setConnected(true);
                 console.log('Connected: ' + frame);
+                var clientinfo = '{"type" : "android", "version" : "1.0"}'; 
+                stompClient.send('/registration', null, clientinfo)
                 stompClient.subscribe('/topic/device/notifications', function(greeting){
                     showGreeting(JSON.parse(greeting.body).content);
                 });
