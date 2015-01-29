@@ -1,0 +1,17 @@
+package com.fancypants.message.topic;
+
+import com.fancypants.message.AbstractMessageException;
+
+public interface TopicManager {
+
+	void topicCreate(String topic) throws AbstractMessageException;
+
+	void topicDestroy(String topic) throws AbstractMessageException;
+
+	TopicProducer topicProducer(String topic) throws AbstractMessageException;
+
+	TopicConsumer topicConsumer(String topic) throws AbstractMessageException;
+	
+	void close();
+
+}

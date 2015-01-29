@@ -1,0 +1,23 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+jar {
+	baseName = 'message'
+	version =  '1.0.0'
+}
+
+dependencies {
+	compile("org.springframework:spring-context") 
+	testCompile("junit:junit:4.+")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}
