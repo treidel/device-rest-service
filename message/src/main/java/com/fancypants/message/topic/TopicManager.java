@@ -11,7 +11,5 @@ public interface TopicManager {
 	TopicProducer topicProducer(String topic) throws AbstractMessageException;
 
 	TopicConsumer topicConsumer(String topic) throws AbstractMessageException;
-	
-	void close();
 
 }

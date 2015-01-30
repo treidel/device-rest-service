@@ -94,15 +94,4 @@ public class RabbitMQTopicManager implements TopicManager {
 			throw new RabbitMQException(e);
 		}
 	}
-
-	@Override
-	public void close() {
-		LOG.trace("RabbitMQTopicManager.close enter");
-		try {
-			connection.close();
-		} catch (IOException e) {
-			LOG.error("error closing connection", e);
-		}
-		LOG.trace("RabbitMQTopicManager.close exit");
-	}
 }

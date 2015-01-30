@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.fancypants.message.rabbitmq.topic.RabbitMQTopicManager;
+import com.fancypants.message.topic.TopicManager;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
@@ -19,6 +21,7 @@ public class RabbitMQConfig {
 	public Connection connection() throws Exception {
 		LOG.trace("RabbitMQConfig.connection enter");
 		ConnectionFactory factory = new ConnectionFactory();
+		factory.setPassword(getPassword());
 		factory.setUri(getURI());
 		factory.setAutomaticRecoveryEnabled(true);
 		Connection connection = factory.newConnection();
@@ -31,8 +34,21 @@ public class RabbitMQConfig {
 		return System.getProperty("rabbitmq.exchange");
 	}
 
+	@Bean
+	public TopicManager topicManager() {
+		LOG.trace("RabbitMQConfig.topicManager enter");
+		TopicManager manager = new RabbitMQTopicManager();
+		LOG.trace("RabbitMQConfig.topicManager exit manager=" + manager);
+		return manager;
+	}
+
 	private URI getURI() {
-		return URI.create(System.getProperty("rabbitmq.uri"));
+		String uri = System.getProperty("rabbitmq.uri");
+		return URI.create(uri);
+	}
+	
+	private String getPassword() {
+		return System.getProperty("rabbitmq.password");
 	}
 
 }
