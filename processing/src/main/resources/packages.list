@@ -1,0 +1,6 @@
+com.fancypants.data.device.DataDeviceScanMe
+com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe
+com.fancypants.device.DeviceScanMe
+com.fancypants.usage.UsageScanMe
+com.fancypants.message.MessageScanMe
+com.fancypants.message.rabbitmq.MessageRabbitMQScanMe

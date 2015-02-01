@@ -1,6 +1,6 @@
 package com.fancypants.message.topic;
 
-import com.fancypants.message.AbstractMessageException;
+import com.fancypants.message.exception.AbstractMessageException;
 
 public interface TopicConsumer {
 

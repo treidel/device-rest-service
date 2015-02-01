@@ -19,13 +19,14 @@ jar {
 }
 
 dependencies {
-	compile("org.springframework.boot:spring-boot-starter")
+	compile("org.springframework.boot:spring-boot-starter")	
 	compile("com.amazonaws:aws-java-sdk")
 	compile("org.apache.storm:storm-core")
 	compile("org.apache.curator:curator-framework")
 	compile("commons-beanutils:commons-beanutils")
 	compile("com.esotericsoftware.kryo:kryo")
 	compile("org.clojars.reideltj:kinesis-storm-spout")
+	compile("org.springframework.security:spring-security-config")
 }
 
 task wrapper(type: Wrapper) {

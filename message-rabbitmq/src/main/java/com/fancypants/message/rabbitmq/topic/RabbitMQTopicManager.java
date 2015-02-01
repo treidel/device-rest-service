@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import com.fancypants.message.AbstractMessageException;
-import com.fancypants.message.rabbitmq.RabbitMQException;
+import com.fancypants.message.exception.AbstractMessageException;
+import com.fancypants.message.rabbitmq.exception.RabbitMQException;
 import com.fancypants.message.topic.TopicConsumer;
 import com.fancypants.message.topic.TopicManager;
 import com.fancypants.message.topic.TopicProducer;

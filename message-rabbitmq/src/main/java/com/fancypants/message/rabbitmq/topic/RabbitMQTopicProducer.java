@@ -5,8 +5,8 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fancypants.message.AbstractMessageException;
-import com.fancypants.message.rabbitmq.RabbitMQException;
+import com.fancypants.message.exception.AbstractMessageException;
+import com.fancypants.message.rabbitmq.exception.RabbitMQException;
 import com.fancypants.message.topic.TopicProducer;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.MessageProperties;

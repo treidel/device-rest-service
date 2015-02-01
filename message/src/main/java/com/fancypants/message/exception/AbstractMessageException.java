@@ -1,4 +1,4 @@
-package com.fancypants.message;
+package com.fancypants.message.exception;
 
 public abstract class AbstractMessageException extends Exception {
 

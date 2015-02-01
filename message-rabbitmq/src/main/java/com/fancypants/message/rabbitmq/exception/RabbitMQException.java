@@ -1,6 +1,6 @@
-package com.fancypants.message.rabbitmq;
+package com.fancypants.message.rabbitmq.exception;
 
-import com.fancypants.message.AbstractMessageException;
+import com.fancypants.message.exception.AbstractMessageException;
 
 public class RabbitMQException extends AbstractMessageException {
 	private static final long serialVersionUID = -7079227597256081822L;

@@ -1,0 +1,7 @@
+com.fancypants.data.device.DataDeviceScanMe
+com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe
+com.fancypants.device.DeviceScanMe
+com.fancypants.app.AppScanMe
+com.fancypants.rest.RestScanMe
+com.fancypants.websocket.WebSocketScanMe
+com.fancypants.websocket.app.WebSocketAppScanMe
