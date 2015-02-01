@@ -11,3 +11,4 @@ build/**
 reports/**
 .project
 .classpath
+**/.gitignore
