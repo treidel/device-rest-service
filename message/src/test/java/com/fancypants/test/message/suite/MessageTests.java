@@ -20,7 +20,7 @@ import com.fancypants.test.message.config.TestConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = TestConfig.class)
-public class Tests {
+public class MessageTests {
 
 	private static final String TEST_TOPIC = "TEST";
 	private static final String TEST_MESSAGE = "Hello World";
