@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.kinesis.AmazonKinesis;
 import com.amazonaws.services.kinesis.AmazonKinesisClient;
 import com.fancypants.data.device.entity.RawRecordEntity;
@@ -28,8 +27,7 @@ public class KinesisConfig {
 
 	@Bean
 	public AmazonKinesis amazonKinesis() {
-		AmazonKinesis amazonKinesis = new AmazonKinesisClient(
-				new BasicAWSCredentials(getAccessKey(), getSecretKey()));
+		AmazonKinesis amazonKinesis = new AmazonKinesisClient();
 		return amazonKinesis;
 	}
 
@@ -41,14 +39,6 @@ public class KinesisConfig {
 				objectMapper, amazonKinesis, RawRecordEntity.class,
 				getStreamName());
 		return streamWriter;
-	}
-
-	private String getAccessKey() {
-		return System.getProperty("amazon.aws.accesskey");
-	}
-
-	private String getSecretKey() {
-		return System.getProperty("amazon.aws.secretkey");
 	}
 
 	private String getStreamName() {

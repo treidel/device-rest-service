@@ -4,11 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.ItemCollection;
@@ -30,9 +28,8 @@ public class DynamoDBHourlyRecordRepository
 	private static final long serialVersionUID = -1966466045228650857L;
 	private static final String TABLE_NAME = "hourly";
 
-	@Autowired
-	public DynamoDBHourlyRecordRepository(AmazonDynamoDB amazonDynamoDB) {
-		super(amazonDynamoDB, EnergyConsumptionRecordEntity.class,
+	public DynamoDBHourlyRecordRepository() {
+		super(EnergyConsumptionRecordEntity.class,
 				EnergyConsumptionRecordEntity.HASH_KEY,
 				EnergyConsumptionRecordEntity.RANGE_KEY);
 	}

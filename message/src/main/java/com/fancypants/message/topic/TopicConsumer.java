@@ -8,7 +8,7 @@ public interface TopicConsumer {
 
 	void close();
 	
-	interface Handler {
+	public interface Handler {
 		void handle(String message);
 	}
 }

@@ -4,11 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Expected;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.ItemCollection;
@@ -28,9 +26,8 @@ public class DynamoDBRawRecordRepository extends
 	private static final long serialVersionUID = -6669041689916234705L;
 	private static final String TABLE_NAME = "raw";
 
-	@Autowired
-	public DynamoDBRawRecordRepository(AmazonDynamoDB amazonDynamoDB) {
-		super(amazonDynamoDB, RawRecordEntity.class, RawRecordEntity.HASH_KEY,
+	public DynamoDBRawRecordRepository() {
+		super(RawRecordEntity.class, RawRecordEntity.HASH_KEY,
 				RawRecordEntity.RANGE_KEY);
 	}
 

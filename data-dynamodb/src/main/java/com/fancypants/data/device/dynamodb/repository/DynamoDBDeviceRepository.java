@@ -1,10 +1,8 @@
 package com.fancypants.data.device.dynamodb.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.data.device.repository.DeviceRepository;
 
@@ -17,9 +15,8 @@ public class DynamoDBDeviceRepository extends
 	private static final long serialVersionUID = 5702619783287693597L;
 	private static final String TABLE_NAME = "devices";
 
-	@Autowired
-	public DynamoDBDeviceRepository(AmazonDynamoDB amazonDynamoDB) {
-		super(amazonDynamoDB, DeviceEntity.class, DeviceEntity.HASH_ATTRIBUTE);
+	public DynamoDBDeviceRepository() {
+		super(DeviceEntity.class, DeviceEntity.HASH_ATTRIBUTE);
 	}
 
 	@Override

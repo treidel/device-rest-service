@@ -9,15 +9,12 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 jar {
-	baseName = 'message'
+	baseName = 'storm'
 	version =  '1.0.0'
 }
 
 dependencies {
-	compile("org.springframework:spring-context")
-	testCompile("org.apache.activemq:activemq-spring")
-	testCompile("org.springframework:spring-jms") 
-	testCompile("org.springframework:spring-test")
+	compile("org.apache.storm:storm-core") 
 	testCompile("junit:junit:4.+")
 }
 

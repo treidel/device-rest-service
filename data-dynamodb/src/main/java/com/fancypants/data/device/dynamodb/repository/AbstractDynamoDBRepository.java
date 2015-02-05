@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.repository.CrudRepository;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.ItemCollection;
@@ -39,18 +42,17 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 	private final String hashAttribute;
 	private final String rangeAttribute;
 	private final ObjectMapper objectMapper = new ObjectMapper();
-	
+
 	@Autowired(required = false)
 	@Qualifier("tablePrefix")
 	private String tablePrefix;
 
-	public AbstractDynamoDBRepository(AmazonDynamoDB amazonDynamoDB,
-			Class<T> clazz, String hashAttribute) {
-		this(amazonDynamoDB, clazz, hashAttribute, null);
+	public AbstractDynamoDBRepository(Class<T> clazz, String hashAttribute) {
+		this(clazz, hashAttribute, null);
 	}
 
-	public AbstractDynamoDBRepository(AmazonDynamoDB amazonDynamoDB,
-			Class<T> clazz, String hashAttribute, String rangeAttribute) {
+	public AbstractDynamoDBRepository(Class<T> clazz, String hashAttribute,
+			String rangeAttribute) {
 		LOG.trace("AbstractDynamoDBRepository entry");
 
 		// make sure this object is serializable
@@ -63,15 +65,18 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 		objectMapper.setDateFormat(new ISO8601DateFormat());
 
 		// store variables
-		this.dynamoDB = new DynamoDB(amazonDynamoDB);
 		this.clazz = clazz;
 		this.hashAttribute = hashAttribute;
 		this.rangeAttribute = rangeAttribute;
 		LOG.trace("AbstractDynamoDBRepository entry");
 	}
-
-	public void setDynamoDB(DynamoDB dynamoDB) {
-		this.dynamoDB = dynamoDB;
+	
+	@PostConstruct
+	private void init() {
+		// now that we are initialized create the client
+		AmazonDynamoDB amazonDynamoDB = new AmazonDynamoDBClient();
+		this.dynamoDB = new DynamoDB(amazonDynamoDB);
+		
 	}
 
 	protected DynamoDB getDynamoDB() {
