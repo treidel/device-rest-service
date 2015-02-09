@@ -16,10 +16,10 @@ import org.springframework.util.Assert;
 import com.fancypants.message.topic.TopicConsumer;
 import com.fancypants.message.topic.TopicManager;
 import com.fancypants.message.topic.TopicProducer;
-import com.fancypants.test.message.config.TestConfig;
+import com.fancypants.test.message.config.MessageTestConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = TestConfig.class)
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = MessageTestConfig.class)
 public class MessageTests {
 
 	private static final String TEST_TOPIC = "TEST";

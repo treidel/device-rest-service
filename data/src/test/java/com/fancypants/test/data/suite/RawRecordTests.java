@@ -12,10 +12,10 @@ import org.springframework.util.Assert;
 
 import com.fancypants.data.device.entity.RawRecordEntity;
 import com.fancypants.data.device.repository.RawRecordRepository;
-import com.fancypants.test.data.config.TestConfig;
+import com.fancypants.test.data.config.DataTestConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = TestConfig.class)
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = DataTestConfig.class)
 public class RawRecordTests {
 
 	private @Autowired

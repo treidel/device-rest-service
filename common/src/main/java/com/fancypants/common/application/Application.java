@@ -59,10 +59,10 @@ public class Application {
 			return packages;
 		} catch (IOException e) {
 			LOG.fatal("IOException reading package list", e);
-			return null;
+			throw new IllegalStateException(e);
 		} catch (ClassNotFoundException e) {
 			LOG.fatal("ClassNotFoundException reading package list", e);
-			return null;
+			throw new IllegalStateException(e);
 		}
 	}
 }

@@ -8,6 +8,8 @@ public class TestDeviceRepository extends
 		AbstractTestRepository<String, DeviceEntity> implements
 		DeviceRepository {
 
+	private static final long serialVersionUID = 1398700548747613221L;
+
 	public TestDeviceRepository(ObjectMapper mapper) {
 		super(mapper, DeviceEntity.class);
 	}

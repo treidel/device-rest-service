@@ -19,6 +19,8 @@ public class TestHourlyRecordRepository
 		AbstractTestRepository<EnergyConsumptionRecordId, EnergyConsumptionRecordEntity>
 		implements HourlyRecordRepository {
 
+	private static final long serialVersionUID = -1539444950934709972L;
+	
 	private final Map<String, SortedMap<Date, EnergyConsumptionRecordEntity>> devices = new HashMap<String, SortedMap<Date, EnergyConsumptionRecordEntity>>();
 
 	public TestHourlyRecordRepository(ObjectMapper mapper) {

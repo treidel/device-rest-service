@@ -17,6 +17,8 @@ public class TestRawRecordRepository extends
 		AbstractTestRepository<RawRecordId, RawRecordEntity> implements
 		RawRecordRepository {
 
+	private static final long serialVersionUID = -989745890815966584L;
+
 	private final Map<String, Map<UUID, RawRecordEntity>> devices = new HashMap<String, Map<UUID, RawRecordEntity>>();
 
 	public TestRawRecordRepository(ObjectMapper mapper) {

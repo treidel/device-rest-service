@@ -12,10 +12,10 @@ import org.springframework.util.Assert;
 
 import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.data.device.repository.DeviceRepository;
-import com.fancypants.test.data.config.TestConfig;
+import com.fancypants.test.data.config.DataTestConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = TestConfig.class)
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = DataTestConfig.class)
 public class DeviceTests {
 
 	private static final String INVALID_DEVICE_NAME = "XYZ789";

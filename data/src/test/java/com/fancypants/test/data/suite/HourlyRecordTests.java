@@ -14,10 +14,10 @@ import org.springframework.util.Assert;
 
 import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.data.device.repository.HourlyRecordRepository;
-import com.fancypants.test.data.config.TestConfig;
+import com.fancypants.test.data.config.DataTestConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = TestConfig.class)
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = DataTestConfig.class)
 public class HourlyRecordTests {
 
 	private @Autowired

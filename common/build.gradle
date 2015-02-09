@@ -10,6 +10,7 @@ jar {
 dependencies {
 	compile("org.apache.commons:commons-lang3")
 	compile("org.springframework.boot:spring-boot-starter")
+	compile("com.fasterxml.jackson.core:jackson-databind")
 }
 	
 task wrapper(type: Wrapper) {
