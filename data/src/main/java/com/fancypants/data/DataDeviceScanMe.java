@@ -1,4 +1,4 @@
-package com.fancypants.data.device;
+package com.fancypants.data;
 
 public interface DataDeviceScanMe {
 

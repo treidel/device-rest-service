@@ -19,6 +19,7 @@ public class EnergyConsumptionRecordEntity {
 	public static final String HASH_KEY = DEVICE_ATTRIBUTE;
 	public static final String RANGE_KEY = DATE_ATTRIBUTE;
 
+	@Id
 	private final EnergyConsumptionRecordId id;
 	private final Map<Integer, Float> energyMap;
 

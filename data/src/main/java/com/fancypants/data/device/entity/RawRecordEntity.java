@@ -21,6 +21,7 @@ public class RawRecordEntity {
 	public static final String HASH_KEY = DEVICE_ATTRIBUTE;
 	public static final String RANGE_KEY = UUID_ATTRIBUTE;
 
+	@Id
 	private final RawRecordId id;
 	private final Date timestamp;
 	private final float durationInSeconds;
@@ -45,7 +46,6 @@ public class RawRecordEntity {
 		this.circuits = circuits;
 	}
 
-	@Id
 	@JsonIgnore
 	public RawRecordId getId() {
 		return id;

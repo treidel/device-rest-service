@@ -18,7 +18,8 @@ package com.fancypants.data.device.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-public class EnergyConsumptionRecordId implements Serializable {
+public class EnergyConsumptionRecordId implements
+		Comparable<EnergyConsumptionRecordId>, Serializable {
 
 	private static final long serialVersionUID = -3881765744413590343L;
 
@@ -30,12 +31,32 @@ public class EnergyConsumptionRecordId implements Serializable {
 		this.date = date;
 	}
 
+	@Override
+	public int compareTo(EnergyConsumptionRecordId id) {
+		int value = id.device.compareTo(device);
+		if (0 != value) {
+			return value;
+		}
+		return id.date.compareTo(date);
+	}
+
+	@Override
+	public int hashCode() {
+		return device.hashCode() + 37 * date.hashCode();
+	}
+
 	public String getDevice() {
 		return device;
 	}
 
 	public Date getDate() {
 		return date;
+	}
+
+	@Override
+	public String toString() {
+		return "[EnergyConsumptionRecordId device=" + device.toString()
+				+ ", date=" + date.toString() + "]";
 	}
 
 }

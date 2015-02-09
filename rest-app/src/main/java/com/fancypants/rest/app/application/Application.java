@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 import com.fancypants.app.AppScanMe;
-import com.fancypants.data.device.DataDeviceScanMe;
+import com.fancypants.data.DataDeviceScanMe;
 import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe;
 import com.fancypants.device.DeviceScanMe;
 import com.fancypants.rest.RestScanMe;

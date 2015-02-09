@@ -24,16 +24,30 @@ import java.util.UUID;
  * methods must be annotated with @DynamoDBHashKey or @DynamoDBRangeKey
  * 
  */
-public class RawRecordId implements Serializable {
+public class RawRecordId implements Comparable<RawRecordId>, Serializable {
 
 	private static final long serialVersionUID = 2392535614010208931L;
-	
+
 	private final String device;
 	private final UUID uuid;
 
 	public RawRecordId(String device, UUID uuid) {
 		this.device = device;
 		this.uuid = uuid;
+	}
+
+	@Override
+	public int compareTo(RawRecordId id) {
+		int value = id.device.compareTo(device);
+		if (0 != value) {
+			return value;
+		}
+		return id.uuid.compareTo(id.uuid);
+	}
+
+	@Override
+	public int hashCode() {
+		return device.hashCode() * 31 + uuid.hashCode();
 	}
 
 	public String getDevice() {
@@ -44,4 +58,9 @@ public class RawRecordId implements Serializable {
 		return uuid;
 	}
 
+	@Override
+	public String toString() {
+		return "[RawRecordId device=" + device.toString() + ", uuid="
+				+ uuid.toString() + "]";
+	}
 }

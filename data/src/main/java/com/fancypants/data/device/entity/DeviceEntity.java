@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.springframework.data.annotation.Id;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,6 +21,7 @@ public class DeviceEntity {
 	public static final String HASH_ATTRIBUTE = DEVICE_ATTRIBUTE;
 	public static final int MAX_CIRCUITS = 16;
 
+	@Id
 	private final String device;
 	private final String serialnumber;
 	private final Set<CircuitEntity> circuits;
@@ -91,5 +94,10 @@ public class DeviceEntity {
 			DEVICEENTITY = new DeviceEntity("ABCD1234", "000000001", circuits,
 					new Date());
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "[DeviceEntity device=" + device.toString() + "]";
 	}
 }
