@@ -168,7 +168,7 @@ project(':rest-app') {
 		compile project(':rest')
 		compile project(':app')
 		compile project(':usage')
-		compile project(':data-dynamodb')
+		compile project(':data')
 	}
 }
 

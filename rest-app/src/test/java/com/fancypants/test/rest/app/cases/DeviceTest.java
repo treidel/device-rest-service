@@ -20,11 +20,11 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fancypants.data.device.entity.DeviceEntity;
 import com.fancypants.data.device.repository.DeviceRepository;
-import com.fancypants.rest.app.application.Application;
+import com.fancypants.rest.app.config.WebConfig;
 import com.fancypants.rest.app.resource.DeviceResource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { Application.class,
+@SpringApplicationConfiguration(classes = { WebConfig.class,
 		TestConfiguration.class })
 @WebAppConfiguration
 @IntegrationTest
