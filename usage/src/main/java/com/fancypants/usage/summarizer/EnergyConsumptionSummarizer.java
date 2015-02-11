@@ -1,17 +1,25 @@
 package com.fancypants.usage.summarizer;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.springframework.stereotype.Component;
 
 import com.fancypants.data.entity.DeviceEntity;
 import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.data.entity.EnergyConsumptionRecordId;
 
+@Component
 public class EnergyConsumptionSummarizer implements
-		Summarizer<EnergyConsumptionRecordId, EnergyConsumptionRecordEntity> {
+		Summarizer<EnergyConsumptionRecordId, EnergyConsumptionRecordEntity>,
+		Serializable {
+
+	private static final long serialVersionUID = -6315384857284705447L;
 
 	@Override
-	public EnergyConsumptionRecordEntity summarize(EnergyConsumptionRecordId id,
+	public EnergyConsumptionRecordEntity summarize(
+			EnergyConsumptionRecordId id,
 			EnergyConsumptionRecordEntity entity1,
 			EnergyConsumptionRecordEntity entity2) {
 		// create the set to hold the new usage

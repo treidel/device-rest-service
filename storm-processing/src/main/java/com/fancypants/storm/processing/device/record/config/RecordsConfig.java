@@ -23,6 +23,7 @@ import com.fancypants.data.entity.RawRecordEntity;
 import com.fancypants.data.repository.HourlyRecordRepository;
 import com.fancypants.device.DeviceScanMe;
 import com.fancypants.message.MessageScanMe;
+import com.fancypants.storm.StormScanMe;
 import com.fancypants.storm.device.record.mapping.EnergyConsumptionEntityMapper;
 import com.fancypants.storm.device.record.mapping.EnergyConsumptionTupleMapper;
 import com.fancypants.storm.device.record.mapping.RawRecordTupleMapper;
@@ -39,7 +40,7 @@ import com.fancypants.usage.UsageScanMe;
 @Configuration
 @ComponentScan(basePackageClasses = { CommonScanMe.class, DataScanMe.class,
 		DeviceScanMe.class, UsageScanMe.class, MessageScanMe.class,
-		StormProcessingScanMe.class })
+		StormScanMe.class, StormProcessingScanMe.class })
 public class RecordsConfig {
 	private final static Logger LOG = LoggerFactory
 			.getLogger(RecordsConfig.class);

@@ -26,7 +26,7 @@ public class DeviceService {
 	@Autowired
 	private DeviceRepository repository;
 
-	@Autowired
+	@Autowired(required = false)
 	private TopicManager topicManager;
 
 	public DeviceEntity getDevice(String deviceId)

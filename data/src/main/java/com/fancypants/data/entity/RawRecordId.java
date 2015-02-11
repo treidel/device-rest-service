@@ -50,6 +50,18 @@ public class RawRecordId implements Comparable<RawRecordId>, Serializable {
 		return device.hashCode() * 31 + uuid.hashCode();
 	}
 
+	@Override
+	public boolean equals(Object object) {
+		if (null == object) {
+			return false;
+		}
+		if (false == object instanceof RawRecordId) {
+			return false;
+		}
+		RawRecordId id = (RawRecordId) object;
+		return id.device.equals(device) && id.uuid.equals(uuid);
+	}
+
 	public String getDevice() {
 		return device;
 	}

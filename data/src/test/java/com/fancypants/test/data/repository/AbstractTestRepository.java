@@ -22,7 +22,7 @@ public abstract class AbstractTestRepository<T, I extends Serializable>
 
 	private final Map<I, T> table;
 	private final Class<T> clazz;
-	private ReflectionEntityInformation<T, I> entityInformation;
+	private transient ReflectionEntityInformation<T, I> entityInformation;
 
 	@Autowired
 	private ObjectMapper mapper;

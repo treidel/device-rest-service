@@ -93,10 +93,16 @@ public class ProcessingTests {
 	@Test
 	public void writeMultipleRecordsTest() throws InterruptedException {
 		// write some test records
-		spout.feed(MAPPER.convert(RECORD1));
-		spout.feed(MAPPER.convert(RECORD1));
-		spout.feed(MAPPER.convert(RECORD2));
-		spout.feed(MAPPER.convert(RECORD2));
+		List<List<Object>> tuples = new ArrayList<List<Object>>(4);		
+		List<Object> tuple1 = MAPPER.convert(RECORD1);
+		List<Object> tuple2 = MAPPER.convert(RECORD2);
+		List<Object> tuple3 = MAPPER.convert(RECORD1);
+		List<Object> tuple4 = MAPPER.convert(RECORD2);
+		tuples.add(tuple1);
+		tuples.add(tuple2);
+		tuples.add(tuple3);
+		tuples.add(tuple4);
+		spout.feed(tuples);
 		// now we wait for the data to come through
 		List<EnergyConsumptionRecordEntity> records = fetchRecordsBlocking();
 		// fail if we don't have the right number records

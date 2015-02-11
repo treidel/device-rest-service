@@ -7,6 +7,7 @@ import java.util.logging.LogRecord;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import storm.trident.operation.Aggregator;
 import storm.trident.operation.TridentCollector;
@@ -20,7 +21,6 @@ import com.fancypants.storm.device.record.mapping.EnergyConsumptionTupleMapper;
 import com.fancypants.storm.device.record.mapping.RawRecordEntityMapper;
 import com.fancypants.usage.generators.DateIntervalGenerator;
 
-
 public abstract class EnergyCalculationAggregator implements
 		Aggregator<RawRecordEntity>, java.util.logging.Filter {
 
@@ -29,8 +29,12 @@ public abstract class EnergyCalculationAggregator implements
 			.getLogger(EnergyCalculationAggregator.class);
 
 	private static final int SECONDS_PER_HOUR = 60 * 60;
-	private static final RawRecordEntityMapper recordMapper = new RawRecordEntityMapper();
-	private static final EnergyConsumptionTupleMapper tupleMapper = new EnergyConsumptionTupleMapper();
+
+	@Autowired
+	private RawRecordEntityMapper recordMapper;
+
+	@Autowired
+	private EnergyConsumptionTupleMapper tupleMapper;
 
 	private final DateIntervalGenerator generator;
 

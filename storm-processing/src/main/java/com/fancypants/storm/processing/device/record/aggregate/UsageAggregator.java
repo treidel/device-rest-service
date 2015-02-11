@@ -1,5 +1,6 @@
 package com.fancypants.storm.processing.device.record.aggregate;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import storm.trident.operation.ReducerAggregator;
@@ -18,8 +19,11 @@ public class UsageAggregator implements
 	 */
 	private static final long serialVersionUID = -313154810699858938L;
 
-	private static final EnergyConsumptionEntityMapper mapper = new EnergyConsumptionEntityMapper();
-	private static final EnergyConsumptionSummarizer summarizer = new EnergyConsumptionSummarizer();
+	@Autowired
+	private EnergyConsumptionEntityMapper mapper;
+
+	@Autowired
+	private EnergyConsumptionSummarizer summarizer;
 
 	@Override
 	public EnergyConsumptionRecordEntity init() {

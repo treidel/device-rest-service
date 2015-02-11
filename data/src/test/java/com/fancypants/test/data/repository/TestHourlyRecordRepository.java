@@ -23,7 +23,7 @@ public class TestHourlyRecordRepository
 
 	private static final long serialVersionUID = -1539444950934709972L;
 
-	private final Map<String, SortedMap<Date, EnergyConsumptionRecordEntity>> devices = new HashMap<String, SortedMap<Date, EnergyConsumptionRecordEntity>>();
+	private static final Map<String, SortedMap<Date, EnergyConsumptionRecordEntity>> DEVICES = new HashMap<String, SortedMap<Date, EnergyConsumptionRecordEntity>>();
 
 	public TestHourlyRecordRepository() {
 		super(EnergyConsumptionRecordEntity.class);
@@ -31,11 +31,11 @@ public class TestHourlyRecordRepository
 
 	@Override
 	public <S extends EnergyConsumptionRecordEntity> S save(S entity) {
-		SortedMap<Date, EnergyConsumptionRecordEntity> records = devices
+		SortedMap<Date, EnergyConsumptionRecordEntity> records = DEVICES
 				.get(entity.getDevice());
 		if (null == records) {
 			records = new TreeMap<Date, EnergyConsumptionRecordEntity>();
-			devices.put(entity.getDevice(), records);
+			DEVICES.put(entity.getDevice(), records);
 		}
 		records.put(entity.getDate(), entity);
 		return super.save(entity);
@@ -43,7 +43,7 @@ public class TestHourlyRecordRepository
 
 	@Override
 	public List<EnergyConsumptionRecordEntity> findByDevice(String device) {
-		SortedMap<Date, EnergyConsumptionRecordEntity> recordsMap = devices
+		SortedMap<Date, EnergyConsumptionRecordEntity> recordsMap = DEVICES
 				.get(device);
 		if (null != recordsMap) {
 			return new ArrayList<EnergyConsumptionRecordEntity>(
@@ -54,7 +54,7 @@ public class TestHourlyRecordRepository
 
 	@Override
 	public void deleteAllForDevice(String device) {
-		Map<Date, EnergyConsumptionRecordEntity> records = devices
+		Map<Date, EnergyConsumptionRecordEntity> records = DEVICES
 				.remove(device);
 		if (null != records) {
 			for (EnergyConsumptionRecordEntity record : records.values()) {

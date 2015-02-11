@@ -21,6 +21,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import com.fancypants.test.data.TestDataScanMe;
 import com.fancypants.test.data.values.DeviceValues;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,7 +30,8 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 @EnableAutoConfiguration
-@ComponentScan(basePackageClasses = { TestConfiguration.class })
+@ComponentScan(basePackageClasses = { TestConfiguration.class,
+		TestDataScanMe.class })
 public class TestConfiguration {
 
 	@Bean

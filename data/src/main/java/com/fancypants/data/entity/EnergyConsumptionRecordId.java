@@ -44,6 +44,18 @@ public class EnergyConsumptionRecordId implements
 	public int hashCode() {
 		return device.hashCode() + 37 * date.hashCode();
 	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if (null == object) {
+			return false;
+		}
+		if (false == object instanceof EnergyConsumptionRecordId) {
+			return false;
+		}
+		EnergyConsumptionRecordId id = (EnergyConsumptionRecordId)object;
+		return id.device.equals(device) && id.date.equals(date);				
+	}
 
 	public String getDevice() {
 		return device;
