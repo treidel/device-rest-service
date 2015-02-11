@@ -13,9 +13,9 @@ import storm.trident.operation.TridentCollector;
 import storm.trident.operation.TridentOperationContext;
 import storm.trident.tuple.TridentTuple;
 
-import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
-import com.fancypants.data.device.entity.RawMeasurementEntity;
-import com.fancypants.data.device.entity.RawRecordEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.entity.RawMeasurementEntity;
+import com.fancypants.data.entity.RawRecordEntity;
 import com.fancypants.storm.device.record.mapping.EnergyConsumptionTupleMapper;
 import com.fancypants.storm.device.record.mapping.RawRecordEntityMapper;
 import com.fancypants.usage.generators.DateIntervalGenerator;

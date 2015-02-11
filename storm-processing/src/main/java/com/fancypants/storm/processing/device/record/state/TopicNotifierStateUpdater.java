@@ -2,8 +2,6 @@ package com.fancypants.storm.processing.device.record.state;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -15,7 +13,7 @@ import storm.trident.operation.TridentCollector;
 import storm.trident.state.BaseStateUpdater;
 import storm.trident.tuple.TridentTuple;
 
-import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

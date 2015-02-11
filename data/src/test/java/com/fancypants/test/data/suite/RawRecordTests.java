@@ -10,9 +10,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.util.Assert;
 
-import com.fancypants.data.device.entity.RawRecordEntity;
-import com.fancypants.data.device.repository.RawRecordRepository;
+import com.fancypants.data.entity.RawRecordEntity;
+import com.fancypants.data.repository.RawRecordRepository;
 import com.fancypants.test.data.config.DataTestConfig;
+import com.fancypants.test.data.values.RawRecordValues;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = DataTestConfig.class)
@@ -35,7 +36,7 @@ public class RawRecordTests {
 
 	@Test
 	public void createTest() {
-		Assert.isTrue(repository.insert(RawRecordEntity.TEST.RECORD1));
+		Assert.isTrue(repository.insert(RawRecordValues.RECORD1));
 	}
 
 	@Test
@@ -43,7 +44,7 @@ public class RawRecordTests {
 		// pre-create
 		createTest();
 		// now create again and make sure duplicate is detected
-		Assert.isTrue(false == repository.insert(RawRecordEntity.TEST.RECORD1));
+		Assert.isTrue(false == repository.insert(RawRecordValues.RECORD1));
 	}
 
 	@Test
@@ -51,24 +52,24 @@ public class RawRecordTests {
 		// run the create test to create a record
 		createTest();
 		// query for it
-		RawRecordEntity record = repository
-				.findOne(RawRecordEntity.TEST.RECORD1.getId());
+		RawRecordEntity record = repository.findOne(RawRecordValues.RECORD1
+				.getId());
 		Assert.isTrue(null != record);
 	}
 
 	@Test
 	public void queryInvalidTest() {
 		RawRecordEntity record = repository
-				.findOne(RawRecordEntity.TEST.INVALID_RECORD_ID);
+				.findOne(RawRecordValues.INVALID_RECORD_ID);
 		Assert.isNull(record);
 	}
 
 	@Test
 	public void bulkInsertTest() {
-		for (RawRecordEntity record : RawRecordEntity.TEST.RECORDS) {
+		for (RawRecordEntity record : RawRecordValues.RECORDS) {
 			repository.insert(record);
 		}
-		Assert.isTrue(RawRecordEntity.TEST.RECORDS.length == repository.count());
+		Assert.isTrue(RawRecordValues.RECORDS.length == repository.count());
 	}
 
 }

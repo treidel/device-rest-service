@@ -5,19 +5,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
 import backtype.storm.tuple.Fields;
 
 import com.fancypants.common.mapping.EntityMapper;
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.entity.DeviceEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
 
+@Component
 public class EnergyConsumptionTupleMapper implements
 		EntityMapper<List<Object>, EnergyConsumptionRecordEntity>, Serializable {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1215563042377564751L;
+	
 	private static final int FIXED_FIELDS_COUNT = 2;
 
 	@Override

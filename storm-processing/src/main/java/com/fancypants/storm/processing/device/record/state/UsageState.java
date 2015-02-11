@@ -3,8 +3,8 @@ package com.fancypants.storm.processing.device.record.state;
 import storm.trident.state.State;
 import storm.trident.state.ValueUpdater;
 
-import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
-import com.fancypants.data.device.repository.HourlyRecordRepository;
+import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.repository.HourlyRecordRepository;
 
 public class UsageState implements State,
 		ValueUpdater<EnergyConsumptionRecordEntity> {

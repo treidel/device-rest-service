@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fancypants.common.exception.AbstractServiceException;
 import com.fancypants.common.exception.DataValidationException;
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.entity.DeviceEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.device.container.DeviceContainer;
 import com.fancypants.rest.app.assembler.PowerConsumptionResourceAssembler;
 import com.fancypants.rest.app.resource.PowerConsumptionRecordResource;

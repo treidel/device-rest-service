@@ -17,7 +17,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 import com.fancypants.common.application.Application;
-import com.fancypants.data.device.repository.DeviceRepository;
+import com.fancypants.data.repository.DeviceRepository;
 import com.fancypants.rest.device.resource.DeviceResource;
 import com.fancypants.rest.domain.Device;
 

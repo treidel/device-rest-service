@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fancypants.common.mapping.EntityMapper;
-import com.fancypants.data.device.entity.CircuitEntity;
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.entity.RawMeasurementEntity;
-import com.fancypants.data.device.entity.RawRecordEntity;
-import com.fancypants.data.device.entity.RawRecordId;
+import com.fancypants.data.entity.CircuitEntity;
+import com.fancypants.data.entity.DeviceEntity;
+import com.fancypants.data.entity.RawMeasurementEntity;
+import com.fancypants.data.entity.RawRecordEntity;
+import com.fancypants.data.entity.RawRecordId;
 import com.fancypants.rest.domain.RawMeasurement;
 import com.fancypants.rest.domain.RawRecord;
 

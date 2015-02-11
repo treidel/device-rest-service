@@ -13,11 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fancypants.data.device.repository;
+package com.fancypants.data.repository;
+
+import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.fancypants.data.device.entity.DeviceEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordId;
 
-public interface DeviceRepository extends CrudRepository<DeviceEntity, String> {
+public interface HourlyRecordRepository extends CrudRepository<EnergyConsumptionRecordEntity, EnergyConsumptionRecordId>{
+
+	public List<EnergyConsumptionRecordEntity> findByDevice(String device);
+	
+	public void deleteAllForDevice(String device);
+
+	public void insertOrIncrement(EnergyConsumptionRecordEntity record);
+
 }

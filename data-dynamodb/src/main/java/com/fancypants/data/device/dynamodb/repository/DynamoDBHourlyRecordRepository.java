@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
@@ -14,12 +13,11 @@ import com.amazonaws.services.dynamodbv2.document.KeyAttribute;
 import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
 import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
-import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
-import com.fancypants.data.device.entity.EnergyConsumptionRecordId;
-import com.fancypants.data.device.repository.HourlyRecordRepository;
+import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordId;
+import com.fancypants.data.repository.HourlyRecordRepository;
 
 @Component
-@Lazy
 public class DynamoDBHourlyRecordRepository
 		extends
 		AbstractDynamoDBRepository<EnergyConsumptionRecordEntity, EnergyConsumptionRecordId>

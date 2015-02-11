@@ -1,4 +1,4 @@
-package com.fancypants.data.device.entity;
+package com.fancypants.data.entity;
 
 import java.util.Date;
 import java.util.HashMap;

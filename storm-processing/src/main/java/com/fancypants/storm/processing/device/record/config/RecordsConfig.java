@@ -18,9 +18,9 @@ import backtype.storm.tuple.Fields;
 
 import com.fancypants.common.CommonScanMe;
 import com.fancypants.data.DataScanMe;
-import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
-import com.fancypants.data.device.entity.RawRecordEntity;
-import com.fancypants.data.device.repository.HourlyRecordRepository;
+import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.entity.RawRecordEntity;
+import com.fancypants.data.repository.HourlyRecordRepository;
 import com.fancypants.device.DeviceScanMe;
 import com.fancypants.message.MessageScanMe;
 import com.fancypants.storm.device.record.mapping.EnergyConsumptionEntityMapper;

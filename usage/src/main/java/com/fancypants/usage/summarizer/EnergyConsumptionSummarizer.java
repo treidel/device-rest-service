@@ -3,9 +3,9 @@ package com.fancypants.usage.summarizer;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
-import com.fancypants.data.device.entity.EnergyConsumptionRecordId;
+import com.fancypants.data.entity.DeviceEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordId;
 
 public class EnergyConsumptionSummarizer implements
 		Summarizer<EnergyConsumptionRecordId, EnergyConsumptionRecordEntity> {

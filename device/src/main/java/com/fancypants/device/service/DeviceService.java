@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import com.fancypants.common.exception.AbstractServiceException;
 import com.fancypants.common.exception.BusinessLogicException;
 import com.fancypants.common.exception.DataValidationException;
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.repository.DeviceRepository;
+import com.fancypants.data.entity.DeviceEntity;
+import com.fancypants.data.repository.DeviceRepository;
 import com.fancypants.message.exception.AbstractMessageException;
 import com.fancypants.message.topic.TopicManager;
 

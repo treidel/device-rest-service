@@ -20,9 +20,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 import com.fancypants.common.application.Application;
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.repository.DeviceRepository;
+import com.fancypants.data.repository.DeviceRepository;
 import com.fancypants.rest.device.resource.DeviceResource;
+import com.fancypants.test.data.values.DeviceValues;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = { Application.class,
@@ -44,9 +44,9 @@ public class DeviceRestTests {
 	@PostConstruct
 	public void init() {
 		// start clean
-		deviceRepository.delete(DeviceEntity.TEST.DEVICEENTITY.getDevice());
+		deviceRepository.delete(DeviceValues.DEVICEENTITY.getDevice());
 		// pre-create test device
-		deviceRepository.save(DeviceEntity.TEST.DEVICEENTITY);
+		deviceRepository.save(DeviceValues.DEVICEENTITY);
 	}
 
 	@Test

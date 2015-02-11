@@ -5,13 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
 import backtype.storm.tuple.Fields;
 
 import com.fancypants.common.mapping.EntityMapper;
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.entity.RawMeasurementEntity;
-import com.fancypants.data.device.entity.RawRecordEntity;
+import com.fancypants.data.entity.DeviceEntity;
+import com.fancypants.data.entity.RawMeasurementEntity;
+import com.fancypants.data.entity.RawRecordEntity;
 
+@Component
 public class RawRecordTupleMapper implements
 		EntityMapper<List<Object>, RawRecordEntity>, Serializable {
 

@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 import com.fancypants.common.exception.AbstractServiceException;
 import com.fancypants.common.exception.BusinessLogicException;
 import com.fancypants.common.exception.DataValidationException;
-import com.fancypants.data.device.entity.CircuitEntity;
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.entity.RawRecordEntity;
-import com.fancypants.data.device.entity.RawRecordId;
-import com.fancypants.data.device.repository.DeviceRepository;
-import com.fancypants.data.device.repository.RawRecordRepository;
+import com.fancypants.data.entity.CircuitEntity;
+import com.fancypants.data.entity.DeviceEntity;
+import com.fancypants.data.entity.RawRecordEntity;
+import com.fancypants.data.entity.RawRecordId;
+import com.fancypants.data.repository.DeviceRepository;
+import com.fancypants.data.repository.RawRecordRepository;
 import com.fancypants.stream.writer.StreamWriter;
 
 @Service

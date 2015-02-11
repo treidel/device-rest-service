@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fancypants.common.exception.AbstractServiceException;
-import com.fancypants.data.device.entity.DeviceEntity;
+import com.fancypants.data.entity.DeviceEntity;
 import com.fancypants.device.service.DeviceService;
 import com.fancypants.rest.device.assembler.DeviceResourceAssembler;
 import com.fancypants.rest.device.resource.DeviceResource;

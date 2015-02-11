@@ -1,9 +1,7 @@
-package com.fancypants.data.device.entity;
+package com.fancypants.data.entity;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.TreeMap;
 
 import org.springframework.data.annotation.Id;
@@ -218,43 +216,5 @@ public class EnergyConsumptionRecordEntity {
 
 	public void setEnergy16(float energyInKWH) {
 		setEnergy(16, energyInKWH);
-	}
-
-	public static class TEST {
-		public static final EnergyConsumptionRecordEntity RECORD1;
-		public static final EnergyConsumptionRecordEntity RECORD2;
-		public static final EnergyConsumptionRecordEntity RECORDS[];
-
-		static {
-			// get the current time
-			Date currentTime = new Date();
-			// use GMT time
-			Calendar calendar = Calendar.getInstance(TimeZone
-					.getTimeZone("GMT"));
-			// populate the current time
-			calendar.setTime(currentTime);
-			// want times on hour boundary
-			calendar.set(Calendar.MINUTE, 0);
-			calendar.set(Calendar.SECOND, 0);
-			calendar.set(Calendar.MILLISECOND, 0);
-			// find the start time of the hour
-			Date startOfHour = calendar.getTime();
-			// find the nextday of the next
-			calendar.add(Calendar.HOUR, 1);
-			Date endOfHour = calendar.getTime();
-
-			// setup the test records
-			RECORD1 = new EnergyConsumptionRecordEntity("ABCD1234", startOfHour);
-			for (int i = 1; i <= DeviceEntity.MAX_CIRCUITS; i++) {
-				RECORD1.setEnergy(i, 10.0f);
-			}
-			RECORD2 = new EnergyConsumptionRecordEntity("ABCD1234", endOfHour);
-			for (int i = 1; i <= DeviceEntity.MAX_CIRCUITS; i++) {
-				RECORD2.setEnergy(i, 20.0f);
-			}
-
-			// setup the list of records
-			RECORDS = new EnergyConsumptionRecordEntity[] { RECORD1, RECORD2 };
-		}
 	}
 }

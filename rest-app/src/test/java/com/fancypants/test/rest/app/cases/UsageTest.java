@@ -20,12 +20,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
-import com.fancypants.data.device.repository.DeviceRepository;
-import com.fancypants.data.device.repository.HourlyRecordRepository;
+import com.fancypants.data.repository.DeviceRepository;
+import com.fancypants.data.repository.HourlyRecordRepository;
 import com.fancypants.rest.app.config.WebConfig;
 import com.fancypants.rest.app.resource.PowerConsumptionRecordResource;
+import com.fancypants.test.data.values.DeviceValues;
+import com.fancypants.test.data.values.HourlyRecordValues;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = { WebConfig.class,
@@ -48,12 +48,11 @@ public class UsageTest {
 
 	@PostConstruct
 	public void init() {
-		deviceRepository.delete(DeviceEntity.TEST.DEVICEENTITY.getDevice());
-		usageRepository.deleteAllForDevice(DeviceEntity.TEST.DEVICEENTITY
+		deviceRepository.delete(DeviceValues.DEVICEENTITY.getDevice());
+		usageRepository.deleteAllForDevice(DeviceValues.DEVICEENTITY
 				.getDevice());
-		deviceRepository.save(DeviceEntity.TEST.DEVICEENTITY);
-		usageRepository.save(Arrays
-				.asList(EnergyConsumptionRecordEntity.TEST.RECORDS));
+		deviceRepository.save(DeviceValues.DEVICEENTITY);
+		usageRepository.save(Arrays.asList(HourlyRecordValues.RECORDS));
 	}
 
 	@Test
@@ -67,7 +66,7 @@ public class UsageTest {
 						new ParameterizedTypeReference<Collection<PowerConsumptionRecordResource>>() {
 						});
 		Assert.assertTrue(HttpStatus.OK.equals(recordsResponse.getStatusCode()));
-		Assert.assertTrue(recordsResponse.getBody().size() == EnergyConsumptionRecordEntity.TEST.RECORDS.length);
+		Assert.assertTrue(recordsResponse.getBody().size() == HourlyRecordValues.RECORDS.length);
 		// read each individual record too
 		for (PowerConsumptionRecordResource resource : recordsResponse
 				.getBody()) {

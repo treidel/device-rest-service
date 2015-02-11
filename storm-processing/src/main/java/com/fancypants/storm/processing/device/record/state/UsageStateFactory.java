@@ -15,7 +15,7 @@ import storm.trident.state.StateFactory;
 import backtype.storm.task.IMetricsContext;
 
 import com.fancypants.common.application.util.AnnotationUtils;
-import com.fancypants.data.device.repository.HourlyRecordRepository;
+import com.fancypants.data.repository.HourlyRecordRepository;
 
 @Component
 public class UsageStateFactory implements StateFactory {

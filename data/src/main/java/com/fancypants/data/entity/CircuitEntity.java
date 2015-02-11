@@ -1,4 +1,4 @@
-package com.fancypants.data.device.entity;
+package com.fancypants.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

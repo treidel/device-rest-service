@@ -10,7 +10,7 @@ import storm.trident.operation.TridentCollector;
 import storm.trident.state.BaseStateUpdater;
 import storm.trident.tuple.TridentTuple;
 
-import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
 
 @Component
 public class UsageStateUpdater extends BaseStateUpdater<UsageState> {

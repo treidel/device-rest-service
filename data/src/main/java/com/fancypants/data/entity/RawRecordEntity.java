@@ -1,8 +1,7 @@
-package com.fancypants.data.device.entity;
+package com.fancypants.data.entity;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
@@ -79,32 +78,5 @@ public class RawRecordEntity {
 	@JsonIgnore
 	public RawMeasurementEntity getCircuit(int index) {
 		return circuits.get(index);
-	}
-
-	public static class TEST {
-		public static final RawRecordEntity RECORD1;
-		public static final RawRecordEntity RECORD2;
-		public static final RawRecordId INVALID_RECORD_ID;
-		public static final RawRecordEntity RECORDS[];
-
-		static {
-			// setup test data
-			Map<Integer, RawMeasurementEntity> circuits = new TreeMap<Integer, RawMeasurementEntity>();
-			for (int i = 1; i <= 16; i++) {
-				RawMeasurementEntity measurement = new RawMeasurementEntity(i,
-						120.0f, 30.0f);
-				circuits.put(i, measurement);
-			}
-			// setup the test records
-			RECORD1 = new RawRecordEntity("ABCD1234", UUID.randomUUID()
-					.toString(), new Date(), 10.0f, circuits);
-			RECORD2 = new RawRecordEntity("ABCD1234", UUID.randomUUID()
-					.toString(), new Date(), 10.0f, circuits);
-			INVALID_RECORD_ID = new RawRecordId("WXYZ7890", UUID.randomUUID());
-
-			// setup the list of records
-			RECORDS = new RawRecordEntity[] { RECORD1, RECORD2 };
-		}
-
 	}
 }

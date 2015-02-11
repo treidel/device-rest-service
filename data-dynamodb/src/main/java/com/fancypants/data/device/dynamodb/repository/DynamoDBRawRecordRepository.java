@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.dynamodbv2.document.Expected;
@@ -13,12 +12,11 @@ import com.amazonaws.services.dynamodbv2.document.ItemCollection;
 import com.amazonaws.services.dynamodbv2.document.KeyAttribute;
 import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
-import com.fancypants.data.device.entity.RawRecordEntity;
-import com.fancypants.data.device.entity.RawRecordId;
-import com.fancypants.data.device.repository.RawRecordRepository;
-
+import com.fancypants.data.entity.RawRecordEntity;
+import com.fancypants.data.entity.RawRecordId;
+import com.fancypants.data.repository.RawRecordRepository;
+ 
 @Component
-@Lazy
 public class DynamoDBRawRecordRepository extends
 		AbstractDynamoDBRepository<RawRecordEntity, RawRecordId> implements
 		RawRecordRepository {
@@ -59,7 +57,7 @@ public class DynamoDBRawRecordRepository extends
 	@Override
 	public boolean insert(RawRecordEntity record) {
 		// serialize the record
-		Item item = serialize(record);
+		Item item = serialize((RawRecordEntity) record);
 		// setup the expected value
 		Expected expected = new Expected(RawRecordEntity.HASH_KEY).notExist();
 		// run the query

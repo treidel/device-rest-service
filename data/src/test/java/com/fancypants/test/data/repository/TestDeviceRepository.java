@@ -1,17 +1,19 @@
 package com.fancypants.test.data.repository;
 
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.repository.DeviceRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 
+import com.fancypants.data.entity.DeviceEntity;
+import com.fancypants.data.repository.DeviceRepository;
+
+@Component
 public class TestDeviceRepository extends
-		AbstractTestRepository<String, DeviceEntity> implements
+		AbstractTestRepository<DeviceEntity, String> implements
 		DeviceRepository {
 
 	private static final long serialVersionUID = 1398700548747613221L;
 
-	public TestDeviceRepository(ObjectMapper mapper) {
-		super(mapper, DeviceEntity.class);
+	public TestDeviceRepository() {
+		super(DeviceEntity.class);
 	}
 
 }

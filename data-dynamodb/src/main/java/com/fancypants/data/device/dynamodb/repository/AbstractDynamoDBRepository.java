@@ -47,11 +47,11 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 	@Qualifier("tablePrefix")
 	private String tablePrefix;
 
-	public AbstractDynamoDBRepository(Class<T> clazz, String hashAttribute) {
+	protected AbstractDynamoDBRepository(Class<T> clazz, String hashAttribute) {
 		this(clazz, hashAttribute, null);
 	}
 
-	public AbstractDynamoDBRepository(Class<T> clazz, String hashAttribute,
+	protected AbstractDynamoDBRepository(Class<T> clazz, String hashAttribute,
 			String rangeAttribute) {
 		LOG.trace("AbstractDynamoDBRepository entry");
 
@@ -70,13 +70,13 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 		this.rangeAttribute = rangeAttribute;
 		LOG.trace("AbstractDynamoDBRepository entry");
 	}
-	
+
 	@PostConstruct
 	private void init() {
 		// now that we are initialized create the client
 		AmazonDynamoDB amazonDynamoDB = new AmazonDynamoDBClient();
 		this.dynamoDB = new DynamoDB(amazonDynamoDB);
-		
+
 	}
 
 	protected DynamoDB getDynamoDB() {
@@ -159,7 +159,7 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 
 	@Override
 	public <S extends T> S save(S entity) {
-		Item item = serialize(entity);
+		Item item = serialize((T) entity);
 		getTable().putItem(item);
 		return entity;
 	}
@@ -217,9 +217,10 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 
 	@Override
 	public void delete(T entity) {
-		PrimaryKey key = new PrimaryKey(hashAttribute, retrieveHashKey(entity));
+		PrimaryKey key = new PrimaryKey(hashAttribute,
+				retrieveHashKey((T) entity));
 		if (null != rangeAttribute) {
-			key.addComponent(rangeAttribute, retrieveRangeKey(entity));
+			key.addComponent(rangeAttribute, retrieveRangeKey((T) entity));
 		}
 		getTable().deleteItem(key);
 	}

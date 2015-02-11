@@ -13,54 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fancypants.data.device.entity;
+package com.fancypants.data.entity;
 
 import java.io.Serializable;
-import java.util.UUID;
+import java.util.Date;
 
-/**
- * Composite id for the Thread entity. For spring-data-dynamodb to be able to
- * identify which attribute is the hash key and which is the range key the
- * methods must be annotated with @DynamoDBHashKey or @DynamoDBRangeKey
- * 
- */
-public class RawRecordId implements Comparable<RawRecordId>, Serializable {
+public class EnergyConsumptionRecordId implements
+		Comparable<EnergyConsumptionRecordId>, Serializable {
 
-	private static final long serialVersionUID = 2392535614010208931L;
+	private static final long serialVersionUID = -3881765744413590343L;
 
 	private final String device;
-	private final UUID uuid;
+	private final Date date;
 
-	public RawRecordId(String device, UUID uuid) {
+	public EnergyConsumptionRecordId(String device, Date date) {
 		this.device = device;
-		this.uuid = uuid;
+		this.date = date;
 	}
 
 	@Override
-	public int compareTo(RawRecordId id) {
+	public int compareTo(EnergyConsumptionRecordId id) {
 		int value = id.device.compareTo(device);
 		if (0 != value) {
 			return value;
 		}
-		return id.uuid.compareTo(id.uuid);
+		return id.date.compareTo(date);
 	}
 
 	@Override
 	public int hashCode() {
-		return device.hashCode() * 31 + uuid.hashCode();
+		return device.hashCode() + 37 * date.hashCode();
 	}
 
 	public String getDevice() {
 		return device;
 	}
 
-	public UUID getUUID() {
-		return uuid;
+	public Date getDate() {
+		return date;
 	}
 
 	@Override
 	public String toString() {
-		return "[RawRecordId device=" + device.toString() + ", uuid="
-				+ uuid.toString() + "]";
+		return "[EnergyConsumptionRecordId device=" + device.toString()
+				+ ", date=" + date.toString() + "]";
 	}
+
 }

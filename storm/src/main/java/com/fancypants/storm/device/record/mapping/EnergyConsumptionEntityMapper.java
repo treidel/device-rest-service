@@ -7,14 +7,16 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import storm.trident.tuple.TridentTuple;
 
 import com.fancypants.common.mapping.EntityMapper;
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
-import com.fancypants.data.device.entity.EnergyConsumptionRecordId;
+import com.fancypants.data.entity.DeviceEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordId;
 
+@Component
 public class EnergyConsumptionEntityMapper implements
 		EntityMapper<EnergyConsumptionRecordEntity, TridentTuple>, Serializable {
 

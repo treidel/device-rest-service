@@ -10,7 +10,7 @@ import backtype.storm.tuple.Fields;
 
 import com.amazonaws.services.kinesis.model.Record;
 import com.amazonaws.services.kinesis.stormspout.IKinesisRecordScheme;
-import com.fancypants.data.device.entity.RawRecordEntity;
+import com.fancypants.data.entity.RawRecordEntity;
 import com.fancypants.storm.device.record.mapping.RawRecordTupleMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

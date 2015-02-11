@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.amazonaws.services.kinesis.AmazonKinesis;
 import com.amazonaws.services.kinesis.AmazonKinesisClient;
-import com.fancypants.data.device.entity.RawRecordEntity;
+import com.fancypants.data.entity.RawRecordEntity;
 import com.fancypants.stream.kinesis.writer.KinesisStreamWriter;
 import com.fancypants.stream.writer.StreamWriter;
 import com.fasterxml.jackson.databind.ObjectMapper;

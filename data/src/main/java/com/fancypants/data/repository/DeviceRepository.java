@@ -13,20 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fancypants.data.device.repository;
-
-import java.util.List;
+package com.fancypants.data.repository;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.fancypants.data.device.entity.RawRecordEntity;
-import com.fancypants.data.device.entity.RawRecordId;
+import com.fancypants.data.entity.DeviceEntity;
 
-public interface RawRecordRepository extends
-		CrudRepository<RawRecordEntity, RawRecordId> {
-
-	public boolean insert(RawRecordEntity record);
-	public List<RawRecordEntity> findAllForDevice(String device);
-	public void deleteAllForDevice(String device);
-
+public interface DeviceRepository extends CrudRepository<DeviceEntity, String> {
 }

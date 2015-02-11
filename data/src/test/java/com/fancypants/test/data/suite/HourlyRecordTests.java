@@ -12,9 +12,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.util.Assert;
 
-import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
-import com.fancypants.data.device.repository.HourlyRecordRepository;
+import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.repository.HourlyRecordRepository;
 import com.fancypants.test.data.config.DataTestConfig;
+import com.fancypants.test.data.values.HourlyRecordValues;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = DataTestConfig.class)
@@ -37,7 +38,7 @@ public class HourlyRecordTests {
 
 	@Test
 	public void createTest() {
-		repository.insertOrIncrement(EnergyConsumptionRecordEntity.TEST.RECORD1);
+		repository.insertOrIncrement(HourlyRecordValues.RECORD1);
 	}
 
 	@Test
@@ -45,12 +46,12 @@ public class HourlyRecordTests {
 		// pre-create
 		createTest();
 		// now update
-		repository.insertOrIncrement(EnergyConsumptionRecordEntity.TEST.RECORD1);
+		repository.insertOrIncrement(HourlyRecordValues.RECORD1);
 		// now query the row
 		EnergyConsumptionRecordEntity record = repository
-				.findOne(EnergyConsumptionRecordEntity.TEST.RECORD1.getId());
+				.findOne(HourlyRecordValues.RECORD1.getId());
 		// check the values - should be doubled
-		float value1 = EnergyConsumptionRecordEntity.TEST.RECORD1.getEnergy(1);
+		float value1 = HourlyRecordValues.RECORD1.getEnergy(1);
 		float value2 = record.getEnergy(1);
 		Assert.isTrue(value1 == value2 / 2);
 	}
@@ -61,19 +62,16 @@ public class HourlyRecordTests {
 		bulkInsertTest();
 		// query for all records
 		List<EnergyConsumptionRecordEntity> records = repository
-				.findByDevice(EnergyConsumptionRecordEntity.TEST.RECORD1
-						.getDevice());
-		Assert.isTrue(EnergyConsumptionRecordEntity.TEST.RECORDS.length == records
-				.size());
+				.findByDevice(HourlyRecordValues.RECORD1.getDevice());
+		Assert.isTrue(HourlyRecordValues.RECORDS.length == records.size());
 	}
 
 	@Test
 	public void bulkInsertTest() {
-		for (EnergyConsumptionRecordEntity record : EnergyConsumptionRecordEntity.TEST.RECORDS) {
+		for (EnergyConsumptionRecordEntity record : HourlyRecordValues.RECORDS) {
 			repository.insertOrIncrement(record);
 		}
-		Assert.isTrue(EnergyConsumptionRecordEntity.TEST.RECORDS.length == repository
-				.count());
+		Assert.isTrue(HourlyRecordValues.RECORDS.length == repository.count());
 	}
 
 }

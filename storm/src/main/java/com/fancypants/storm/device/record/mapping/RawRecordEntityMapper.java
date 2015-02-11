@@ -6,14 +6,17 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.springframework.stereotype.Component;
+
 import storm.trident.tuple.TridentTuple;
 
 import com.fancypants.common.mapping.EntityMapper;
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.entity.RawMeasurementEntity;
-import com.fancypants.data.device.entity.RawRecordEntity;
-import com.fancypants.data.device.entity.RawRecordId;
+import com.fancypants.data.entity.DeviceEntity;
+import com.fancypants.data.entity.RawMeasurementEntity;
+import com.fancypants.data.entity.RawRecordEntity;
+import com.fancypants.data.entity.RawRecordId;
 
+@Component
 public class RawRecordEntityMapper implements
 		EntityMapper<RawRecordEntity, TridentTuple>, Serializable {
 
@@ -21,6 +24,7 @@ public class RawRecordEntityMapper implements
 	 * 
 	 */
 	private static final long serialVersionUID = -2650439842355334806L;
+	
 
 	@Override
 	public RawRecordEntity convert(TridentTuple tuple) {

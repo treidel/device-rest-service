@@ -18,7 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.fancypants.common.exception.AbstractServiceException;
-import com.fancypants.data.device.entity.DeviceEntity;
+import com.fancypants.data.entity.DeviceEntity;
 import com.fancypants.device.container.DeviceContainer;
 import com.fancypants.device.service.DeviceService;
 

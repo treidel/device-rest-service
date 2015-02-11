@@ -8,9 +8,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
 import com.fancypants.common.mapping.EntityMapper;
-import com.fancypants.data.device.entity.CircuitEntity;
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.entity.CircuitEntity;
+import com.fancypants.data.entity.DeviceEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.rest.domain.PowerConsumptionMeasurement;
 import com.fancypants.rest.domain.PowerConsumptionRecord;
 

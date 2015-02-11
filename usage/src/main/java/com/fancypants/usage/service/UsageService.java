@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.fancypants.common.exception.AbstractServiceException;
 import com.fancypants.common.exception.BusinessLogicException;
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
-import com.fancypants.data.device.entity.EnergyConsumptionRecordId;
-import com.fancypants.data.device.repository.HourlyRecordRepository;
+import com.fancypants.data.entity.DeviceEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordId;
+import com.fancypants.data.repository.HourlyRecordRepository;
 
 @Service
 public class UsageService {

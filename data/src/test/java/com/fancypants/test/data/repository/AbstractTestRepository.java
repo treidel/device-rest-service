@@ -8,29 +8,43 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.core.support.ReflectionEntityInformation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public abstract class AbstractTestRepository<I extends Serializable, T>
+public abstract class AbstractTestRepository<T, I extends Serializable>
 		implements CrudRepository<T, I>, Serializable {
 
 	private static final long serialVersionUID = 5088964975582070882L;
-	
-	private final ObjectMapper mapper;
-	private final Class<T> clazz;
-	private final Map<I, T> table = new HashMap<I, T>();
-	private transient ReflectionEntityInformation<T, I> entityInfo;
+	private static final Map<Class<?>, Map<?, ?>> SINGLETON = new HashMap<Class<?>, Map<?, ?>>();
 
-	protected AbstractTestRepository(ObjectMapper mapper, Class<T> clazz) {
-		this.mapper = mapper;
-		this.clazz = clazz;
-	}
-	
+	private final Map<I, T> table;
+	private final Class<T> clazz;
+	private ReflectionEntityInformation<T, I> entityInformation;
+
+	@Autowired
+	private ObjectMapper mapper;
+
 	@PostConstruct
 	private void init() {
-		this.entityInfo = new ReflectionEntityInformation<>(clazz);
+		entityInformation = new ReflectionEntityInformation<>(clazz);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected AbstractTestRepository(Class<T> clazz) {
+		// store the params
+		this.clazz = clazz;
+		// create the map if needed
+		synchronized (SINGLETON) {
+			Map<I, T> table = (Map<I, T>) SINGLETON.get(clazz);
+			if (null == table) {
+				table = new HashMap<I, T>();
+				SINGLETON.put(clazz, table);
+			}
+			this.table = table;
+		}
 	}
 
 	@Override
@@ -45,15 +59,14 @@ public abstract class AbstractTestRepository<I extends Serializable, T>
 
 	@Override
 	public <S extends T> S save(S entity) {
+		I id = entityInformation.getId(entity);
 		try {
-			I id = entityInfo.getId(entity);
 			String json = mapper.writeValueAsString(entity);
-			Class<T> clazz = entityInfo.getJavaType();
 			T copy = mapper.readValue(json.getBytes(), clazz);
 			table.put(id, copy);
 			return entity;
 		} catch (IOException e) {
-			throw new IllegalAccessError();
+			throw new IllegalStateException(e);
 		}
 	}
 
@@ -92,7 +105,7 @@ public abstract class AbstractTestRepository<I extends Serializable, T>
 
 	@Override
 	public void delete(T entity) {
-		I id = entityInfo.getId(entity);
+		I id = entityInformation.getId(entity);
 		delete(id);
 	}
 

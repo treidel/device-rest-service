@@ -14,8 +14,8 @@ import org.springframework.stereotype.Controller;
 
 import com.fancypants.common.exception.AbstractServiceException;
 import com.fancypants.common.exception.BusinessLogicException;
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.entity.RawRecordEntity;
+import com.fancypants.data.entity.DeviceEntity;
+import com.fancypants.data.entity.RawRecordEntity;
 import com.fancypants.device.service.DeviceService;
 import com.fancypants.records.service.RecordService;
 import com.fancypants.rest.domain.ErrorMessage;

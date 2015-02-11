@@ -8,21 +8,23 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import com.fancypants.data.device.entity.RawRecordEntity;
-import com.fancypants.data.device.entity.RawRecordId;
-import com.fancypants.data.device.repository.RawRecordRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 
+import com.fancypants.data.entity.RawRecordEntity;
+import com.fancypants.data.entity.RawRecordId;
+import com.fancypants.data.repository.RawRecordRepository;
+
+@Component
 public class TestRawRecordRepository extends
-		AbstractTestRepository<RawRecordId, RawRecordEntity> implements
+		AbstractTestRepository<RawRecordEntity, RawRecordId> implements
 		RawRecordRepository {
 
 	private static final long serialVersionUID = -989745890815966584L;
 
 	private final Map<String, Map<UUID, RawRecordEntity>> devices = new HashMap<String, Map<UUID, RawRecordEntity>>();
 
-	public TestRawRecordRepository(ObjectMapper mapper) {
-		super(mapper, RawRecordEntity.class);
+	public TestRawRecordRepository() {
+		super(RawRecordEntity.class);
 	}
 
 	@Override

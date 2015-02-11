@@ -10,15 +10,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.util.Assert;
 
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.repository.DeviceRepository;
+import com.fancypants.data.entity.DeviceEntity;
+import com.fancypants.data.repository.DeviceRepository;
 import com.fancypants.test.data.config.DataTestConfig;
+import com.fancypants.test.data.values.DeviceValues;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = DataTestConfig.class)
 public class DeviceTests {
-
-	private static final String INVALID_DEVICE_NAME = "XYZ789";
 
 	private @Autowired
 	DeviceRepository repository;
@@ -37,7 +36,7 @@ public class DeviceTests {
 
 	@Test
 	public void createTest() {
-		repository.save(DeviceEntity.TEST.DEVICEENTITY);
+		repository.save(DeviceValues.DEVICEENTITY);
 	}
 
 	@Test
@@ -53,14 +52,15 @@ public class DeviceTests {
 		// run the create test to create a record
 		createTest();
 		// query for it
-		DeviceEntity device = repository.findOne(DeviceEntity.TEST.DEVICEENTITY
+		DeviceEntity device = repository.findOne(DeviceValues.DEVICEENTITY
 				.getDevice());
 		Assert.isTrue(null != device);
 	}
 
 	@Test
 	public void queryInvalidTest() {
-		DeviceEntity device = repository.findOne(INVALID_DEVICE_NAME);
+		DeviceEntity device = repository
+				.findOne(DeviceValues.INVALID_DEVICE_NAME);
 		Assert.isNull(device);
 	}
 

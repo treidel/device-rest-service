@@ -14,7 +14,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = RabbitMQConfig.class)
+@ContextConfiguration(inheritLocations = false, loader = AnnotationConfigContextLoader.class, classes = RabbitMQConfig.class)
 public class RabbitMQMessageTests extends MessageTests {
 
 	private @Autowired

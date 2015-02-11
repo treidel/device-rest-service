@@ -9,22 +9,24 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.fancypants.data.device.entity.EnergyConsumptionRecordEntity;
-import com.fancypants.data.device.entity.EnergyConsumptionRecordId;
-import com.fancypants.data.device.repository.HourlyRecordRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 
+import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordId;
+import com.fancypants.data.repository.HourlyRecordRepository;
+
+@Component
 public class TestHourlyRecordRepository
 		extends
-		AbstractTestRepository<EnergyConsumptionRecordId, EnergyConsumptionRecordEntity>
+		AbstractTestRepository<EnergyConsumptionRecordEntity, EnergyConsumptionRecordId>
 		implements HourlyRecordRepository {
 
 	private static final long serialVersionUID = -1539444950934709972L;
-	
+
 	private final Map<String, SortedMap<Date, EnergyConsumptionRecordEntity>> devices = new HashMap<String, SortedMap<Date, EnergyConsumptionRecordEntity>>();
 
-	public TestHourlyRecordRepository(ObjectMapper mapper) {
-		super(mapper, EnergyConsumptionRecordEntity.class);
+	public TestHourlyRecordRepository() {
+		super(EnergyConsumptionRecordEntity.class);
 	}
 
 	@Override

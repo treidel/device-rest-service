@@ -21,7 +21,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import com.fancypants.data.device.entity.DeviceEntity;
+import com.fancypants.test.data.values.DeviceValues;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -38,8 +38,8 @@ public class TestConfiguration {
 		HttpClientBuilder builder = HttpClientBuilder.create();
 		CredentialsProvider provider = new BasicCredentialsProvider();
 		Credentials credentials = new UsernamePasswordCredentials(
-				DeviceEntity.TEST.DEVICEENTITY.getDevice(),
-				DeviceEntity.TEST.DEVICEENTITY.getSerialNumber());
+				DeviceValues.DEVICEENTITY.getDevice(),
+				DeviceValues.DEVICEENTITY.getSerialNumber());
 		provider.setCredentials(AuthScope.ANY, credentials);
 		HttpClient client = builder.setDefaultCredentialsProvider(provider)
 				.build();

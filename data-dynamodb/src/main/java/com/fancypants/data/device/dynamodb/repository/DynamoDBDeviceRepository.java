@@ -1,13 +1,11 @@
 package com.fancypants.data.device.dynamodb.repository;
 
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.repository.DeviceRepository;
+import com.fancypants.data.entity.DeviceEntity;
+import com.fancypants.data.repository.DeviceRepository;
 
 @Component
-@Lazy
 public class DynamoDBDeviceRepository extends
 		AbstractDynamoDBRepository<DeviceEntity, String> implements
 		DeviceRepository {

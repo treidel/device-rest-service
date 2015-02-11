@@ -18,10 +18,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.repository.DeviceRepository;
+import com.fancypants.data.repository.DeviceRepository;
 import com.fancypants.rest.app.config.WebConfig;
 import com.fancypants.rest.app.resource.DeviceResource;
+import com.fancypants.test.data.values.DeviceValues;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = { WebConfig.class,
@@ -36,11 +36,14 @@ public class DeviceTest {
 
 	@Autowired
 	private RestTemplate restTemplate;
+	
+	@Autowired
+	private DeviceValues values;
 
 	@PostConstruct
 	public void init() {
-		deviceRepository.delete(DeviceEntity.TEST.DEVICEENTITY.getDevice());
-		deviceRepository.save(DeviceEntity.TEST.DEVICEENTITY);
+		deviceRepository.delete(DeviceValues.DEVICEENTITY.getDevice());
+		deviceRepository.save(DeviceValues.DEVICEENTITY);
 	}
 
 	@Test

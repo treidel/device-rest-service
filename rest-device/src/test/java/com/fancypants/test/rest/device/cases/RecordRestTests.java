@@ -23,11 +23,11 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 import com.fancypants.common.application.Application;
-import com.fancypants.data.device.entity.DeviceEntity;
-import com.fancypants.data.device.repository.DeviceRepository;
-import com.fancypants.data.device.repository.RawRecordRepository;
+import com.fancypants.data.repository.DeviceRepository;
+import com.fancypants.data.repository.RawRecordRepository;
 import com.fancypants.rest.device.resource.RawRecordResource;
 import com.fancypants.rest.domain.RawRecord;
+import com.fancypants.test.data.values.DeviceValues;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = { Application.class,
@@ -52,11 +52,11 @@ public class RecordRestTests {
 	@PostConstruct
 	public void setup() {
 		// cleanup databases
-		deviceRepository.delete(DeviceEntity.TEST.DEVICEENTITY.getDevice());
-		recordRespitory.deleteAllForDevice(DeviceEntity.TEST.DEVICEENTITY
+		deviceRepository.delete(DeviceValues.DEVICEENTITY.getDevice());
+		recordRespitory.deleteAllForDevice(DeviceValues.DEVICEENTITY
 				.getDevice());
 		// inject
-		deviceRepository.save(DeviceEntity.TEST.DEVICEENTITY);
+		deviceRepository.save(DeviceValues.DEVICEENTITY);
 	}
 
 	@Test
