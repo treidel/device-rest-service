@@ -22,6 +22,7 @@ import com.fancypants.data.repository.DeviceRepository;
 import com.fancypants.rest.app.config.WebConfig;
 import com.fancypants.rest.app.resource.DeviceResource;
 import com.fancypants.test.data.values.DeviceValues;
+import com.fancypants.test.rest.app.config.TestConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = { WebConfig.class,

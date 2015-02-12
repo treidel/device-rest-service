@@ -1,4 +1,4 @@
-package com.fancypants.test.rest.device.cases;
+package com.fancypants.test.rest.device.config;
 
 import java.io.IOException;
 import java.security.KeyManagementException;
@@ -22,11 +22,9 @@ import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.core.io.Resource;
 import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -34,6 +32,10 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import com.fancypants.test.data.TestDataScanMe;
+import com.fancypants.test.message.TestMessageScanMe;
+import com.fancypants.test.rest.device.security.KeyStoreCreator;
+import com.fancypants.test.stream.TestStreamScanMe;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -41,31 +43,30 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 @EnableAutoConfiguration
-@ComponentScan(basePackageClasses = { TestConfiguration.class })
+@ComponentScan(basePackageClasses = { TestConfiguration.class,
+		KeyStoreCreator.class, TestDataScanMe.class, TestMessageScanMe.class,
+		TestStreamScanMe.class })
 public class TestConfiguration {
 
 	@Bean
 	@Autowired
 	public SSLContext deviceSSLContext(
-			@Value("${devicekeystore.file}") final Resource keystoreFile,
-			@Value("${devicekeystore.pass}") final String keystorePass)
-			throws KeyStoreException, NoSuchAlgorithmException,
-			CertificateException, IOException, KeyManagementException,
-			UnrecoverableKeyException {
+			@Qualifier("deviceKeyStore") KeyStore keystore)
+			throws KeyManagementException, UnrecoverableKeyException,
+			NoSuchAlgorithmException, KeyStoreException {
 		// use the common internal routine
-		return configureSSLContext(keystoreFile, keystorePass);
+		return configureSSLContext(keystore, "device");
 	}
 
 	@Bean
 	@Autowired
 	public SSLContext adminSSLContext(
-			@Value("${adminkeystore.file}") final Resource keystoreFile,
-			@Value("${adminkeystore.pass}") final String keystorePass)
+			@Qualifier("adminKeyStore") KeyStore keystore)
 			throws KeyStoreException, NoSuchAlgorithmException,
 			CertificateException, IOException, KeyManagementException,
 			UnrecoverableKeyException {
 		// use the common internal routine
-		return configureSSLContext(keystoreFile, keystorePass);
+		return configureSSLContext(keystore, "admin");
 	}
 
 	@Bean
@@ -122,15 +123,10 @@ public class TestConfiguration {
 		return configureRestTemplate(factory);
 	}
 
-	private SSLContext configureSSLContext(Resource keystoreFile,
-			String keystorePass) throws KeyStoreException,
-			NoSuchAlgorithmException, CertificateException, IOException,
-			KeyManagementException, UnrecoverableKeyException {
-		// create the keystore
-		KeyStore keystore = KeyStore.getInstance("JKS");
-		// load the keystore from the file
-		keystore.load(keystoreFile.getInputStream(), keystorePass.toCharArray());
-
+	private SSLContext configureSSLContext(KeyStore keystore,
+			String keystorePass) throws KeyManagementException,
+			UnrecoverableKeyException, NoSuchAlgorithmException,
+			KeyStoreException {
 		// initialize an SSL context with the keystore
 		// using all certificate in the keystore for trust material
 		// and the device key as the SSL authentication certificate

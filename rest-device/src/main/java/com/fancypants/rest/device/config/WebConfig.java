@@ -2,18 +2,29 @@ package com.fancypants.rest.device.config;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.Http11NioProtocol;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.Resource;
 
-@Configuration
+import com.fancypants.common.CommonScanMe;
+import com.fancypants.device.DeviceScanMe;
+import com.fancypants.records.RecordsScanMe;
+import com.fancypants.rest.RestScanMe;
+import com.fancypants.rest.device.RestDeviceScanMe;
+
+@EnableAutoConfiguration
+@ComponentScan(basePackageClasses = { CommonScanMe.class, RestScanMe.class,
+		RestDeviceScanMe.class, DeviceScanMe.class, RecordsScanMe.class })
 public class WebConfig {
 	@Bean
+	@Autowired
 	public EmbeddedServletContainerCustomizer containerCustomizer(
 			@Value("${keystore.file}") final Resource keystoreFile,
 			@Value("${keystore.pass}") final String keystorePass)

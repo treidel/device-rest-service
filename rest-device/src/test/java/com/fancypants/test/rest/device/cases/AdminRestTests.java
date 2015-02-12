@@ -16,13 +16,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import com.fancypants.common.application.Application;
 import com.fancypants.data.repository.DeviceRepository;
+import com.fancypants.rest.device.config.WebConfig;
 import com.fancypants.rest.device.resource.DeviceResource;
 import com.fancypants.rest.domain.Device;
+import com.fancypants.test.rest.device.config.TestConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { Application.class,
+@SpringApplicationConfiguration(classes = { WebConfig.class,
 		TestConfiguration.class })
 @WebAppConfiguration
 @IntegrationTest

@@ -96,6 +96,7 @@ project(':rest') {
 project(':stream') {	
 	dependencies {
 		compile project(':common')
+		testCompile project(':data')
 	}
 }
 
@@ -149,8 +150,8 @@ project(':rest-device') {
 		compile project(':rest')
 		compile project(':records')
 		compile project(':usage')
-		compile project(':data-dynamodb')
-		compile project(':stream-kinesis')
+		compile project(':data')
+		compile project(':stream')
 	}
 }
 

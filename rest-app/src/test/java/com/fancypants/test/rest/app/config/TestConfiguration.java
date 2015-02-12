@@ -1,4 +1,4 @@
-package com.fancypants.test.rest.app.cases;
+package com.fancypants.test.rest.app.config;
 
 import java.util.ArrayList;
 import java.util.List;
