@@ -62,7 +62,6 @@ public class TestTopicManager implements TopicManager, Serializable {
 		// create the producer
 		TopicProducer producer = new TestTopicProducer(template, destination);
 		return producer;
-
 	}
 
 	@Override

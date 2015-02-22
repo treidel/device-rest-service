@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.Assert;
 
 import com.fancypants.message.rabbitmq.topic.RabbitMQTopicManager;
 import com.fancypants.message.topic.TopicManager;
@@ -44,11 +45,14 @@ public class RabbitMQConfig {
 
 	private URI getURI() {
 		String uri = System.getProperty("rabbitmq.uri");
+		Assert.notNull(uri);
 		return URI.create(uri);
 	}
 	
 	private String getPassword() {
-		return System.getProperty("rabbitmq.password");
+		String password = System.getProperty("rabbitmq.password");
+		Assert.notNull(password);
+		return password;
 	}
 
 }

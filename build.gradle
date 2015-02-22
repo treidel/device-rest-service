@@ -209,7 +209,7 @@ project(':websocket-app') {
 		compile project(':common')
 		compile project(':websocket')
 		compile project(':app')
-		compile project(':data-dynamodb')
+		compile project(':data')
 	}
 }
 
@@ -220,5 +220,6 @@ project(':websocket-device') {
 		compile project(':device')
 		compile project(':records')
 		compile project(':usage')
+		compile project(':data')
 	}
 }

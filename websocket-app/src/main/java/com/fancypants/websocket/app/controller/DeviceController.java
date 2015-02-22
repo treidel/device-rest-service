@@ -28,9 +28,10 @@ public class DeviceController {
 		// only allowed to subscribe if they are registered
 		if (false == sessionContainer.isRegistered()) {
 			throw new IllegalAccessError("must be registered to subscribe to notifications");
-		}
+		}		
 		// map subscriptions to the actual device topic
-		this.template.convertAndSend("/topic/device." + user.getName(), message.getPayload(), message.getHeaders());
+		//this.template.convertAndSend("/topic/device." + user.getName(), message.getPayload(), message.getHeaders());
+		
 		LOG.trace("DeviceController.handleNotificationSubscription exit");
 	}
 }

@@ -19,4 +19,5 @@ public class WebSocketSecurityConfig extends
 				.anyMessage().hasRole("USER");
 	}
 
+	
 }
