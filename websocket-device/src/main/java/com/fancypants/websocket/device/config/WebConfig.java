@@ -42,7 +42,7 @@ public class WebConfig {
 					.addConnectorCustomizers(new TomcatConnectorCustomizer() {
 						@Override
 						public void customize(Connector connector) {
-							connector.setPort(8443);
+							connector.setPort(8084);
 							connector.setSecure(true);
 							connector.setScheme("https");
 							Http11NioProtocol proto = (Http11NioProtocol) connector

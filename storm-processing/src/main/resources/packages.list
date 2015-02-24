@@ -1,3 +1,4 @@
+com.fancypants.storm.processing.StormProcessingScanMe
 com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe
 com.fancypants.message.rabbitmq.MessageRabbitMQScanMe
 com.fancypants.storm.kinesis.StormKinesisScanMe

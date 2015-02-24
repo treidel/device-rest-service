@@ -11,6 +11,7 @@ import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomize
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 
 import com.fancypants.common.CommonScanMe;
@@ -19,6 +20,7 @@ import com.fancypants.records.RecordsScanMe;
 import com.fancypants.rest.RestScanMe;
 import com.fancypants.rest.device.RestDeviceScanMe;
 
+@Configuration
 @EnableAutoConfiguration
 @ComponentScan(basePackageClasses = { CommonScanMe.class, RestScanMe.class,
 		RestDeviceScanMe.class, DeviceScanMe.class, RecordsScanMe.class })
@@ -53,7 +55,7 @@ public class WebConfig {
 					.addConnectorCustomizers(new TomcatConnectorCustomizer() {
 						@Override
 						public void customize(Connector connector) {
-							connector.setPort(8443);
+							connector.setPort(8081);
 							connector.setSecure(true);
 							connector.setScheme("https");
 							Http11NioProtocol proto = (Http11NioProtocol) connector

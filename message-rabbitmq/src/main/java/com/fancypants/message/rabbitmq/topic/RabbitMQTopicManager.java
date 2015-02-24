@@ -1,12 +1,17 @@
 package com.fancypants.message.rabbitmq.topic;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.net.URI;
+
+import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import com.fancypants.message.exception.AbstractMessageException;
 import com.fancypants.message.rabbitmq.exception.RabbitMQException;
@@ -15,19 +20,32 @@ import com.fancypants.message.topic.TopicManager;
 import com.fancypants.message.topic.TopicProducer;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 
 @Component
-public class RabbitMQTopicManager implements TopicManager {
+public class RabbitMQTopicManager implements TopicManager, Serializable {
+
+	private static final long serialVersionUID = 2706248108381878149L;
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(RabbitMQTopicManager.class);
 
-	@Autowired
-	private Connection connection;
+	private transient Connection connection;
 
 	@Autowired
 	@Qualifier("exchange")
 	private String exchange;
+
+	@PostConstruct
+	private void init() throws Exception {
+		LOG.trace("init enter");
+		ConnectionFactory factory = new ConnectionFactory();
+		factory.setPassword(getPassword());
+		factory.setUri(getURI());
+		factory.setAutomaticRecoveryEnabled(true);
+		connection = factory.newConnection();
+		LOG.trace("init exit");
+	}
 
 	@Override
 	public void topicCreate(String topic) throws AbstractMessageException {
@@ -62,9 +80,10 @@ public class RabbitMQTopicManager implements TopicManager {
 		LOG.trace("RabbitMQTopicManager.topicProducer enter topic=" + topic);
 		try {
 			// create the channel
-			Channel channel = connection.createChannel();		
-			// wrap the channel 
-			TopicProducer producer = new RabbitMQTopicProducer(channel, exchange, topic);
+			Channel channel = connection.createChannel();
+			// wrap the channel
+			TopicProducer producer = new RabbitMQTopicProducer(channel,
+					exchange, topic);
 			LOG.trace("RabbitMQTopicManager.topicProducer exit producer="
 					+ producer);
 			return producer;
@@ -93,5 +112,17 @@ public class RabbitMQTopicManager implements TopicManager {
 			LOG.error("can not create consumer", e);
 			throw new RabbitMQException(e);
 		}
+	}
+
+	private URI getURI() {
+		String uri = System.getProperty("rabbitmq.uri");
+		Assert.notNull(uri);
+		return URI.create(uri);
+	}
+
+	private String getPassword() {
+		String password = System.getProperty("rabbitmq.password");
+		Assert.notNull(password);
+		return password;
 	}
 }
