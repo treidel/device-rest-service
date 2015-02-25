@@ -30,6 +30,7 @@ def versionOverrides = [
 	"org.apache.httpcomponents:httpcore" : "4.3.2",
 	"org.apache.james:apache-mime4j":"0.7.2",
 	"org.clojars.reideltj:kinesis-storm-spout":"1.0.4-SNAPSHOT",
+	"org.eclipse.jetty.websocket:websocket-client":"9.2.8.v20150217",
 	"org.slf4j:slf4j-api":"1.7.7",
 	"com.jayway.jsonpath:json-path":"0.9.1",	
 	"com.amazonaws:aws-java-sdk" : "1.9.16",	

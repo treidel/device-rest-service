@@ -21,6 +21,7 @@ jar {
 dependencies {
 	compile("org.springframework.boot:spring-boot-starter-websocket")
 	testCompile("org.springframework.boot:spring-boot-starter-test")
+	testCompile("org.eclipse.jetty.websocket:websocket-client")
 }
 
 task wrapper(type: Wrapper) {

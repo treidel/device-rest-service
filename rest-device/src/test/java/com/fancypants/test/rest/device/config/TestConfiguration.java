@@ -34,7 +34,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fancypants.test.data.TestDataScanMe;
 import com.fancypants.test.message.TestMessageScanMe;
-import com.fancypants.test.rest.device.security.KeyStoreCreator;
+import com.fancypants.test.rest.security.KeyStoreCreator;
 import com.fancypants.test.stream.TestStreamScanMe;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;

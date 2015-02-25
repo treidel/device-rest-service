@@ -1,4 +1,4 @@
-package com.fancypants.test.websocket.app.util;
+package com.fancypants.test.websocket.util;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -180,17 +180,31 @@ public class StompSimulator extends TextWebSocketHandler {
 		}
 	};
 
-	public static class RegisterAction implements Action {
+	public static class SendAction implements Action {
 
+		private final String destination;
 		private final String body;
+		private final String receipt;
 
-		public RegisterAction(String body) {
+		public SendAction(String destination, String body) {
+			this.destination = destination;
 			this.body = body;
+			this.receipt = null;
+		}
+
+		public SendAction(String destination, String body, String receipt) {
+			this.destination = destination;
+			this.body = body;
+			this.receipt = receipt;
 		}
 
 		@Override
 		public void validateResponse(StompHeaderAccessor accessor) {
-			Assert.fail();
+			if (null == receipt) {
+				Assert.fail();
+			}
+			Assert.assertNotNull(accessor.getReceiptId());
+			Assert.assertTrue(true == receipt.equals(accessor.getReceiptId()));
 		}
 
 		@Override
@@ -198,8 +212,11 @@ public class StompSimulator extends TextWebSocketHandler {
 			StompHeaderAccessor accessor = StompHeaderAccessor
 					.create(StompCommand.SEND);
 			accessor.addNativeHeader(
-					StompHeaderAccessor.STOMP_DESTINATION_HEADER,
-					"/registration");
+					StompHeaderAccessor.STOMP_DESTINATION_HEADER, destination);
+			if (null != receipt) {
+				accessor.addNativeHeader(
+						StompHeaderAccessor.STOMP_RECEIPT_HEADER, receipt);
+			}
 			return accessor;
 		}
 
@@ -210,7 +227,7 @@ public class StompSimulator extends TextWebSocketHandler {
 
 		@Override
 		public boolean expectResponse() {
-			return false;
+			return (null != receipt);
 		}
 	};
 
@@ -280,6 +297,5 @@ public class StompSimulator extends TextWebSocketHandler {
 		public String createBody() {
 			return null;
 		}
-
 	}
 }

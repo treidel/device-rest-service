@@ -3,13 +3,18 @@ package com.fancypants.websocket.device.controller;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Controller;
 
 import com.fancypants.common.exception.AbstractServiceException;
@@ -29,8 +34,11 @@ public class RecordController {
 	private static final Logger LOG = Logger.getLogger(RecordController.class);
 
 	@Autowired
+	private MessageChannel clientOutboundChannel;
+
+	@Autowired
 	private DeviceService deviceService;
-	
+
 	@Autowired
 	private RecordService recordService;
 
@@ -41,16 +49,16 @@ public class RecordController {
 	private RawRecordEntityMapper recordEntityMapper;
 
 	@MessageMapping("/records")
-	public void handleRecords(Principal user, List<RawRecord> records)
-			throws AbstractServiceException {
+	public void handleRecords(StompHeaderAccessor request, Principal user,
+			@Payload RawRecord[] records) throws AbstractServiceException {
 		LOG.trace("RecordsController.handleRecords enter" + " records"
 				+ records);
-		
-		// make sure they are registered 
+
+		// make sure they are registered
 		if (false == sessionContainer.isRegistered()) {
 			throw new BusinessLogicException("not registered");
 		}
-		
+
 		// get the device
 		DeviceEntity deviceEntity = deviceService.getDevice(user.getName());
 		// map the records into the internal format
@@ -65,6 +73,19 @@ public class RecordController {
 		}
 		// bulk create the records
 		recordService.bulkCreateRecords(deviceEntity, entities);
+		// see if they want confirmation we got it + processed it
+		if (null != request.getReceipt()) {
+			// create the response
+			StompHeaderAccessor response = StompHeaderAccessor
+					.create(StompCommand.RECEIPT);
+			response.setSessionId(request.getSessionId());
+			response.setReceiptId(request.getReceipt());
+			// send it
+			Message<byte[]> message = MessageBuilder.createMessage(
+					"".getBytes(), response.getMessageHeaders());
+			clientOutboundChannel.send(message);
+		}
+
 		LOG.trace("RecordsController.handleRecords exit");
 	}
 

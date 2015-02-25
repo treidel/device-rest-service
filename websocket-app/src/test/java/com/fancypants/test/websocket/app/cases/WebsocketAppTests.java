@@ -25,7 +25,7 @@ import com.fancypants.message.topic.TopicProducer;
 import com.fancypants.test.data.values.DeviceValues;
 import com.fancypants.test.data.values.HourlyRecordValues;
 import com.fancypants.test.websocket.app.config.WebsocketAppTestConfig;
-import com.fancypants.test.websocket.app.util.StompSimulator;
+import com.fancypants.test.websocket.util.StompSimulator;
 import com.fancypants.websocket.app.config.WebSecurityConfig;
 import com.fancypants.websocket.app.config.WebSocketConfig;
 import com.fancypants.websocket.app.config.WebSocketSecurityConfig;
@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebAppConfiguration
 @IntegrationTest
 public class WebsocketAppTests {
-	private static final URI TEST_URI = URI.create("ws://localhost:8080/stomp");
+	private static final URI TEST_URI = URI.create("ws://localhost:8082/stomp");
 
 	@Autowired
 	private DeviceRepository deviceRepository;
@@ -79,8 +79,9 @@ public class WebsocketAppTests {
 		StompSimulator simulator = new StompSimulator();
 		// add a connection action
 		simulator.add(new StompSimulator.ConnectionAction());
-		// add a registration action
-		simulator.add(new StompSimulator.RegisterAction(clientInfoJSON));
+		// add a send action
+		simulator.add(new StompSimulator.SendAction("/registration",
+				clientInfoJSON));
 		// add a disconnect action
 		simulator.add(new StompSimulator.DisconnectAction());
 
@@ -104,7 +105,8 @@ public class WebsocketAppTests {
 		// add a connection action
 		simulator.add(new StompSimulator.ConnectionAction());
 		// add a registration action
-		simulator.add(new StompSimulator.RegisterAction(clientInfoJSON));
+		simulator.add(new StompSimulator.SendAction("/registration",
+				clientInfoJSON));
 		// add a subscription action
 		simulator.add(new StompSimulator.SubscriptionAction("/topic/"
 				+ DeviceValues.DEVICEENTITY.getDevice(), UUID.randomUUID()
@@ -133,7 +135,8 @@ public class WebsocketAppTests {
 		// add a connection action
 		simulator.add(new StompSimulator.ConnectionAction());
 		// add a registration action
-		simulator.add(new StompSimulator.RegisterAction(clientInfoJSON));
+		simulator.add(new StompSimulator.SendAction("/registration",
+				clientInfoJSON));
 		// add a subscription action
 		String subscriptionId = UUID.randomUUID().toString();
 		simulator.add(new StompSimulator.SubscriptionAction("/topic/"

@@ -1,4 +1,4 @@
-package com.fancypants.test.rest.device.security;
+package com.fancypants.test.rest.security;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

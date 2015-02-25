@@ -25,7 +25,7 @@ public abstract class AbstractTestRepository<T, I extends Serializable>
 	private transient ReflectionEntityInformation<T, I> entityInformation;
 
 	@Autowired
-	private ObjectMapper mapper;
+	private ObjectMapper objectMapper;
 
 	@PostConstruct
 	private void init() {
@@ -61,8 +61,8 @@ public abstract class AbstractTestRepository<T, I extends Serializable>
 	public <S extends T> S save(S entity) {
 		I id = entityInformation.getId(entity);
 		try {
-			String json = mapper.writeValueAsString(entity);
-			T copy = mapper.readValue(json.getBytes(), clazz);
+			String json = objectMapper.writeValueAsString(entity);
+			T copy = objectMapper.readValue(json.getBytes(), clazz);
 			table.put(id, copy);
 			return entity;
 		} catch (IOException e) {
