@@ -56,21 +56,14 @@ public class WebsocketAppTests {
 	@Autowired
 	private SockJsClient sockjsClient;
 
-	private String clientInfoJSON;
-
 	@PostConstruct
 	public void init() throws Exception {
 		// cleanup + init database
 		deviceRepository.delete(DeviceValues.DEVICEENTITY.getDevice());
 		deviceRepository.save(DeviceValues.DEVICEENTITY);
 
-		// create the client info body
-		ClientInfo info = new ClientInfo("test", "1.0");
-		clientInfoJSON = mapper.writeValueAsString(info);
-
 		// initialize the message broker
 		topicManager.topicCreate(DeviceValues.DEVICEENTITY.getDevice());
-
 	}
 
 	@Test
@@ -79,6 +72,11 @@ public class WebsocketAppTests {
 		StompSimulator simulator = new StompSimulator();
 		// add a connection action
 		simulator.add(new StompSimulator.ConnectionAction());
+
+		// create the client info body
+		ClientInfo info = new ClientInfo("test", "1.0");
+		String clientInfoJSON = mapper.writeValueAsString(info);
+
 		// add a send action
 		simulator.add(new StompSimulator.SendAction("/registration",
 				clientInfoJSON));
@@ -104,6 +102,11 @@ public class WebsocketAppTests {
 		StompSimulator simulator = new StompSimulator();
 		// add a connection action
 		simulator.add(new StompSimulator.ConnectionAction());
+
+		// create the client info body
+		ClientInfo info = new ClientInfo("test", "1.0");
+		String clientInfoJSON = mapper.writeValueAsString(info);
+
 		// add a registration action
 		simulator.add(new StompSimulator.SendAction("/registration",
 				clientInfoJSON));
@@ -134,6 +137,11 @@ public class WebsocketAppTests {
 		StompSimulator simulator = new StompSimulator();
 		// add a connection action
 		simulator.add(new StompSimulator.ConnectionAction());
+
+		// create the client info body
+		ClientInfo info = new ClientInfo("test", "1.0");
+		String clientInfoJSON = mapper.writeValueAsString(info);
+
 		// add a registration action
 		simulator.add(new StompSimulator.SendAction("/registration",
 				clientInfoJSON));
