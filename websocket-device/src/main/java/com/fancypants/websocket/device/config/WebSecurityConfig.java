@@ -21,13 +21,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		/*
-		 * http.authorizeRequests().anyRequest().authenticated().and().
-		 * sessionManagement()
-		 * .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
-		 * .x509().subjectPrincipalRegex("emailAddress=(.*?)(?:,|$)");
-		 */
-		http.sessionManagement()
+		http.authorizeRequests().anyRequest().authenticated().and()
+				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
 				.x509().subjectPrincipalRegex("emailAddress=(.*?)(?:,|$)")
 				.and().csrf().disable();

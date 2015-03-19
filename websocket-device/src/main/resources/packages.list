@@ -1,2 +1,3 @@
+com.fancypants.websocket.device.WebSocketDeviceScanMe
 com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe
 com.fancypants.stream.kinesis.StreamKinesisScanMe

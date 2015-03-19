@@ -8,7 +8,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.core.io.ClassPathResource;
@@ -17,11 +18,12 @@ import org.springframework.core.io.Resource;
 @EnableAutoConfiguration
 public class Application {
 
-	private static final Logger LOG = Logger.getLogger(Application.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(Application.class);
 	private static final String PACKAGES_RESOURCES = "packages.list";
 
 	public static void main(String[] args) throws Exception {
-		LOG.trace("main enter" + " args" + args);
+		LOG.trace("main enter", "args", args);
 		// calculate which packages to search for components
 		Package[] packages = computeSearchPath();
 		// create the args for SpringApplication
@@ -29,10 +31,9 @@ public class Application {
 		objects.add(Application.class);
 		objects.addAll(Arrays.asList(packages));
 		// start the spring application using this search path
-		SpringApplication application = new SpringApplication(
-				objects.toArray());
+		SpringApplication application = new SpringApplication(objects.toArray());
 		application.run(args);
-		LOG.trace("main exit" + " args" + args);
+		LOG.trace("main exit", "args", args);
 	}
 
 	private static Package[] computeSearchPath() {
@@ -58,10 +59,10 @@ public class Application {
 			packageList.toArray(packages);
 			return packages;
 		} catch (IOException e) {
-			LOG.fatal("IOException reading package list", e);
+			LOG.error("IOException reading package list", e);
 			throw new IllegalStateException(e);
 		} catch (ClassNotFoundException e) {
-			LOG.fatal("ClassNotFoundException reading package list", e);
+			LOG.error("ClassNotFoundException reading package list", e);
 			throw new IllegalStateException(e);
 		}
 	}
