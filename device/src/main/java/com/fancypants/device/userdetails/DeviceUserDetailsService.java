@@ -35,7 +35,6 @@ public class DeviceUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	private DeviceContainer deviceContainer;
-	
 
 	@Override
 	public UserDetails loadUserByUsername(String username)
@@ -53,8 +52,9 @@ public class DeviceUserDetailsService implements UserDetailsService {
 				authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 			} else {
 				// lookup the device to be sure it exists
-				DeviceEntity deviceEntity = deviceService.getDevice(address.getLocalPart());
-				
+				DeviceEntity deviceEntity = deviceService.getDevice(address
+						.getLocalPart());
+
 				// cache the device
 				deviceContainer.setDeviceEntity(deviceEntity);
 
@@ -66,6 +66,9 @@ public class DeviceUserDetailsService implements UserDetailsService {
 			LOG.trace("loadUserByUsername exit", user);
 			return user;
 		} catch (AbstractServiceException e) {
+			LOG.warn("User="
+					+ username
+					+ " presented a valid certificate but was not found in the database");
 			throw new UsernameNotFoundException("device=" + username
 					+ " not found in database");
 		} catch (ParseException e) {
