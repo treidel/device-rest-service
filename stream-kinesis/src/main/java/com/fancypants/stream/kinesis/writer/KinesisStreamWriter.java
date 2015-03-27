@@ -5,7 +5,9 @@ import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.kinesis.AmazonKinesis;
+import com.fancypants.stream.exception.StreamException;
 import com.fancypants.stream.writer.StreamWriter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,7 +34,7 @@ public class KinesisStreamWriter<T> implements StreamWriter<T> {
 		LOG.trace("KinesisStreamWriter exit");
 	}
 
-	public void putRecord(String hashKey, T record) {
+	public void putRecord(String hashKey, T record) throws StreamException {
 		LOG.trace("putRecord entry", hashKey, record);
 		try {
 			// serialize
@@ -41,6 +43,10 @@ public class KinesisStreamWriter<T> implements StreamWriter<T> {
 			amazonKinesis.putRecord(streamName, ByteBuffer.wrap(data), hashKey);
 		} catch (JsonProcessingException e) {
 			LOG.error("processing error", e);
+		}
+		catch (AmazonClientException e) {
+			LOG.warn("amazon error", e);
+			throw new StreamException(e);
 		}
 		LOG.trace("putRecord exit");
 	}

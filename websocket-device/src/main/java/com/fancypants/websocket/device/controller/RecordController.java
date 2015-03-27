@@ -27,6 +27,9 @@ import com.fancypants.rest.domain.ErrorMessage;
 import com.fancypants.rest.domain.RawRecord;
 import com.fancypants.rest.mapping.RawRecordEntityMapper;
 import com.fancypants.websocket.container.SessionContainer;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class RecordController {
@@ -47,6 +50,9 @@ public class RecordController {
 
 	@Autowired
 	private RawRecordEntityMapper recordEntityMapper;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@MessageMapping("/records")
 	public void handleRecords(StompHeaderAccessor request, Principal user,
@@ -90,9 +96,24 @@ public class RecordController {
 	}
 
 	@MessageExceptionHandler
-	public ErrorMessage handleException(AbstractServiceException exception) {
+	public void handleException(StompHeaderAccessor request, AbstractServiceException exception) {
 		LOG.error("RecordsController.handleException", exception);
+		try {
+		// create the error
 		ErrorMessage errorMessage = new ErrorMessage(exception.getMessage());
-		return errorMessage;
+		// create the response
+		StompHeaderAccessor response = StompHeaderAccessor
+				.create(StompCommand.ERROR);
+		response.setSessionId(request.getSessionId());
+		response.setReceiptId(request.getReceipt());
+		String messageText = objectMapper.writeValueAsString(errorMessage);
+		response.setMessage(messageText);
+		// send it
+		Message<byte[]> message = MessageBuilder.createMessage(
+				"".getBytes(), response.getMessageHeaders());
+		clientOutboundChannel.send(message);
+		} catch (JsonProcessingException e) {
+			LOG.error(e);
+		}
 	}
 }

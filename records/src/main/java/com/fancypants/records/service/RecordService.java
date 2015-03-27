@@ -18,6 +18,7 @@ import com.fancypants.data.entity.RawRecordEntity;
 import com.fancypants.data.entity.RawRecordId;
 import com.fancypants.data.repository.DeviceRepository;
 import com.fancypants.data.repository.RawRecordRepository;
+import com.fancypants.stream.exception.StreamException;
 import com.fancypants.stream.writer.StreamWriter;
 
 @Service
@@ -74,7 +75,11 @@ public class RecordService {
 			boolean created = recordRepository.insert(recordEntity);
 			if (true == created) {
 				// not a dup, insert it into the queue for more processing
-				streamWriter.putRecord(recordEntity.getDevice(), recordEntity);
+				try {
+					streamWriter.putRecord(recordEntity.getDevice(), recordEntity);
+				} catch (StreamException e) {
+					LOG.warn("ignoring stream error as data is already written");
+				}
 			} else {
 				LOG.debug("duplicate record", recordEntity);
 			}
