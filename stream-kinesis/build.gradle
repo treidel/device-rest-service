@@ -18,7 +18,3 @@ dependencies {
 	compile("org.springframework:spring-context") 
 	testCompile("junit:junit:4.+")
 }
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.11'
-}

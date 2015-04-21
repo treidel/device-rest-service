@@ -23,6 +23,3 @@ dependencies {
     compile("org.springframework.security:spring-security-web")
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.11'
-}

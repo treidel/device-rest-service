@@ -26,6 +26,3 @@ dependencies {
 	compile("org.springframework.security:spring-security-config")
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.11'
-}

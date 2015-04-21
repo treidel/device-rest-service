@@ -12,6 +12,3 @@ dependencies {
 	compile("org.apache.james:apache-mime4j")
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.11'
-}

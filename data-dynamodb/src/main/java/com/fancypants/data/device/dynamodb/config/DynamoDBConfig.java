@@ -6,11 +6,14 @@ import org.springframework.context.annotation.Configuration;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.fancypants.common.config.util.ConfigUtils;
 import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe;
 
 @Configuration
 @ComponentScan(basePackageClasses = { DataDeviceDynamoDBScanMe.class })
 public class DynamoDBConfig {
+
+	private static final String AMAZON_DYNAMODB_ENDPOINT_ENVVAR = "AWS_DYNANMODB_ENDPOINT";
 
 	@Bean
 	public AmazonDynamoDB amazonDynamoDB() {
@@ -20,7 +23,8 @@ public class DynamoDBConfig {
 	}
 
 	private String getAmazonDynamoDBEndpoint() {
-		return System.getProperty("amazon.dynamodb.endpoint");
+		return ConfigUtils
+				.retrieveEnvVarOrFail(AMAZON_DYNAMODB_ENDPOINT_ENVVAR);
 	}
 
 }

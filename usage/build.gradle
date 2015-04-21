@@ -7,6 +7,3 @@ jar {
 	version =  '1.0.0'
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.11'
-}

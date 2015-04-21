@@ -27,7 +27,6 @@ import com.fancypants.rest.domain.ErrorMessage;
 import com.fancypants.rest.domain.RawRecord;
 import com.fancypants.rest.mapping.RawRecordEntityMapper;
 import com.fancypants.websocket.container.SessionContainer;
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

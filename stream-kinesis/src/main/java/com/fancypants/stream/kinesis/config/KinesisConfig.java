@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.amazonaws.services.kinesis.AmazonKinesis;
 import com.amazonaws.services.kinesis.AmazonKinesisClient;
+import com.fancypants.common.config.util.ConfigUtils;
 import com.fancypants.data.entity.RawRecordEntity;
 import com.fancypants.stream.kinesis.writer.KinesisStreamWriter;
 import com.fancypants.stream.writer.StreamWriter;
@@ -16,6 +17,8 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 @Configuration
 public class KinesisConfig {
+
+	private static final String AMAZON_KINESIS_STREAM_ENVVAR = "AWS_KINESIS_STREAM";
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -42,6 +45,6 @@ public class KinesisConfig {
 	}
 
 	private String getStreamName() {
-		return System.getProperty("amazon.kinesis.stream.rawrecord");
+		return ConfigUtils.retrieveEnvVarOrFail(AMAZON_KINESIS_STREAM_ENVVAR);
 	}
 }

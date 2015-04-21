@@ -5,6 +5,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.8.RELEASE")
+	classpath("se.transmode.gradle:gradle-docker:1.2")
     }
 }
 
@@ -12,6 +13,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
+apply plugin: 'docker'
 
 jar {
 	baseName = 'websocket-device'
@@ -24,6 +26,10 @@ dependencies {
 	testCompile("org.eclipse.jetty.websocket:websocket-client")
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.11'
+group = 'fancypants'
+sourceCompatibility = 1.7
+mainClassName = 'com.fancypants.common.application.Application'
+
+distDocker {
+	exposePort 8083
 }
