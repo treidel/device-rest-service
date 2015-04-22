@@ -15,8 +15,8 @@ import org.springframework.core.io.Resource;
 public class WebConfig {
 	@Bean
 	public EmbeddedServletContainerCustomizer containerCustomizer(
-			@Value("${keystore.file}") final Resource keystoreFile,
-			@Value("${keystore.pass}") final String keystorePass)
+			@Value("${KEYSTORE_FILE}") final Resource keystoreFile,
+			@Value("${KEYSTORE_PASSWORD}") final String keystorePass)
 			throws Exception {
 		String keystoreFilePath = keystoreFile.getFile().getAbsolutePath();
 		return new TomcatClientSSLAuthenticationCustomizer(keystoreFilePath,

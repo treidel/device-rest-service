@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.8.RELEASE")
-	classpath("se.transmode.gradle:gradle-docker:1.2")
+		classpath("se.transmode.gradle:gradle-docker:1.2")
     }
 }
 
@@ -26,10 +26,12 @@ dependencies {
 	testCompile("org.eclipse.jetty.websocket:websocket-client")
 }
 
-group = 'fancypants'
+group = 'reideltj'
 sourceCompatibility = 1.7
 mainClassName = 'com.fancypants.common.application.Application'
 
 distDocker {
 	exposePort 8083
+	addFile('src/main/security/server.jks','/etc/server.jks')
+	setEnvironment('KEYSTORE_FILE', 'file:/etc/server.jks')
 }

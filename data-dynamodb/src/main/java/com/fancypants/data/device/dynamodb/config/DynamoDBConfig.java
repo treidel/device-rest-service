@@ -13,7 +13,7 @@ import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe;
 @ComponentScan(basePackageClasses = { DataDeviceDynamoDBScanMe.class })
 public class DynamoDBConfig {
 
-	private static final String AMAZON_DYNAMODB_ENDPOINT_ENVVAR = "AWS_DYNANMODB_ENDPOINT";
+	private static final String AMAZON_DYNAMODB_ENDPOINT_ENVVAR = "AWS_DYNAMODB_ENDPOINT";
 
 	@Bean
 	public AmazonDynamoDB amazonDynamoDB() {

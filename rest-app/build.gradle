@@ -5,6 +5,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.8.RELEASE")
+		classpath("se.transmode.gradle:gradle-docker:1.2")        
     }
 }
 
@@ -12,6 +13,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
+apply plugin: 'docker'
 
 jar {
 	baseName = 'rest-app'
@@ -21,4 +23,12 @@ jar {
 dependencies {
 	compile("org.springframework.boot:spring-boot-starter-web")
 	testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+group = 'reideltj'
+sourceCompatibility = 1.7
+mainClassName = 'com.fancypants.common.application.Application'
+
+distDocker {
+	exposePort 8082
 }
