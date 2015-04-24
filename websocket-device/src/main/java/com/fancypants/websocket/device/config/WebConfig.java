@@ -5,6 +5,7 @@ import org.apache.coyote.http11.Http11NioProtocol;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,22 @@ import org.springframework.core.io.Resource;
 
 @Configuration
 public class WebConfig {
+
+	@Bean
+	public EmbeddedServletContainerFactory servletContainer() throws Exception {
+		TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
+		tomcat.addAdditionalTomcatConnectors(createHTTPConnector());
+		return tomcat;
+	}
+
+	public Connector createHTTPConnector() {
+		Connector connector = new Connector(
+				org.apache.coyote.http11.Http11NioProtocol.class.getName());
+		connector.setPort(8003);
+		connector.setScheme("http");
+		return connector;
+	}
+
 	@Bean
 	public EmbeddedServletContainerCustomizer containerCustomizer(
 			@Value("${KEYSTORE_FILE}") final Resource keystoreFile,
