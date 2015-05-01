@@ -45,8 +45,8 @@ public class KeyStoreCreator {
 			@Qualifier("rootCert") X509Certificate rootCert,
 			@Qualifier("serverCert") X509Certificate serverCert,
 			@Qualifier("serverKey") CertAndKeyGen serverKey,
-			@Value("${keystore.file}") final Resource keystoreFile,
-			@Value("${keystore.pass}") final String keystorePassword)
+			@Value("${KEYSTORE_FILE}") final Resource keystoreFile,
+			@Value("${KEYSTORE_PASSWORD}") final String keystorePassword)
 			throws KeyStoreException, NoSuchAlgorithmException,
 			CertificateException, IOException {
 		// remove the old keystore

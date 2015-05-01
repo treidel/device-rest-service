@@ -222,8 +222,6 @@ project(':websocket-device') {
 		compile project(':records')
 		compile project(':usage')
 		compile project(':data')
-		runtime project(':data-dynamodb')
-		runtime project(':stream-kinesis')
 	}
 }
 

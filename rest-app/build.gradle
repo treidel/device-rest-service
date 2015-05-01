@@ -20,9 +20,17 @@ jar {
 	version =  '1.0.0'
 }
 
+configurations {
+ 	customRuntime {
+ 		extendsFrom runtime
+ 	}
+}
+
 dependencies {
 	compile("org.springframework.boot:spring-boot-starter-web")
 	testCompile("org.springframework.boot:spring-boot-starter-test")
+	customRuntime(':data-dynamodb')
+	customRuntime(':message-rabbitmq')
 }
 
 group = 'reideltj'
@@ -30,5 +38,6 @@ sourceCompatibility = 1.7
 mainClassName = 'com.fancypants.common.application.Application'
 
 distDocker {
+	exposePort 8080
 	exposePort 8082
 }

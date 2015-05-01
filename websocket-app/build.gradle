@@ -19,14 +19,18 @@ jar {
 	baseName = 'websocket-app'
 	version =  '1.0.0'
 }
-
+ 
+configurations {
+ 	customRuntime {
+ 		extendsFrom runtime
+ 	}
+ }
+ 
 dependencies {
 	compile("org.springframework.boot:spring-boot-starter-websocket")
 	testCompile("org.springframework.boot:spring-boot-starter-test")
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.11'
+	customRuntime(':data-dynamodb')
+	customRuntime(':message-rabbitmq')
 }
 
 group = 'reideltj'
@@ -34,5 +38,10 @@ sourceCompatibility = 1.7
 mainClassName = 'com.fancypants.common.application.Application'
 
 distDocker {
+	exposePort 8080
 	exposePort 8084
+}
+
+bootRepackage {
+    customConfiguration = "customRuntime"
 }
