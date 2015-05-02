@@ -54,7 +54,7 @@ sourceCompatibility = 1.7
 mainClassName = 'com.fancypants.common.application.Application'
 
 distDocker {
-	exposePort 8080
+	exposePort 8003
 	exposePort 8083
 	addFile('src/main/security/server.jks','/etc/server.jks')
 	setEnvironment('KEYSTORE_FILE', 'file:/etc/server.jks')
