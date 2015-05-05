@@ -20,17 +20,33 @@ jar {
 	version =  '1.0.0'
 }
  
-configurations {
- 	customRuntime {
- 		extendsFrom runtime
- 	}
- }
- 
 dependencies {
+	/* create a new configuration for all of the application dependencies */
+	configurations {
+ 		bootPackaging {
+ 			extendsFrom runtime
+ 		}
+	}
+	
 	compile("org.springframework.boot:spring-boot-starter-websocket")
 	testCompile("org.springframework.boot:spring-boot-starter-test")
-	customRuntime(':data-dynamodb')
-	customRuntime(':message-rabbitmq')
+	bootPackaging project(':data-dynamodb')
+	bootPackaging project(':message-rabbitmq')
+}
+
+/* use the application dependencies */
+bootRepackage {
+	customConfiguration = "bootPackaging"
+}
+
+/* include the application dependencies in the distribution */
+applicationDistribution.from(configurations.bootPackaging) {
+	into "lib"
+}
+
+/* add application dependencies to the classpath */
+startScripts {
+	classpath += configurations.bootPackaging
 }
 
 group = 'reideltj'
@@ -38,8 +54,7 @@ sourceCompatibility = 1.7
 mainClassName = 'com.fancypants.common.application.Application'
 
 distDocker {
-	exposePort 8080
-	exposePort 8084
+	exposePort 8004
 }
 
 bootRepackage {

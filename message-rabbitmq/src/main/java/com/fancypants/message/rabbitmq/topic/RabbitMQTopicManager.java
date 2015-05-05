@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
+import com.fancypants.common.config.util.ConfigUtils;
 import com.fancypants.message.exception.AbstractMessageException;
 import com.fancypants.message.rabbitmq.exception.RabbitMQException;
 import com.fancypants.message.topic.TopicConsumer;
@@ -26,6 +26,9 @@ import com.rabbitmq.client.ConnectionFactory;
 public class RabbitMQTopicManager implements TopicManager, Serializable {
 
 	private static final long serialVersionUID = 2706248108381878149L;
+
+	private static final String RABBITMQ_URI_ENVVAR = "RABBITMQ_URI";
+	private static final String RABBITMQ_PASSWORD_ENVVAR = "RABBITMQ_PASSWORD";
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(RabbitMQTopicManager.class);
@@ -115,14 +118,13 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 	}
 
 	private URI getURI() {
-		String uri = System.getProperty("rabbitmq.uri");
-		Assert.notNull(uri);
+		String uri = ConfigUtils.retrieveEnvVarOrFail(RABBITMQ_URI_ENVVAR);
 		return URI.create(uri);
 	}
 
 	private String getPassword() {
-		String password = System.getProperty("rabbitmq.password");
-		Assert.notNull(password);
+		String password = ConfigUtils
+				.retrieveEnvVarOrFail(RABBITMQ_PASSWORD_ENVVAR);
 		return password;
 	}
 }
