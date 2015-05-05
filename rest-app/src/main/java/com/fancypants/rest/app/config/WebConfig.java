@@ -2,8 +2,14 @@ package com.fancypants.rest.app.config;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.catalina.connector.Connector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;
+import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -32,5 +38,28 @@ public class WebConfig {
 		// tweak the serialization of dates
 		httpMessageConverter.getObjectMapper().setDateFormat(
 				new ISO8601DateFormat());
+	}
+
+	@Bean
+	public EmbeddedServletContainerCustomizer containerCustomizer()
+			throws Exception {
+		return new TomcatCustomizer();
+	}
+
+	private static class TomcatCustomizer implements
+			EmbeddedServletContainerCustomizer {
+
+		@Override
+		public void customize(ConfigurableEmbeddedServletContainer factory) {
+			TomcatEmbeddedServletContainerFactory tomcatFactory = (TomcatEmbeddedServletContainerFactory) factory;
+			tomcatFactory
+					.addConnectorCustomizers(new TomcatConnectorCustomizer() {
+						@Override
+						public void customize(Connector connector) {
+							connector.setPort(8002);
+						}
+					});
+		}
+
 	}
 }

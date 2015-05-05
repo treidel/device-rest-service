@@ -1,3 +1,2 @@
 com.fancypants.rest.app.RestAppScanMe
 com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe
-com.fancypants.message.rabbitmq.MessageRabbitMQScanMe
