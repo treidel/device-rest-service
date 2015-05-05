@@ -46,10 +46,13 @@ startScripts {
 	classpath += configurations.bootPackaging
 }
 
+/* configure the memory usage for the JVM */
+applicationDefaultJvmArgs = ["-Xms128M", "-Xmx128M"]
+
 group = 'reideltj'
 sourceCompatibility = 1.7
 mainClassName = 'com.fancypants.common.application.Application'
 
 distDocker {
-	exposePort 8082
+	exposePort 8002
 }
