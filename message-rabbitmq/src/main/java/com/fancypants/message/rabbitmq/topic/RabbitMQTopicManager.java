@@ -27,8 +27,8 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 
 	private static final long serialVersionUID = 2706248108381878149L;
 
-	private static final String RABBITMQ_URI_ENVVAR = "RABBITMQ_URI";
-	private static final String RABBITMQ_PASSWORD_ENVVAR = "RABBITMQ_PASSWORD";
+	public static final String RABBITMQ_URI_ENVVAR = "RABBITMQ_URI";
+	public static final String RABBITMQ_PASSWORD_ENVVAR = "RABBITMQ_PASSWORD";
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(RabbitMQTopicManager.class);
