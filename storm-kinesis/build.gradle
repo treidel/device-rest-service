@@ -9,12 +9,11 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 jar {
-	baseName = 'storm'
+	baseName = 'storm-kinesis'
 	version =  '1.0.0'
 }
 
 dependencies {
-	compile("org.apache.storm:storm-core") 
 	compile("com.amazonaws:aws-java-sdk")	
 	compile("org.clojars.reideltj:kinesis-storm-spout")
 	testCompile("junit:junit:4.+")

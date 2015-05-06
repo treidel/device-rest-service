@@ -5,6 +5,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.8.RELEASE")
+		classpath("se.transmode.gradle:gradle-docker:1.2")        
     }
 }
 
@@ -12,6 +13,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
+apply plugin: 'docker'
 
 jar {
 	baseName = 'storm-processing'
@@ -19,10 +21,43 @@ jar {
 }
 
 dependencies {
+	/* create a new configuration for all of the application dependencies */
+	configurations {
+ 		bootPackaging {
+ 			extendsFrom runtime
+ 		}
+	}
+	
 	compile("org.springframework.boot:spring-boot-starter")	
 	compile("org.apache.curator:curator-framework")
 	compile("commons-beanutils:commons-beanutils")
 	compile("com.esotericsoftware.kryo:kryo")
 	compile("org.springframework.security:spring-security-config")
+	bootPackaging project(':data-dynamodb')
+	bootPackaging project(':storm-kinesis')
+	bootPackaging project(':message-rabbitmq')
+	
 }
+
+/* use the application dependencies */
+bootRepackage {
+	customConfiguration = "bootPackaging"
+}
+
+/* include the application dependencies in the distribution */
+applicationDistribution.from(configurations.bootPackaging) {
+	into "lib"
+}
+
+/* add application dependencies to the classpath */
+startScripts {
+	classpath += configurations.bootPackaging
+}
+
+/* configure the memory usage for the JVM */
+applicationDefaultJvmArgs = ["-Xms128M", "-Xmx128M"]
+
+group = 'reideltj'
+sourceCompatibility = 1.7
+mainClassName = 'com.fancypants.common.application.Application' 
 
