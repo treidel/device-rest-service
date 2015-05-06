@@ -23,10 +23,10 @@ public class RawRecord {
 
 	@JsonCreator
 	public RawRecord(
-			@JsonProperty(UUID_ATTRIBUTE) UUID uuid,
-			@JsonProperty(TIMESTAMP_ATTRIBUTE) Date timestamp,
-			@JsonProperty(DURATION_ATTRIBUTE) float durationInSeconds,
-			@JsonProperty(MEASUREMENTS_ATTRIBUTE) Set<RawMeasurement> measurements) {
+			@JsonProperty(value = UUID_ATTRIBUTE, required = true) UUID uuid,
+			@JsonProperty(value = TIMESTAMP_ATTRIBUTE, required = true) Date timestamp,
+			@JsonProperty(value = DURATION_ATTRIBUTE, required = true) float durationInSeconds,
+			@JsonProperty(value = MEASUREMENTS_ATTRIBUTE, required = true) Set<RawMeasurement> measurements) {
 		this.uuid = uuid;
 		this.timestamp = timestamp;
 		this.durationInSeconds = durationInSeconds;

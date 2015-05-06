@@ -17,9 +17,10 @@ public class Device {
 	private final SortedSet<Circuit> circuits;
 
 	@JsonCreator
-	public Device(@JsonProperty(NAME_ATTRIBUTE) String name,
-			@JsonProperty(SERIALNUMBER_ATTRIBUTE) String serialNumber,
-			@JsonProperty(CIRCUITS_ATTRIBUTE) SortedSet<Circuit> circuits) {
+	public Device(
+			@JsonProperty(value = NAME_ATTRIBUTE, required = true) String name,
+			@JsonProperty(value = SERIALNUMBER_ATTRIBUTE, required = true) String serialNumber,
+			@JsonProperty(value = CIRCUITS_ATTRIBUTE, required = true) SortedSet<Circuit> circuits) {
 		this.name = name;
 		this.serialNumber = serialNumber;
 		this.circuits = circuits;

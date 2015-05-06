@@ -8,13 +8,14 @@ public class PowerConsumptionMeasurement implements
 
 	public static final String CIRCUIT_ATTRIBUTE = "circuit";
 	public static final String POWERINKWH_ATTRIBUTE = "power-in-kwh";
-	
+
 	private final String circuit;
 	private float powerInKWH;
 
 	@JsonCreator
-	public PowerConsumptionMeasurement(@JsonProperty(CIRCUIT_ATTRIBUTE) String circuit,
-			@JsonProperty(POWERINKWH_ATTRIBUTE) float powerInKWH) {
+	public PowerConsumptionMeasurement(
+			@JsonProperty(value = CIRCUIT_ATTRIBUTE, required = true) String circuit,
+			@JsonProperty(value = POWERINKWH_ATTRIBUTE, required = true) float powerInKWH) {
 		this.circuit = circuit;
 		this.powerInKWH = powerInKWH;
 	}
@@ -37,7 +38,7 @@ public class PowerConsumptionMeasurement implements
 	public int compareTo(PowerConsumptionMeasurement measurement) {
 		return circuit.compareTo(measurement.circuit);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return circuit.hashCode();

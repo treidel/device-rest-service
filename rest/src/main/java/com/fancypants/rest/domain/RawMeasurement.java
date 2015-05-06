@@ -14,9 +14,9 @@ public class RawMeasurement implements Comparable<RawMeasurement> {
 	private final float amperageInAmps;
 
 	@JsonCreator
-	public RawMeasurement(@JsonProperty(CIRCUIT_ATTRIBUTE) String circuit,
-			@JsonProperty(VOLTAGE_ATTRIBUTE) float voltageInVolts,
-			@JsonProperty(AMPERAGE_ATTRIBUTE) float amperageInAmps) {
+	public RawMeasurement(@JsonProperty(value = CIRCUIT_ATTRIBUTE, required = true) String circuit,
+			@JsonProperty(value = VOLTAGE_ATTRIBUTE, required = true) float voltageInVolts,
+			@JsonProperty(value = AMPERAGE_ATTRIBUTE, required = true) float amperageInAmps) {
 		this.circuit = circuit;
 		this.voltageInVolts = voltageInVolts;
 		this.amperageInAmps = amperageInAmps;

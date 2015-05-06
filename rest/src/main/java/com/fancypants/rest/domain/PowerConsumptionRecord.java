@@ -21,8 +21,8 @@ public class PowerConsumptionRecord implements
 
 	@JsonCreator
 	public PowerConsumptionRecord(
-			@JsonProperty(DATE_ATTRIBUTE) Date date,
-			@JsonProperty(MEASUREMENTS_ATTRIBUTE) Set<PowerConsumptionMeasurement> measurements) {
+			@JsonProperty(value = DATE_ATTRIBUTE, required = true) Date date,
+			@JsonProperty(value = MEASUREMENTS_ATTRIBUTE, required = true) Set<PowerConsumptionMeasurement> measurements) {
 		this.date = date;
 		this.measurements = measurements;
 	}
