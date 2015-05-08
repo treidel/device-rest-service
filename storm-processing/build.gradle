@@ -30,9 +30,11 @@ dependencies {
 	
 	compile("org.springframework.boot:spring-boot-starter")	
 	compile("org.apache.curator:curator-framework")
+	compile("org.apache.storm:storm-kafka")
 	compile("commons-beanutils:commons-beanutils")
 	compile("com.esotericsoftware.kryo:kryo")
 	compile("org.springframework.security:spring-security-config")
+	compile("org.apache.kafka:kafka_2.10:0.8.2.1")
 	bootPackaging project(':data-dynamodb')
 	bootPackaging project(':storm-kinesis')
 	bootPackaging project(':message-rabbitmq')

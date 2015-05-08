@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.fancypants.common.exception.AbstractServiceException;
 import com.fancypants.common.exception.BusinessLogicException;
+import com.fancypants.common.exception.DataPersistenceException;
 import com.fancypants.common.exception.DataValidationException;
 import com.fancypants.data.entity.CircuitEntity;
 import com.fancypants.data.entity.DeviceEntity;
@@ -34,8 +35,8 @@ public class RecordService {
 	@Autowired
 	private StreamWriter<RawRecordEntity> streamWriter;
 
-	public RawRecordEntity findRecordForDevice(DeviceEntity deviceEntity, UUID uuid)
-			throws AbstractServiceException {
+	public RawRecordEntity findRecordForDevice(DeviceEntity deviceEntity,
+			UUID uuid) throws AbstractServiceException {
 		LOG.trace("findRecordForDevice entry", uuid);
 		// create the record id for the query
 		RawRecordId recordId = new RawRecordId(deviceEntity.getDevice(), uuid);
@@ -50,7 +51,8 @@ public class RecordService {
 		return recordEntity;
 	}
 
-	public Collection<RawRecordEntity> findRecordsForDevice(DeviceEntity deviceEntity) {
+	public Collection<RawRecordEntity> findRecordsForDevice(
+			DeviceEntity deviceEntity) {
 		LOG.trace("findRecordsForDevice entry");
 		List<RawRecordEntity> entities = recordRepository
 				.findAllForDevice(deviceEntity.getDevice());
@@ -58,7 +60,8 @@ public class RecordService {
 		return entities;
 	}
 
-	public void bulkCreateRecords(DeviceEntity deviceEntity, Collection<RawRecordEntity> entities)
+	public void bulkCreateRecords(DeviceEntity deviceEntity,
+			Collection<RawRecordEntity> entities)
 			throws AbstractServiceException {
 		LOG.trace("bulkCreateRecords entry", entities);
 		for (RawRecordEntity recordEntity : entities) {
@@ -71,17 +74,15 @@ public class RecordService {
 							+ " for circuit=" + circuitEntity.getIndex());
 				}
 			}
-			// try to create the record
-			boolean created = recordRepository.insert(recordEntity);
-			if (true == created) {
-				// not a dup, insert it into the queue for more processing
-				try {
-					streamWriter.putRecord(recordEntity.getDevice(), recordEntity);
-				} catch (StreamException e) {
-					LOG.warn("ignoring stream error as data is already written");
-				}
-			} else {
-				LOG.debug("duplicate record", recordEntity);
+			// insert it into the queue for more processing, dups will be
+			// detected + eliminated later
+			try {
+				streamWriter.putRecord(recordEntity.getDevice(), recordEntity);
+			} catch (StreamException e) {
+				LOG.error("stream error", e);
+				throw new DataPersistenceException(
+						"unable to write data to persistent storage for record="
+								+ recordEntity.getUUID().toString());
 			}
 		}
 		LOG.trace("bulkCreateRecords exit");

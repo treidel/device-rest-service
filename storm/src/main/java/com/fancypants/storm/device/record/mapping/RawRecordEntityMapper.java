@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
-import storm.trident.tuple.TridentTuple;
+import backtype.storm.tuple.ITuple;
 
 import com.fancypants.common.mapping.EntityMapper;
 import com.fancypants.data.entity.DeviceEntity;
@@ -18,16 +18,15 @@ import com.fancypants.data.entity.RawRecordId;
 
 @Component
 public class RawRecordEntityMapper implements
-		EntityMapper<RawRecordEntity, TridentTuple>, Serializable {
+		EntityMapper<RawRecordEntity, ITuple>, Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2650439842355334806L;
-	
 
 	@Override
-	public RawRecordEntity convert(TridentTuple tuple) {
+	public RawRecordEntity convert(ITuple tuple) {
 		// extract the id attributes
 		RawRecordId id = new RawRecordId(
 				tuple.getStringByField(RawRecordEntity.DEVICE_ATTRIBUTE),

@@ -1,5 +1,7 @@
 package com.fancypants.storm.processing.device.record.aggregate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,9 @@ import com.fancypants.usage.summarizer.EnergyConsumptionSummarizer;
 public class UsageAggregator implements
 		ReducerAggregator<EnergyConsumptionRecordEntity> {
 
+	private static final Logger LOG = LoggerFactory
+			.getLogger(UsageAggregator.class);
+
 	/**
 	 * 
 	 */
@@ -27,23 +32,29 @@ public class UsageAggregator implements
 
 	@Override
 	public EnergyConsumptionRecordEntity init() {
+		LOG.trace("EnergyConsumptionRecordEntity.init enter");
 		// indicate null for a new period of time
+		LOG.trace("EnergyConsumptionRecordEntity.init exit");
 		return null;
 	}
 
 	@Override
 	public EnergyConsumptionRecordEntity reduce(
 			EnergyConsumptionRecordEntity curr, TridentTuple tuple) {
+		LOG.trace("EnergyConsumptionRecordEntity.reduce enter", "curr", curr,
+				"tuple", tuple);
 		// decode the tuple
-		EnergyConsumptionRecordEntity newEntity = mapper.convert(tuple);
-		// see if this is the first record for the time period
-		if (null == curr) {
-			// we're done!
-			return newEntity;
-		} else {
+		EnergyConsumptionRecordEntity value = mapper.convert(tuple);
+
+		LOG.info("summarizing usage", "device", value.getDevice());
+
+		// only for subsequent invocations do we summarize
+		if (null != curr) {
 			// sum the two records together
-			return summarizer.summarize(curr.getId(), curr, newEntity);
+			value = summarizer.summarize(curr.getId(), curr, value);
 		}
+		LOG.trace("EnergyConsumptionRecordEntity.reduce exit", value);
+		return value;
 	}
 
 }

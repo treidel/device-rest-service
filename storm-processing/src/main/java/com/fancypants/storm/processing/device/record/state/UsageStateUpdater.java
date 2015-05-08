@@ -28,6 +28,7 @@ public class UsageStateUpdater extends BaseStateUpdater<UsageState> {
 			// get the record
 			EnergyConsumptionRecordEntity record = (EnergyConsumptionRecordEntity) tuple
 					.get(0);
+			LOG.info("writing usage for device", "device", record.getDevice());
 			// do the write
 			state.update(record);
 		}

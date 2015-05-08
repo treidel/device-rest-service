@@ -45,6 +45,7 @@ public class TopicNotifierStateUpdater extends
 				// create the pair
 				Pair<String, String> pair = new ImmutablePair<String, String>(
 						record.getDevice(), json);
+				LOG.info("sending notification", "device", record.getDevice());
 				// do the write
 				state.update(pair);
 			}
