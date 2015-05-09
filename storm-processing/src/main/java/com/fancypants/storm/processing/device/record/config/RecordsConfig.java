@@ -11,7 +11,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import storm.kafka.bolt.KafkaBolt;
-import storm.kafka.bolt.mapper.FieldNameBasedTupleToKafkaMapper;
 import storm.kafka.bolt.selector.DefaultTopicSelector;
 import storm.kafka.trident.TridentKafkaState;
 import storm.trident.Stream;
@@ -38,11 +37,11 @@ import com.fancypants.storm.device.record.mapping.EnergyConsumptionTupleMapper;
 import com.fancypants.storm.device.record.mapping.RawRecordTupleMapper;
 import com.fancypants.storm.kafka.StormKafkaScanMe;
 import com.fancypants.storm.kafka.config.KafkaConfig;
+import com.fancypants.storm.kafka.mapper.RawRecordToKafkaMapper;
 import com.fancypants.storm.processing.StormProcessingScanMe;
 import com.fancypants.storm.processing.device.record.aggregate.HourlyEnergyCalculationAggregator;
 import com.fancypants.storm.processing.device.record.aggregate.UsageAggregator;
 import com.fancypants.storm.processing.device.record.bolt.DuplicateDetectionBolt;
-import com.fancypants.storm.processing.device.record.filter.PrintFilter;
 import com.fancypants.storm.processing.device.record.state.TopicNotifierStateFactory;
 import com.fancypants.storm.processing.device.record.state.TopicNotifierStateUpdater;
 import com.fancypants.storm.processing.device.record.state.UsageStateFactory;
@@ -67,6 +66,9 @@ public class RecordsConfig {
 	private HourlyRecordRepository hourlyRepository;
 
 	@Autowired
+	private RawRecordToKafkaMapper kafkaMapper;
+
+	@Autowired
 	private UsageStateFactory usageStateFactory;
 
 	@Autowired
@@ -88,9 +90,6 @@ public class RecordsConfig {
 	private UsageAggregator usageAggregator;
 
 	@Autowired
-	private PrintFilter printFilter;
-
-	@Autowired
 	private IRichSpout kinesisSpout;
 
 	@SuppressWarnings("rawtypes")
@@ -104,26 +103,29 @@ public class RecordsConfig {
 
 		// config object for all topologies
 		Config conf = new Config();
-		
+
 		// create the regular storm topology
 		TopologyBuilder stormTopology = new TopologyBuilder();
 
 		// setup the raw topology
 		stormTopology.setSpout(RAW_RECORDS_SPOUT, kinesisSpout);
-		stormTopology.setBolt(DUPLICATE_DETECTION_BOLT, duplicateDetectionBolt);
+		// duplicate detection takes records from the spout
+		stormTopology.setBolt(DUPLICATE_DETECTION_BOLT, duplicateDetectionBolt)
+				.shuffleGrouping(RAW_RECORDS_SPOUT);
 		KafkaBolt kafkaBolt = new KafkaBolt().withTopicSelector(
 				new DefaultTopicSelector(ConfigUtils
 						.retrieveEnvVarOrFail(KafkaConfig.KAFKA_TOPIC_ENVVAR)))
-				.withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper());
-		stormTopology.setBolt(PERSIST_TO_KAFKA_BOLT, kafkaBolt);
-		
+				.withTupleToKafkaMapper(kafkaMapper);
+		// the kafka bolt takes records from the duplicate detection
+		stormTopology.setBolt(PERSIST_TO_KAFKA_BOLT, kafkaBolt)
+				.shuffleGrouping(DUPLICATE_DETECTION_BOLT);
+
 		// set kafka producer properties
-        Properties props = new Properties();
-        props.put("metadata.broker.list", "localhost:9092");
-        props.put("request.required.acks", "1");
-        props.put("serializer.class", "kafka.serializer.StringEncoder");
-        conf.put(TridentKafkaState.KAFKA_BROKER_PROPERTIES, props);
-		
+		Properties props = new Properties();
+		props.put("metadata.broker.list", "localhost:9092");
+		props.put("request.required.acks", "1");
+		props.put("serializer.class", "kafka.serializer.StringEncoder");
+		conf.put(TridentKafkaState.KAFKA_BROKER_PROPERTIES, props);
 
 		// create the trident topology
 		TridentTopology tridentTopology = new TridentTopology();
@@ -133,19 +135,15 @@ public class RecordsConfig {
 				FILTERED_RECORDS_TXID, kafkaSpout);
 		Stream node1 = filteredStream.partitionBy(new Fields(
 				RawRecordEntity.DEVICE_ATTRIBUTE));
-		node1.each(RawRecordTupleMapper.getOutputFields(), printFilter);
 		Stream node2 = node1.aggregate(RawRecordTupleMapper.getOutputFields(),
 				hourlyEnergyCalculationAggregator,
 				EnergyConsumptionTupleMapper.getOutputFields());
-		node2.each(EnergyConsumptionTupleMapper.getOutputFields(),
-				new PrintFilter());
 		GroupedStream node3 = node2.groupBy(new Fields(
 				EnergyConsumptionRecordEntity.DEVICE_ATTRIBUTE,
 				EnergyConsumptionRecordEntity.DATE_ATTRIBUTE));
 		Stream node4 = node3.aggregate(new Fields(
 				EnergyConsumptionEntityMapper.ATTRIBUTES), usageAggregator,
 				new Fields("result"));
-		node4.each(new Fields("result"), new PrintFilter());
 		node4.partitionPersist(usageStateFactory, new Fields("result"),
 				usageStateUpdater);
 		node4.partitionPersist(topicNotifierStateFactory, new Fields("result"),
