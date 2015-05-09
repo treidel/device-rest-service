@@ -4,7 +4,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +19,9 @@ import com.fancypants.rest.domain.RawRecord;
 public class CurrentRecordResourceAssembler extends
 		ResourceAssemblerSupport<Pair<Device, RawRecord>, RawRecordResource> {
 
-	private static final Logger LOG = Logger.getLogger(CurrentRecordResourceAssembler.class);
-	
+	private static final Logger LOG = LoggerFactory
+			.getLogger(CurrentRecordResourceAssembler.class);
+
 	public CurrentRecordResourceAssembler() {
 		super(RecordController.class, RawRecordResource.class);
 	}
@@ -31,9 +33,10 @@ public class CurrentRecordResourceAssembler extends
 		try {
 			resource.add(linkTo(
 					methodOn(RecordController.class).getRecord(
-							entity.getRight().getUUID().toString())).withSelfRel());
+							entity.getRight().getUUID().toString()))
+					.withSelfRel());
 		} catch (AbstractServiceException e) {
-			LOG.error("exception received" , e);
+			LOG.error("exception received", e);
 		}
 
 		return resource;

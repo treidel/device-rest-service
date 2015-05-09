@@ -34,6 +34,8 @@ def versionOverrides = [
 	"org.slf4j:slf4j-api":"1.7.7",
 	"com.jayway.jsonpath:json-path":"0.9.1",	
 	"com.amazonaws:aws-java-sdk" : "1.9.16",
+	"com.amazonaws:aws-java-sdk-dynamodb" : "1.9.16",
+	"com.amazonaws:aws-java-sdk-kinesis" : "1.9.16",
 	"com.amazonaws:kinesis-storm-spout":"1.1.0",	
 	"com.esotericsoftware.kryo:kryo" : "2.21",	
 	"com.h2database:h2" : "1.4.185",
@@ -71,6 +73,9 @@ subprojects {
 				details.useVersion overrideVersion
 			}		
 		}
+	 	/* remove certain logging libraries to avoid complaints */
+ 		exclude group: 'org.slf4j', module: 'log4j-over-slf4j'
+ 		exclude group: 'ch.qos.logback'
    	}
 }
 

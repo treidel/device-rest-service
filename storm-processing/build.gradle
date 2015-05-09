@@ -23,6 +23,7 @@ jar {
 dependencies {
 	/* create a new configuration for all of the application dependencies */
 	configurations {
+ 		/* create the packaging configuration used for extra libraries for spring boto */
  		bootPackaging {
  			extendsFrom runtime
  		}
@@ -38,7 +39,6 @@ dependencies {
 	bootPackaging project(':data-dynamodb')
 	bootPackaging project(':storm-kinesis')
 	bootPackaging project(':message-rabbitmq')
-	
 }
 
 /* use the application dependencies */

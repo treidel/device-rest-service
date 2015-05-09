@@ -1,6 +1,7 @@
 package com.fancypants.websocket.device.controller;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -14,7 +15,8 @@ import com.fancypants.websocket.device.domain.DeviceInfo;
 @Controller
 public class DeviceController {
 
-	private static final Logger LOG = Logger.getLogger(DeviceController.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(DeviceController.class);
 
 	@Autowired
 	private SessionContainer sessionContainer;
@@ -22,14 +24,14 @@ public class DeviceController {
 	@MessageMapping("/registration")
 	public void handleDeviceRegistration(DeviceInfo deviceInfo)
 			throws AbstractServiceException {
-		LOG.trace("DeviceController.handleDeviceRegistration enter" + " deviceInfo"
-				+ deviceInfo);
-		
+		LOG.trace("DeviceController.handleDeviceRegistration enter"
+				+ " deviceInfo" + deviceInfo);
+
 		// TBD: log the device info
-		
+
 		// mark the session as registered
 		sessionContainer.setRegistered(true);
-		
+
 		LOG.trace("RecordsController.handleRecords exit");
 	}
 

@@ -3,7 +3,8 @@ package com.fancypants.rest.app.assembler;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ import com.fasterxml.jackson.databind.util.ISO8601Utils;
 public class PowerConsumptionResourceAssembler
 		extends
 		ResourceAssemblerSupport<PowerConsumptionRecord, PowerConsumptionRecordResource> {
-	private static final Logger LOG = Logger
+	private static final Logger LOG = LoggerFactory
 			.getLogger(PowerConsumptionResourceAssembler.class);
 
 	public PowerConsumptionResourceAssembler() {

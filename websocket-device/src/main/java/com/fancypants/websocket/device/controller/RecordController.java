@@ -5,7 +5,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -33,7 +34,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 public class RecordController {
 
-	private static final Logger LOG = Logger.getLogger(RecordController.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(RecordController.class);
 
 	@Autowired
 	private MessageChannel clientOutboundChannel;
@@ -49,7 +51,7 @@ public class RecordController {
 
 	@Autowired
 	private RawRecordEntityMapper recordEntityMapper;
-	
+
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -95,24 +97,25 @@ public class RecordController {
 	}
 
 	@MessageExceptionHandler
-	public void handleException(StompHeaderAccessor request, AbstractServiceException exception) {
+	public void handleException(StompHeaderAccessor request,
+			AbstractServiceException exception) {
 		LOG.error("RecordsController.handleException", exception);
 		try {
-		// create the error
-		ErrorMessage errorMessage = new ErrorMessage(exception.getMessage());
-		// create the response
-		StompHeaderAccessor response = StompHeaderAccessor
-				.create(StompCommand.ERROR);
-		response.setSessionId(request.getSessionId());
-		response.setReceiptId(request.getReceipt());
-		String messageText = objectMapper.writeValueAsString(errorMessage);
-		response.setMessage(messageText);
-		// send it
-		Message<byte[]> message = MessageBuilder.createMessage(
-				"".getBytes(), response.getMessageHeaders());
-		clientOutboundChannel.send(message);
+			// create the error
+			ErrorMessage errorMessage = new ErrorMessage(exception.getMessage());
+			// create the response
+			StompHeaderAccessor response = StompHeaderAccessor
+					.create(StompCommand.ERROR);
+			response.setSessionId(request.getSessionId());
+			response.setReceiptId(request.getReceipt());
+			String messageText = objectMapper.writeValueAsString(errorMessage);
+			response.setMessage(messageText);
+			// send it
+			Message<byte[]> message = MessageBuilder.createMessage(
+					"".getBytes(), response.getMessageHeaders());
+			clientOutboundChannel.send(message);
 		} catch (JsonProcessingException e) {
-			LOG.error(e);
+			LOG.error("json error", e);
 		}
 	}
 }

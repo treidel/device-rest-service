@@ -2,17 +2,18 @@ package com.fancypants.websocket.device.listener;
 
 import java.security.Principal;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-@Component
+@Component 
 public class SessionDisconnectedListener implements
 		ApplicationListener<SessionDisconnectEvent> {
 
-	private static final Logger LOG = Logger
+	private static final Logger LOG = LoggerFactory
 			.getLogger(SessionDisconnectedListener.class);
 
 	@Override
@@ -22,11 +23,11 @@ public class SessionDisconnectedListener implements
 		// extract the stomp headers
 		StompHeaderAccessor headers = StompHeaderAccessor.wrap(event
 				.getMessage());
-		// get the user 
+		// get the user
 		Principal user = headers.getUser();
-		
+
 		LOG.info("disconnection for device=" + user.getName());
-		
+
 		// TBD: remove from session database
 
 		LOG.trace("SessionDisconnectedListener.onApplicationEvent exit");
