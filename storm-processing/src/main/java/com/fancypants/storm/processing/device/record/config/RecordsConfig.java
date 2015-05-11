@@ -55,6 +55,7 @@ import com.fancypants.usage.UsageScanMe;
 public class RecordsConfig {
 	private final static Logger LOG = LoggerFactory
 			.getLogger(RecordsConfig.class);
+	private static final String ZOOKEEPER_ENDPOINT_ENVVAR = "ZOOKEEPER_ENDPOINT";
 	private final static String STORM_TOPOLOGY = "raw_records_topology";
 	private final static String TRIDENT_TOPOLOGY = "filtered_records_topology";
 	private final static String RAW_RECORDS_SPOUT = "raw_record_spout";
@@ -122,7 +123,8 @@ public class RecordsConfig {
 
 		// set kafka producer properties
 		Properties props = new Properties();
-		props.put("metadata.broker.list", "localhost:9092");
+		props.put("metadata.broker.list",
+				ConfigUtils.retrieveEnvVarOrFail(ZOOKEEPER_ENDPOINT_ENVVAR));
 		props.put("request.required.acks", "1");
 		props.put("serializer.class", "kafka.serializer.StringEncoder");
 		conf.put(TridentKafkaState.KAFKA_BROKER_PROPERTIES, props);
