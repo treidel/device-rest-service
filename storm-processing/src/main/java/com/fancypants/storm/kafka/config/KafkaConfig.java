@@ -27,6 +27,7 @@ public class KafkaConfig {
 			.getLogger(KafkaConfig.class);
 
 	public static final String KAFKA_TOPIC_ENVVAR = "KAFKA_TOPIC";
+	public static final String ZOOKEEPER_ENDPOINT_ENVVAR = "ZOOKEEPER_ENDPOINT";
 
 	@Autowired
 	private RawRecordScheme rawRecordScheme;
@@ -35,8 +36,11 @@ public class KafkaConfig {
 	@Bean
 	public IOpaquePartitionedTridentSpout kafkaSpout() {
 		LOG.trace("kafkaSpout enter");
+		// get the zookeeper host
+		String zookeeperEndpoint = ConfigUtils
+				.retrieveEnvVarOrFail(ZOOKEEPER_ENDPOINT_ENVVAR);
 		// create the kafka spout
-		BrokerHosts zk = new ZkHosts("localhost");
+		BrokerHosts zk = new ZkHosts(zookeeperEndpoint);
 		TridentKafkaConfig kafkaSpoutConf = new TridentKafkaConfig(zk,
 				ConfigUtils.retrieveEnvVarOrFail(KAFKA_TOPIC_ENVVAR));
 		kafkaSpoutConf.scheme = rawRecordScheme;
