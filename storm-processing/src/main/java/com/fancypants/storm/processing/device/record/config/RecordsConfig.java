@@ -7,11 +7,10 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import storm.kafka.bolt.KafkaBolt;
-import storm.kafka.bolt.selector.DefaultTopicSelector;
 import storm.kafka.trident.TridentKafkaState;
 import storm.trident.Stream;
 import storm.trident.TridentTopology;
@@ -19,12 +18,12 @@ import storm.trident.fluent.GroupedStream;
 import storm.trident.spout.IOpaquePartitionedTridentSpout;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
+import backtype.storm.topology.IRichBolt;
 import backtype.storm.topology.IRichSpout;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
 
 import com.fancypants.common.CommonScanMe;
-import com.fancypants.common.config.util.ConfigUtils;
 import com.fancypants.data.DataScanMe;
 import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.data.entity.RawRecordEntity;
@@ -36,8 +35,6 @@ import com.fancypants.storm.device.record.mapping.EnergyConsumptionEntityMapper;
 import com.fancypants.storm.device.record.mapping.EnergyConsumptionTupleMapper;
 import com.fancypants.storm.device.record.mapping.RawRecordTupleMapper;
 import com.fancypants.storm.kafka.StormKafkaScanMe;
-import com.fancypants.storm.kafka.config.KafkaConfig;
-import com.fancypants.storm.kafka.mapper.RawRecordToKafkaMapper;
 import com.fancypants.storm.processing.StormProcessingScanMe;
 import com.fancypants.storm.processing.device.record.aggregate.HourlyEnergyCalculationAggregator;
 import com.fancypants.storm.processing.device.record.aggregate.UsageAggregator;
@@ -67,9 +64,6 @@ public class RecordsConfig {
 	private HourlyRecordRepository hourlyRepository;
 
 	@Autowired
-	private RawRecordToKafkaMapper kafkaMapper;
-
-	@Autowired
 	private UsageStateFactory usageStateFactory;
 
 	@Autowired
@@ -93,11 +87,17 @@ public class RecordsConfig {
 	@Autowired
 	private IRichSpout kinesisSpout;
 
+	@Autowired
+	private IRichBolt kafkaBolt;
+
 	@SuppressWarnings("rawtypes")
 	@Autowired
 	private IOpaquePartitionedTridentSpout kafkaSpout;
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Autowired
+	@Qualifier(TridentKafkaState.KAFKA_BROKER_PROPERTIES)
+	private Properties kafkaProperties;
+
 	@PostConstruct
 	public void init() throws Exception {
 		LOG.trace("RecordsConfig.init enter");
@@ -113,21 +113,12 @@ public class RecordsConfig {
 		// duplicate detection takes records from the spout
 		stormTopology.setBolt(DUPLICATE_DETECTION_BOLT, duplicateDetectionBolt)
 				.shuffleGrouping(RAW_RECORDS_SPOUT);
-		KafkaBolt kafkaBolt = new KafkaBolt().withTopicSelector(
-				new DefaultTopicSelector(ConfigUtils
-						.retrieveEnvVarOrFail(KafkaConfig.KAFKA_TOPIC_ENVVAR)))
-				.withTupleToKafkaMapper(kafkaMapper);
 		// the kafka bolt takes records from the duplicate detection
 		stormTopology.setBolt(PERSIST_TO_KAFKA_BOLT, kafkaBolt)
 				.shuffleGrouping(DUPLICATE_DETECTION_BOLT);
 
 		// set kafka producer properties
-		Properties props = new Properties();
-		props.put("metadata.broker.list", ConfigUtils
-				.retrieveEnvVarOrFail(KafkaConfig.ZOOKEEPER_ENDPOINT_ENVVAR));
-		props.put("request.required.acks", "1");
-		props.put("serializer.class", "kafka.serializer.StringEncoder");
-		conf.put(TridentKafkaState.KAFKA_BROKER_PROPERTIES, props);
+		conf.put(TridentKafkaState.KAFKA_BROKER_PROPERTIES, kafkaProperties);
 
 		// create the trident topology
 		TridentTopology tridentTopology = new TridentTopology();

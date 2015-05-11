@@ -1,5 +1,7 @@
 package com.fancypants.storm.kafka.config;
 
+import java.util.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +11,19 @@ import org.springframework.context.annotation.Configuration;
 
 import storm.kafka.BrokerHosts;
 import storm.kafka.ZkHosts;
+import storm.kafka.bolt.KafkaBolt;
+import storm.kafka.bolt.selector.DefaultTopicSelector;
 import storm.kafka.trident.OpaqueTridentKafkaSpout;
 import storm.kafka.trident.TridentKafkaConfig;
+import storm.kafka.trident.TridentKafkaState;
 import storm.trident.spout.IOpaquePartitionedTridentSpout;
+import backtype.storm.topology.IRichBolt;
 
 import com.fancypants.common.CommonScanMe;
 import com.fancypants.common.config.util.ConfigUtils;
 import com.fancypants.storm.StormScanMe;
 import com.fancypants.storm.kafka.StormKafkaScanMe;
+import com.fancypants.storm.kafka.mapper.RawRecordToKafkaMapper;
 import com.fancypants.storm.kafka.scheme.RawRecordScheme;
 
 @Configuration
@@ -26,11 +33,15 @@ public class KafkaConfig {
 	private final static Logger LOG = LoggerFactory
 			.getLogger(KafkaConfig.class);
 
-	public static final String KAFKA_TOPIC_ENVVAR = "KAFKA_TOPIC";
-	public static final String ZOOKEEPER_ENDPOINT_ENVVAR = "ZOOKEEPER_ENDPOINT";
+	private static final String KAFKA_TOPIC_ENVVAR = "KAFKA_TOPIC";
+	private static final String KAFKA_BROKERS_ENVVAR = "KAFKA_BROKERS";
+	private static final String ZOOKEEPER_ENDPOINT_ENVVAR = "ZOOKEEPER_ENDPOINT";
 
 	@Autowired
 	private RawRecordScheme rawRecordScheme;
+
+	@Autowired
+	private RawRecordToKafkaMapper kafkaMapper;
 
 	@SuppressWarnings("rawtypes")
 	@Bean
@@ -49,5 +60,27 @@ public class KafkaConfig {
 
 		LOG.trace("kafkaSpout exit", kafkaSpout);
 		return kafkaSpout;
+	}
+
+	@Bean
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public IRichBolt kafkaBolt() {
+		LOG.trace("kafkaBolt enter");
+		KafkaBolt kafkaBolt = new KafkaBolt().withTopicSelector(
+				new DefaultTopicSelector(ConfigUtils
+						.retrieveEnvVarOrFail(KafkaConfig.KAFKA_TOPIC_ENVVAR)))
+				.withTupleToKafkaMapper(kafkaMapper);
+		LOG.trace("kafkaBolt exit", kafkaBolt);
+		return kafkaBolt;
+	}
+
+	@Bean(name = TridentKafkaState.KAFKA_BROKER_PROPERTIES)
+	public Properties kafkaProperties() {
+		Properties props = new Properties();
+		props.put("metadata.broker.list", ConfigUtils
+				.retrieveEnvVarOrFail(KafkaConfig.KAFKA_BROKERS_ENVVAR));
+		props.put("request.required.acks", "1");
+		props.put("serializer.class", "kafka.serializer.StringEncoder");
+		return props;
 	}
 }

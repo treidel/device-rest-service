@@ -9,7 +9,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fancypants.common.config.util.ConfigUtils;
@@ -29,31 +29,27 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 
 	public static final String RABBITMQ_URI_ENVVAR = "RABBITMQ_URI";
 	public static final String RABBITMQ_PASSWORD_ENVVAR = "RABBITMQ_PASSWORD";
+	public static final String RABBITMQ_EXCHANGE_ENVVAR = "RABBITMQ_EXCHANGE";
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(RabbitMQTopicManager.class);
 
-	private transient Connection connection;
-
 	@Autowired
-	@Qualifier("exchange")
+	@Value("${" + RABBITMQ_EXCHANGE_ENVVAR + "}")
 	private String exchange;
+
+	private transient Connection connection;
 
 	@PostConstruct
 	private void init() throws Exception {
 		LOG.trace("init enter");
+		// create the connection
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setPassword(getPassword());
 		factory.setUri(getURI());
 		factory.setAutomaticRecoveryEnabled(true);
 		connection = factory.newConnection();
-		LOG.trace("init exit");
-	}
-
-	@Override
-	public void topicCreate(String topic) throws AbstractMessageException {
-		LOG.trace("RabbitMQTopicManager.topicCreate enter" + " topic=" + topic);
-
+		// create the exchange (if it doesn't already exist)
 		try {
 			// allocate a channel
 			Channel channel = connection.createChannel();
@@ -66,6 +62,13 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 			throw new RabbitMQException(e);
 		}
 
+		LOG.trace("init exit");
+	}
+
+	@Override
+	public void topicCreate(String topic) throws AbstractMessageException {
+		LOG.trace("RabbitMQTopicManager.topicCreate enter" + " topic=" + topic);
+		// nothing to do since we pre create the exchange
 		LOG.trace("RabbitMQTopicManager.topicCreate exit");
 	}
 
