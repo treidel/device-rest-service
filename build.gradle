@@ -33,6 +33,7 @@ def versionOverrides = [
 	"org.eclipse.jetty.websocket:websocket-client":"9.2.8.v20150217",
 	"org.slf4j:slf4j-api":"1.7.7",
 	"org.slf4j:slf4j-log4j12":"1.7.7",
+	"org.codehaus.groovy:groovy-all" : "2.4.3",
 	"com.jayway.jsonpath:json-path":"0.9.1",	
 	"com.amazonaws:aws-java-sdk" : "1.9.16",
 	"com.amazonaws:aws-java-sdk-dynamodb" : "1.9.16",
@@ -45,6 +46,8 @@ def versionOverrides = [
 	"com.rabbitmq:amqp-client" : "3.4.3",	
 	"com.beust:jcommander":"1.35",
 	"commons-beanutils:commons-beanutils":"1.9.2",	
+	"ch.qos.logback:logback-classic" : "1.1.3",
+	"org.logback-extensions:logback-ext-loggly" : "0.1.2",		
 	"joda-type:joda-time" : "2.7",	
 	"junit:junit":"4.12"
 	
@@ -64,7 +67,6 @@ subprojects {
 	
 	dependencies {
 		compile("org.slf4j:slf4j-api")
-		runtime("org.slf4j:slf4j-log4j12")
 	}
 
 	configurations.all {
@@ -76,8 +78,7 @@ subprojects {
 			}		
 		}
 	 	/* remove certain logging libraries to avoid complaints */
- 		exclude group: 'org.slf4j', module: 'log4j-over-slf4j'
- 		exclude group: 'ch.qos.logback'
+ 		exclude group: 'org.slf4j', module: 'slf4j-log4j12'
    	}
 }
 

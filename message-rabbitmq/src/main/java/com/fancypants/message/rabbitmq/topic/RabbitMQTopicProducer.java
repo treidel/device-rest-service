@@ -21,6 +21,8 @@ public class RabbitMQTopicProducer implements TopicProducer {
 
 	public RabbitMQTopicProducer(Channel channel, String exchange,
 			String routingKey) {
+		LOG.trace("RabbitMQTopicProducer enter {}={} {}={} {}={}", "channel",
+				channel, "exchange", exchange, "routingKey", routingKey);
 		this.channel = channel;
 		this.exchange = exchange;
 		this.routingKey = routingKey;
@@ -28,7 +30,7 @@ public class RabbitMQTopicProducer implements TopicProducer {
 
 	@Override
 	public void sendMessage(String message) throws AbstractMessageException {
-		LOG.trace("RabbitMQTopicProducer.sendMessage enter message=" + message);
+		LOG.trace("sendMessage enter {}={}", "message", message);
 		try {
 			channel.basicPublish(exchange, routingKey,
 					MessageProperties.TEXT_PLAIN, message.getBytes());
