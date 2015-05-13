@@ -29,6 +29,9 @@ dependencies {
 	}
 	compile("org.springframework.boot:spring-boot-starter-web")
 	testCompile("org.springframework.boot:spring-boot-starter-test")
+	runtime("ch.qos.logback:logback-classic:1.1.3")
+	runtime("org.logback-extensions:logback-ext-loggly")
+	runtime("org.codehaus.groovy:groovy-all")	
 	bootPackaging project(':data-dynamodb')
 }
 /* use the application dependencies */

@@ -1,7 +1,11 @@
 package com.fancypants.websocket.device.config;
 
+import java.io.File;
+
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.Http11NioProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
@@ -11,14 +15,56 @@ import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletCon
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+
+import ch.qos.logback.access.tomcat.LogbackValve;
 
 @Configuration
 public class WebConfig {
+	private static final Logger LOG = LoggerFactory.getLogger(WebConfig.class);
+	private static final String LOGBACK_ACCESS_FILE = "logback-access.xml";
+
+	private final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
 	@Bean
 	public EmbeddedServletContainerFactory servletContainer() throws Exception {
+		LOG.trace("servletContainer enter");
+		// create the tomcat container factory
 		TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
+		// find the config file
+		File configFile = null;
+		Resource resources[] = resolver.getResources("classpath*:/"
+				+ LOGBACK_ACCESS_FILE);
+		switch (resources.length) {
+		case 0:
+			LOG.warn("could not find access log config file: {}",
+					LOGBACK_ACCESS_FILE);
+			break;
+		case 1:
+			LOG.info("found access log config file: {}", resources[0]);
+			configFile = resources[0].getFile();
+			break;
+
+		default:
+			LOG.warn("found multiple " + LOGBACK_ACCESS_FILE
+					+ " files, using first found: {}", resources[0]);
+			configFile = resources[0].getFile();
+			break;
+		}
+
+		// add the access logging valve to the tomcat config if we found a config file
+		if (null != configFile) {
+			// create the access logging valve
+			LogbackValve valve = new LogbackValve();
+			// configure the valve
+			valve.setFilename(configFile.getAbsolutePath());
+			// add the vavle
+			tomcat.addContextValves(valve);
+		}
+		// create an HTTP connector
 		tomcat.addAdditionalTomcatConnectors(createHTTPConnector());
+		// disable access logging 
+		LOG.trace("servletContainer exit {}", tomcat);
 		return tomcat;
 	}
 
