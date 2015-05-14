@@ -1,4 +1,4 @@
-package com.fancypants.storm.processing.device.record.config;
+package com.fancypants.storm.processing.config;
 
 import java.util.Properties;
 
@@ -34,21 +34,20 @@ import com.fancypants.storm.StormScanMe;
 import com.fancypants.storm.device.record.mapping.EnergyConsumptionEntityMapper;
 import com.fancypants.storm.device.record.mapping.EnergyConsumptionTupleMapper;
 import com.fancypants.storm.device.record.mapping.RawRecordTupleMapper;
-import com.fancypants.storm.kafka.StormKafkaScanMe;
 import com.fancypants.storm.processing.StormProcessingScanMe;
-import com.fancypants.storm.processing.device.record.aggregate.HourlyEnergyCalculationAggregator;
-import com.fancypants.storm.processing.device.record.aggregate.UsageAggregator;
-import com.fancypants.storm.processing.device.record.bolt.DuplicateDetectionBolt;
-import com.fancypants.storm.processing.device.record.state.TopicNotifierStateFactory;
-import com.fancypants.storm.processing.device.record.state.TopicNotifierStateUpdater;
-import com.fancypants.storm.processing.device.record.state.UsageStateFactory;
-import com.fancypants.storm.processing.device.record.state.UsageStateUpdater;
+import com.fancypants.storm.processing.aggregate.HourlyEnergyCalculationAggregator;
+import com.fancypants.storm.processing.aggregate.UsageAggregator;
+import com.fancypants.storm.processing.bolt.DuplicateDetectionBolt;
+import com.fancypants.storm.processing.state.TopicNotifierStateFactory;
+import com.fancypants.storm.processing.state.TopicNotifierStateUpdater;
+import com.fancypants.storm.processing.state.UsageStateFactory;
+import com.fancypants.storm.processing.state.UsageStateUpdater;
 import com.fancypants.usage.UsageScanMe;
 
 @Configuration
 @ComponentScan(basePackageClasses = { CommonScanMe.class, DataScanMe.class,
 		DeviceScanMe.class, UsageScanMe.class, MessageScanMe.class,
-		StormScanMe.class, StormProcessingScanMe.class, StormKafkaScanMe.class })
+		StormScanMe.class, StormProcessingScanMe.class })
 public class RecordsConfig {
 	private final static Logger LOG = LoggerFactory
 			.getLogger(RecordsConfig.class);
@@ -57,7 +56,7 @@ public class RecordsConfig {
 	private final static String TRIDENT_TOPOLOGY = "filtered_records_topology";
 	private final static String RAW_RECORDS_SPOUT = "raw_record_spout";
 	private final static String DUPLICATE_DETECTION_BOLT = "duplicate_detection_bolt";
-	private final static String PERSIST_TO_KAFKA_BOLT = "persist_to_kafka_bolt";
+	private final static String PERSIST_BOLT = "persist_bolt";
 	private final static String FILTERED_RECORDS_TXID = "filtered_records";
 
 	@Autowired
@@ -114,7 +113,7 @@ public class RecordsConfig {
 		stormTopology.setBolt(DUPLICATE_DETECTION_BOLT, duplicateDetectionBolt)
 				.shuffleGrouping(RAW_RECORDS_SPOUT);
 		// the kafka bolt takes records from the duplicate detection
-		stormTopology.setBolt(PERSIST_TO_KAFKA_BOLT, kafkaBolt)
+		stormTopology.setBolt(PERSIST_BOLT, kafkaBolt)
 				.shuffleGrouping(DUPLICATE_DETECTION_BOLT);
 
 		// set kafka producer properties

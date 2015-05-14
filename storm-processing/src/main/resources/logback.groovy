@@ -10,11 +10,16 @@ appender("CONSOLE", ConsoleAppender) {
   }
 }
 
-// create the LOGGLY appender
-appender("LOGGLY", LogglyAppender) {
-  endpointUrl = "http://logs-01.loggly.com/inputs/2b2e404d-6a7f-46e2-93c9-b3cbc26950d3/tag/logback"
-  pattern = "%d{ISO8601} %p %t %c{0}.%M - %m%n"
+// see if we have a LOGGLY key
+def LOGGLY_KEY = System.getenv("LOGGLY_KEY")
+if (LOGGLY_KEY) {
+	// create the LOGGLY appender
+	appender("LOGGLY", LogglyAppender) {
+  		endpointUrl = "http://logs-01.loggly.com/inputs/${LOGGLY_KEY}/tag/logback"
+  		pattern = "%d{ISO8601} %p %t %c{0}.%M - %m%n"
+	}
+	// send logs to both appenders
+	root(INFO, ["CONSOLE", "LOGGLY"])
+} else {
+	root(INFO, ["CONSOLE"])
 }
-
-// send logs to both appenders
-root(INFO, ["CONSOLE", "LOGGLY"])

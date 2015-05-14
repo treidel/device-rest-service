@@ -1,4 +1,4 @@
-package com.fancypants.storm.processing.device.record.filter;
+package com.fancypants.storm.processing.filter;
 
 import java.util.Map;
 import java.util.logging.LogRecord;

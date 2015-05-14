@@ -1,0 +1,21 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+jar {
+	baseName = 'storm-kafka'
+	version =  '1.0.0'
+}
+
+dependencies {
+	compile("org.apache.kafka:kafka_2.10:0.8.2.1")
+	compile("org.apache.storm:storm-kafka")
+	testCompile("junit:junit:4.+")
+}
+

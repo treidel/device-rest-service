@@ -1,4 +1,4 @@
-package com.fancypants.storm.processing.device.record.bolt;
+package com.fancypants.storm.processing.bolt;
 
 import java.lang.reflect.Method;
 import java.util.List;

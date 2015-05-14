@@ -1,4 +1,4 @@
-package com.fancypants.storm.processing.device.record.aggregate;
+package com.fancypants.storm.processing.aggregate;
 
 import java.util.Date;
 import java.util.List;

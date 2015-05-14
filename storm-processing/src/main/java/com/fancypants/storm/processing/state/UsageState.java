@@ -1,4 +1,4 @@
-package com.fancypants.storm.processing.device.record.state;
+package com.fancypants.storm.processing.state;
 
 import storm.trident.state.State;
 import storm.trident.state.ValueUpdater;

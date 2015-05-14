@@ -1,4 +1,4 @@
-package com.fancypants.storm.processing.device.record.state;
+package com.fancypants.storm.processing.state;
 
 import java.lang.reflect.Method;
 import java.util.List;

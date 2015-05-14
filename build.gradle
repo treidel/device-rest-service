@@ -187,6 +187,13 @@ project(':storm-kinesis') {
 	}
 }
 
+project(':storm-kafka') {
+	dependencies {
+		compile project(':common')
+		compile project(':storm')
+	}
+}
+
 project(':storm-processing') { 
 	dependencies { 
 		compile project(':common')
