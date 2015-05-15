@@ -20,38 +20,40 @@ public class TopicNotifierState implements State,
 	private final TopicManager topicManager;
 
 	public TopicNotifierState(TopicManager topicManager) {
-		LOG.trace("TopicNotifierState.TopicNotifierState enter topicManager="
-				+ topicManager);
+		LOG.trace("TopicNotifierState enter {}={}", "topicManager",
+				topicManager);
 		this.topicManager = topicManager;
-		LOG.trace("TopicNotifierState.TopicNotifierState exit");
+		LOG.trace("TopicNotifierState exit");
 	}
 
 	@Override
 	public void beginCommit(Long txid) {
-		LOG.trace("TopicNotifierState.beginCommit enter txid=" + txid);
-		LOG.trace("TopicNotifierState.beginCommit exit");
+		LOG.trace("beginCommit enter {}={}", "txid", txid);
+		LOG.trace("beginCommit exit");
 	}
 
 	@Override
 	public void commit(Long txid) {
-		LOG.trace("TopicNotifierState.commit enter txid=" + txid);
-		LOG.trace("TopicNotifierState.commit exit");
+		LOG.trace("commit enter {}={}", "txid", txid);
+		LOG.trace("commit exit");
 	}
 
 	@Override
 	public Pair<String, String> update(Pair<String, String> stored) {
-		LOG.trace("TopicNotifierState.update enter stored=" + stored);
+		LOG.trace("TopicNotifierState.update eter {}={}", "stored", stored);
 		try {
 			// create the producer
 			TopicProducer producer = topicManager
 					.topicProducer(stored.getKey());
 			// send out the notification
 			producer.sendMessage(stored.getValue());
+			// done
+			producer.close();
 		} catch (AbstractMessageException e) {
 			LOG.error("unable to send notification", e);
 		}
 		// don't emit anything
-		LOG.trace("TopicNotifierState.update exit");
+		LOG.trace("update exit");
 		return null;
 	}
 
