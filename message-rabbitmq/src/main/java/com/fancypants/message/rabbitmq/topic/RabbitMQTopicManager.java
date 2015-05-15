@@ -67,31 +67,30 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 
 	@Override
 	public void topicCreate(String topic) throws AbstractMessageException {
-		LOG.trace("RabbitMQTopicManager.topicCreate enter" + " topic=" + topic);
+		LOG.trace("topicCreate enter {}={}", "topic", topic);
 		// nothing to do since we pre create the exchange
-		LOG.trace("RabbitMQTopicManager.topicCreate exit");
+		LOG.trace("topicCreate exit");
 	}
 
 	@Override
 	public void topicDestroy(String topic) throws AbstractMessageException {
-		LOG.trace("RabbitMQTopicManager.topicDestroy enter" + " topic=" + topic);
+		LOG.trace("topicDestroy enter {}={}", "topic", topic);
 		// nothing to do since we don't destroy the exchange
-		LOG.trace("RabbitMQTopicManager.topicCreate exit");
+		LOG.trace("topicCreate exit");
 
 	}
 
 	@Override
 	public TopicProducer topicProducer(String topic)
 			throws AbstractMessageException {
-		LOG.trace("RabbitMQTopicManager.topicProducer enter topic=" + topic);
+		LOG.trace("topicProducer enter {}={}", "topic", topic);
 		try {
 			// create the channel
 			Channel channel = connection.createChannel();
 			// wrap the channel
 			TopicProducer producer = new RabbitMQTopicProducer(channel,
 					exchange, topic);
-			LOG.trace("RabbitMQTopicManager.topicProducer exit producer="
-					+ producer);
+			LOG.trace("topicProducer exit {}={}", "producer", producer);
 			return producer;
 		} catch (IOException e) {
 			LOG.error("can not create producer", e);
@@ -102,6 +101,7 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 	@Override
 	public TopicConsumer topicConsumer(String topic)
 			throws AbstractMessageException {
+		LOG.trace("topicConsumer enter {}={}", "topic", topic);
 		try {
 			// create the channel
 			Channel channel = connection.createChannel();
@@ -111,8 +111,7 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 			channel.queueBind(queue, exchange, topic);
 			// wrap the channel + queue
 			TopicConsumer consumer = new RabbitMQTopicConsumer(channel, queue);
-			LOG.trace("RabbitMQTopicManager.topicConsumer exit consumer="
-					+ consumer);
+			LOG.trace("topicConsumer exit {}", consumer);
 			return consumer;
 		} catch (IOException e) {
 			LOG.error("can not create consumer", e);
@@ -121,13 +120,18 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 	}
 
 	private URI getURI() {
-		String uri = ConfigUtils.retrieveEnvVarOrFail(RABBITMQ_URI_ENVVAR);
-		return URI.create(uri);
+		LOG.trace("getURI enter");
+		String value = ConfigUtils.retrieveEnvVarOrFail(RABBITMQ_URI_ENVVAR);
+		URI uri = URI.create(value);
+		LOG.trace("getURI exit {}", uri);
+		return uri;
 	}
 
 	private String getPassword() {
+		LOG.trace("getPassword enter");
 		String password = ConfigUtils
 				.retrieveEnvVarOrFail(RABBITMQ_PASSWORD_ENVVAR);
+		LOG.trace("getPassword exit {}", password);
 		return password;
 	}
 }

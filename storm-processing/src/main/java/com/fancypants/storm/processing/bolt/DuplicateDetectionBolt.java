@@ -47,8 +47,8 @@ public class DuplicateDetectionBolt extends BaseRichBolt {
 	@Override
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
-		LOG.trace("DuplicateDetectionBolt.prepare enter", "stormConf",
-				stormConf, "context", context, "collector", collector);
+		LOG.trace("prepare enter {}={} {}={} {}={}", "stormConf", stormConf,
+				"context", context, "collector", collector);
 		this.collector = collector;
 		// re-initialize the repository
 		List<Method> methods = AnnotationUtils.findAnnotatedMethods(
@@ -57,18 +57,18 @@ public class DuplicateDetectionBolt extends BaseRichBolt {
 			ReflectionUtils.makeAccessible(method);
 			ReflectionUtils.invokeMethod(method, repository);
 		}
-		LOG.trace("DuplicateDetectionBolt.prepare exit");
+		LOG.trace("prepare exit");
 	}
 
 	@Override
 	public void execute(Tuple input) {
-		LOG.trace("DuplicateDetectionBolt.execute enter", "input", input);
+		LOG.trace("execute enter {}={}", "input", input);
 		// get the record
 		RawRecordEntity record = recordMapper.convert(input);
 		// try to insert
 		if (true == repository.insert(record)) {
 			// not a duplicate so we pass it on
-			LOG.info("emitting record for device", record.getDevice());
+			LOG.info("emitting record for device={}", record.getDevice());
 			List<Object> values = tupleMapper.convert(record);
 			collector.emit(values);
 		}
@@ -76,21 +76,20 @@ public class DuplicateDetectionBolt extends BaseRichBolt {
 		// ack the tuple in all cases
 		collector.ack(input);
 
-		LOG.trace("DuplicateDetectionBolt.execute exit");
+		LOG.trace("execute exit");
 	}
 
 	@Override
 	public void cleanup() {
-		LOG.trace("DuplicateDetectorBolt.cleanup enter");
-		LOG.trace("DuplicateDetectorBolt.cleanup exit");
+		LOG.trace("cleanup enter");
+		LOG.trace("cleanup exit");
 	}
 
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		LOG.trace("DuplicateDetectorBolt.declareOutputFields enter",
-				"declarer", declarer);
+		LOG.trace("declareOutputFields enter {}={}", "declarer", declarer);
 		declarer.declare(RawRecordTupleMapper.getOutputFields());
-		LOG.trace("DuplicateDetectorBolt.declareOutputFields exit");
+		LOG.trace("declareOutputFields exit");
 	}
 
 }

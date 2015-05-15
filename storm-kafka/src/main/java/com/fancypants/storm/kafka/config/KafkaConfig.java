@@ -77,6 +77,7 @@ public class KafkaConfig {
 
 	@Bean
 	public Config filteredConfig() {
+		LOG.trace("filteredConfig enter");
 		Properties props = new Properties();
 		props.put("metadata.broker.list", ConfigUtils
 				.retrieveEnvVarOrFail(KafkaConfig.KAFKA_BROKERS_ENVVAR));
@@ -84,6 +85,7 @@ public class KafkaConfig {
 		props.put("serializer.class", "kafka.serializer.StringEncoder");
 		Config config = new Config();
 		config.put(TridentKafkaState.KAFKA_BROKER_PROPERTIES, props);
+		LOG.trace("filteredConfig exit {}", config);
 		return config;
 	}
 }

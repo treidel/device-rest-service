@@ -1,7 +1,6 @@
 package com.fancypants.websocket.app.subscription;
 
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
@@ -174,17 +173,14 @@ public class SubscriptionManager {
 			SessionState sessionState = SESSIONS.get(accessor.getSessionId());
 			Assert.notNull(sessionState);
 			// extract the topic
-			StringTokenizer tokenizer = new StringTokenizer(
-					accessor.getDestination(), "/");
-			tokenizer.nextToken();
-			String topic = tokenizer.nextToken();
+			String topic = accessor.getUser().getName();
 			try {
 				// create the topic consumer
 				TopicConsumer topicConsumer = topicManager.topicConsumer(topic);
 				// setup the listener
 				TopicConsumer.Handler listener = new TopicListener(
 						accessor.getDestination(), accessor.getSessionId(),
-						accessor.getSubscriptionId());
+						accessor.getSubscriptionId()); 
 				topicConsumer.receiveMessages(listener);
 				// now create the subscription state
 				SubscriptionState subscriptionState = new SubscriptionState(

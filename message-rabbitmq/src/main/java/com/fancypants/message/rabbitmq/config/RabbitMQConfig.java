@@ -16,9 +16,9 @@ public class RabbitMQConfig {
 
 	@Bean
 	public TopicManager topicManager() {
-		LOG.trace("RabbitMQConfig.topicManager enter");
+		LOG.trace("topicManager enter");
 		TopicManager manager = new RabbitMQTopicManager();
-		LOG.trace("RabbitMQConfig.topicManager exit manager=" + manager);
+		LOG.trace("topicManager exit {}", manager);
 		return manager;
 	}
 

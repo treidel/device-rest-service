@@ -11,9 +11,9 @@ public class WebSocketSecurityConfig extends
 	@Override
 	protected void configureInbound(
 			MessageSecurityMetadataSourceRegistry messages) {
-		messages.simpDestMatchers("/queue/**", "/topic/**").denyAll()
-				.simpDestMatchers("/topic/device/notifications")
-				.hasRole("USER").anyMessage().hasRole("USER");
+		messages.simpDestMatchers("/topic/device/notifications")
+				.hasRole("USER").anyMessage().hasRole("USER")
+				.simpDestMatchers("/queue/**", "/topic/**").denyAll();
 	}
 
 	@Override
@@ -21,5 +21,5 @@ public class WebSocketSecurityConfig extends
 		// disable CSRF
 		return true;
 	}
-	
+
 }

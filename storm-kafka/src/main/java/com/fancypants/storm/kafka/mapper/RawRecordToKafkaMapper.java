@@ -29,7 +29,7 @@ public class RawRecordToKafkaMapper implements
 
 	@Override
 	public String getKeyFromTuple(Tuple tuple) {
-		LOG.trace("getKeyFromTuple enter", "tuple", tuple);
+		LOG.trace("getKeyFromTuple enter {}={}", "tuple", tuple);
 		RawRecordEntity record = recordMapper.convert(tuple);
 		LOG.trace("getKeyFromTuple exit", record.getDevice());
 		return record.getDevice();
@@ -37,10 +37,10 @@ public class RawRecordToKafkaMapper implements
 
 	@Override
 	public String getMessageFromTuple(Tuple tuple) {
-		LOG.trace("getMessageFromTuple enter", "tuple", tuple);
+		LOG.trace("getMessageFromTuple enter {}={}", "tuple", tuple);
 		RawRecordEntity record = recordMapper.convert(tuple);
 		try {
-			LOG.info("writing record to kafka for device", record.getDevice());
+			LOG.info("writing record to kafka for device={}", record.getDevice());
 			String value = objectMapper.writeValueAsString(record);
 			LOG.trace("getMessageFromTuple exit", value);
 			return value;

@@ -21,19 +21,18 @@ public class RabbitMQTopicConsumer implements TopicConsumer {
 	private final String queue;
 
 	public RabbitMQTopicConsumer(Channel channel, String queue) {
-		LOG.trace("RabbitMQTopicConsumer.RabbitMQTopicConsumer enter channel="
-				+ channel + " queue=" + queue);
+		LOG.trace("RabbitMQTopicConsumer enter {}={} {}={}", "channel",
+				channel, "queue", queue);
 		// store data
 		this.channel = channel;
 		this.queue = queue;
-		LOG.trace("RabbitMQTopicConsumer.RabbitMQTopicConsumer exit");
+		LOG.trace("RabbitMQTopicConsumer exit");
 	}
 
 	@Override
 	public void receiveMessages(Handler handler)
 			throws AbstractMessageException {
-		LOG.trace("RabbitMQTopicConsumer.receiveMessages enter handler="
-				+ handler);
+		LOG.trace("receiveMessages enter {}={}", "handler", handler);
 		// let the channel do its thing
 		try {
 			channel.basicConsume(queue, new MessageConsumer(channel, handler));
@@ -41,19 +40,19 @@ public class RabbitMQTopicConsumer implements TopicConsumer {
 			LOG.error("unable to receive message", e);
 			throw new RabbitMQException(e);
 		}
-		LOG.trace("RabbitMQTopicConsumer.receiveMessages exit");
+		LOG.trace("receiveMessages exit");
 	}
 
 	@Override
 	public void close() {
-		LOG.trace("RabbitMQTopicConsumer.close enter");
+		LOG.trace("close enter");
 		// close the channel
 		try {
 			channel.close();
 		} catch (IOException e) {
 			LOG.error("unable to close channel", e);
 		}
-		LOG.trace("RabbitMQTopicConsumer.close exit");
+		LOG.trace("close exit");
 	}
 
 	private class MessageConsumer extends DefaultConsumer {
@@ -69,17 +68,14 @@ public class RabbitMQTopicConsumer implements TopicConsumer {
 		public void handleDelivery(String consumerTag, Envelope envelope,
 				AMQP.BasicProperties properties, byte[] body)
 				throws IOException {
-			LOG.trace("RabbitMQTopicConsumer.MessageConsumer.handleDelivery enter consumerTag="
-					+ consumerTag
-					+ " envelope="
-					+ envelope
-					+ " properties="
-					+ properties + " body=" + body);
+			LOG.trace("MessageConsumer.handleDelivery enter {}={} {}={} {}={}",
+					"consumerTag", consumerTag, "envelope", envelope,
+					"properties", properties, "body", body);
 			// convert the body into a string
 			String message = new String(body);
 			// handle it
 			handler.handle(message);
-			LOG.trace("RabbitMQTopicConsumer.MessageConsumer.handleDelivery exit");
+			LOG.trace("MessageConsumer.handleDelivery exit");
 		}
 	}
 }
