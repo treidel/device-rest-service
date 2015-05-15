@@ -39,6 +39,7 @@ dependencies {
 	runtime("org.codehaus.groovy:groovy-all")
 	bootPackaging project(':data-dynamodb')
 	bootPackaging project(':storm-kinesis')
+	bootPackaging project(':storm-kafka')
 	bootPackaging project(':message-rabbitmq')
 }
 

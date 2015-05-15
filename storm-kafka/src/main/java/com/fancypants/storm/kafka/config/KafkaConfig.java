@@ -17,6 +17,7 @@ import storm.kafka.trident.OpaqueTridentKafkaSpout;
 import storm.kafka.trident.TridentKafkaConfig;
 import storm.kafka.trident.TridentKafkaState;
 import storm.trident.spout.IOpaquePartitionedTridentSpout;
+import backtype.storm.Config;
 import backtype.storm.topology.IRichBolt;
 
 import com.fancypants.common.CommonScanMe;
@@ -45,8 +46,8 @@ public class KafkaConfig {
 
 	@SuppressWarnings("rawtypes")
 	@Bean
-	public IOpaquePartitionedTridentSpout kafkaSpout() {
-		LOG.trace("kafkaSpout enter");
+	public IOpaquePartitionedTridentSpout filteredSpout() {
+		LOG.trace("filteredSpout enter");
 		// get the zookeeper host
 		String zookeeperEndpoint = ConfigUtils
 				.retrieveEnvVarOrFail(ZOOKEEPER_ENDPOINT_ENVVAR);
@@ -58,14 +59,14 @@ public class KafkaConfig {
 		OpaqueTridentKafkaSpout kafkaSpout = new OpaqueTridentKafkaSpout(
 				kafkaSpoutConf);
 
-		LOG.trace("kafkaSpout exit", kafkaSpout);
+		LOG.trace("filteredSpout exit", kafkaSpout);
 		return kafkaSpout;
 	}
 
 	@Bean
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public IRichBolt kafkaBolt() {
-		LOG.trace("kafkaBolt enter");
+	public IRichBolt filteredBolt() {
+		LOG.trace("filteredBolt enter");
 		KafkaBolt kafkaBolt = new KafkaBolt().withTopicSelector(
 				new DefaultTopicSelector(ConfigUtils
 						.retrieveEnvVarOrFail(KafkaConfig.KAFKA_TOPIC_ENVVAR)))
@@ -74,13 +75,15 @@ public class KafkaConfig {
 		return kafkaBolt;
 	}
 
-	@Bean(name = TridentKafkaState.KAFKA_BROKER_PROPERTIES)
-	public Properties kafkaProperties() {
+	@Bean
+	public Config filteredConfig() {
 		Properties props = new Properties();
 		props.put("metadata.broker.list", ConfigUtils
 				.retrieveEnvVarOrFail(KafkaConfig.KAFKA_BROKERS_ENVVAR));
 		props.put("request.required.acks", "1");
 		props.put("serializer.class", "kafka.serializer.StringEncoder");
-		return props;
+		Config config = new Config();
+		config.put(TridentKafkaState.KAFKA_BROKER_PROPERTIES, props);
+		return config;
 	}
 }

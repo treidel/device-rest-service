@@ -1,17 +1,13 @@
 package com.fancypants.storm.processing.config;
 
-import java.util.Properties;
-
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import storm.kafka.trident.TridentKafkaState;
 import storm.trident.Stream;
 import storm.trident.TridentTopology;
 import storm.trident.fluent.GroupedStream;
@@ -87,15 +83,14 @@ public class RecordsConfig {
 	private IRichSpout kinesisSpout;
 
 	@Autowired
-	private IRichBolt kafkaBolt;
+	private IRichBolt filteredBolt;
 
 	@SuppressWarnings("rawtypes")
 	@Autowired
-	private IOpaquePartitionedTridentSpout kafkaSpout;
+	private IOpaquePartitionedTridentSpout filteredSpout;
 
 	@Autowired
-	@Qualifier(TridentKafkaState.KAFKA_BROKER_PROPERTIES)
-	private Properties kafkaProperties;
+	private Config filteredConfig;
 
 	@PostConstruct
 	public void init() throws Exception {
@@ -103,6 +98,9 @@ public class RecordsConfig {
 
 		// config object for all topologies
 		Config conf = new Config();
+
+		// populate the filtered config
+		conf.putAll(filteredConfig);
 
 		// create the regular storm topology
 		TopologyBuilder stormTopology = new TopologyBuilder();
@@ -113,18 +111,15 @@ public class RecordsConfig {
 		stormTopology.setBolt(DUPLICATE_DETECTION_BOLT, duplicateDetectionBolt)
 				.shuffleGrouping(RAW_RECORDS_SPOUT);
 		// the kafka bolt takes records from the duplicate detection
-		stormTopology.setBolt(PERSIST_BOLT, kafkaBolt)
-				.shuffleGrouping(DUPLICATE_DETECTION_BOLT);
-
-		// set kafka producer properties
-		conf.put(TridentKafkaState.KAFKA_BROKER_PROPERTIES, kafkaProperties);
+		stormTopology.setBolt(PERSIST_BOLT, filteredBolt).shuffleGrouping(
+				DUPLICATE_DETECTION_BOLT);
 
 		// create the trident topology
 		TridentTopology tridentTopology = new TridentTopology();
 
 		// setup the filtered stream
 		Stream filteredStream = tridentTopology.newStream(
-				FILTERED_RECORDS_TXID, kafkaSpout);
+				FILTERED_RECORDS_TXID, filteredSpout);
 		Stream node1 = filteredStream.partitionBy(new Fields(
 				RawRecordEntity.DEVICE_ATTRIBUTE));
 		Stream node2 = node1.aggregate(RawRecordTupleMapper.getOutputFields(),
