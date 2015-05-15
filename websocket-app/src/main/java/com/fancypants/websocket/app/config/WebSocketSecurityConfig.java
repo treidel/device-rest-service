@@ -16,4 +16,10 @@ public class WebSocketSecurityConfig extends
 				.hasRole("USER").anyMessage().hasRole("USER");
 	}
 
+	@Override
+	protected boolean sameOriginDisabled() {
+		// disable CSRF
+		return true;
+	}
+	
 }
