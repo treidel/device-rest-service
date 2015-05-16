@@ -26,14 +26,14 @@ import com.fancypants.test.data.values.DeviceValues;
 import com.fancypants.test.data.values.HourlyRecordValues;
 import com.fancypants.test.websocket.app.config.WebsocketAppTestConfig;
 import com.fancypants.test.websocket.util.StompSimulator;
-import com.fancypants.websocket.app.config.WebSecurityConfig;
+import com.fancypants.websocket.app.config.WebsocketAppWebSecurityConfig;
 import com.fancypants.websocket.app.config.WebSocketConfig;
 import com.fancypants.websocket.app.config.WebSocketSecurityConfig;
 import com.fancypants.websocket.app.domain.ClientInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { WebSecurityConfig.class,
+@SpringApplicationConfiguration(classes = { WebsocketAppWebSecurityConfig.class,
 		WebSocketConfig.class, WebSocketSecurityConfig.class,
 		WebsocketAppTestConfig.class })
 @WebAppConfiguration

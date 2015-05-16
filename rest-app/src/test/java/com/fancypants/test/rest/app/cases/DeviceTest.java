@@ -19,13 +19,13 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 import com.fancypants.data.repository.DeviceRepository;
-import com.fancypants.rest.app.config.WebConfig;
+import com.fancypants.rest.app.config.RESTAppWebConfig;
 import com.fancypants.rest.app.resource.DeviceResource;
 import com.fancypants.test.data.values.DeviceValues;
 import com.fancypants.test.rest.app.config.TestConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { WebConfig.class,
+@SpringApplicationConfiguration(classes = { RESTAppWebConfig.class,
 		TestConfiguration.class })
 @WebAppConfiguration
 @IntegrationTest

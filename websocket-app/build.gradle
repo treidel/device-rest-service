@@ -50,6 +50,7 @@ applicationDistribution.from(configurations.bootPackaging) {
 /* add application dependencies to the classpath */
 startScripts {
 	classpath += configurations.bootPackaging
+	classpath += files(file('../$APP_HOME/'))
 }
 
 /* configure the memory usage for the JVM */

@@ -14,7 +14,7 @@ import com.fancypants.app.userdetails.AppUserDetailsService;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class RESTAppWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private AppUserDetailsService userDetailsService;
