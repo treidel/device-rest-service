@@ -4,14 +4,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.8.RELEASE")
-		classpath("se.transmode.gradle:gradle-docker:1.2")        
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+		classpath("se.transmode.gradle:gradle-docker:$gradleDockerVersion")        
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
-apply plugin: 'idea'
 apply plugin: 'spring-boot'
 apply plugin: 'docker'
 
@@ -27,11 +26,10 @@ dependencies {
  			extendsFrom runtime
  		}
 	}
-	compile("org.springframework.boot:spring-boot-starter-web")
-	testCompile("org.springframework.boot:spring-boot-starter-test")
-	runtime("ch.qos.logback:logback-classic:1.1.3")
-	runtime("org.logback-extensions:logback-ext-loggly")
-	runtime("org.codehaus.groovy:groovy-all")	
+	compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
+	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
+	runtime("org.logback-extensions:logback-ext-loggly:$logbackExtensionsVersion")
+	runtime("org.codehaus.groovy:groovy-all:$groovyVersion")	
 	bootPackaging project(':data-dynamodb')
 }
 /* use the application dependencies */
@@ -47,6 +45,11 @@ applicationDistribution.from(configurations.bootPackaging) {
 /* add application dependencies to the classpath */
 startScripts {
 	classpath += configurations.bootPackaging
+	doLast {
+		logger.info(unixScript.text)
+		unixScript.text = unixScript.text.replace('CLASSPATH=', 'CLASSPATH=$APP_HOME:')
+		logger.info(unixScript.text)
+	}
 }
 
 /* configure the memory usage for the JVM */

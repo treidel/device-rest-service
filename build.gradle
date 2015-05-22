@@ -1,3 +1,4 @@
+/*
 def versionOverrides = [
 	"org.springframework:spring-core": "4.1.6.RELEASE",
 	"org.springframework:spring-tx": "4.1.6.RELEASE",
@@ -52,36 +53,64 @@ def versionOverrides = [
 	"org.logback-extensions:logback-ext-loggly" : "0.1.2",		
 	"joda-type:joda-time" : "2.7",	
 	"junit:junit":"4.12"
-	
 ]
+*/
 
 subprojects {
 	apply plugin: 'java'
 	group = 'com.fancypants'
 	version = '1.0'
+	
+	/* define the versions of the major libraries we are using */
+	ext {    
+        springVersion = "4.1.6.RELEASE"
+        springDataVersion = "1.8.0.RELEASE"
+        springHateosVersion = "0.16.0.RELEASE"
+        springBootVersion = "1.1.8.RELEASE"
+        springPluginVersion = "1.1.0.RELEASE"
+        springSecurityVersion = "4.0.0.RELEASE"
+        springSessionVersion = "1.0.0.RELEASE"
+        junitVersion = "4.12"
+        rabbitmqVersion = "3.5.2"
+        apacheStormVersion = "0.9.4"
+        apacheCuratorVersion = "2.6.0"
+        apacheCommonsVersion = "3.3.2"
+        apacheJamesVersion = "0.7.2"
+        jettyVersion = "9.2.8.v20150217"
+        slf4jVersion = "1.7.7"
+        groovyVersion = "2.4.3"
+        jsonpathVersion = "0.9.1"
+        amazonAwsVersion = "1.9.16"
+        amazonKinesisStormSpoutVersion = "1.1.0" 
+        kryoVersion = "2.21"
+        h2databaseVersion = "1.4.185"
+        jacksonVersion = "2.4.5"
+        rabbitmqVersion = "3.4.3"
+        logbackVersion = "1.1.3"
+        logbackExtensionsVersion = "0.1.2"
+        beanutilsVersion = "1.9.2"
+        jodatimeVersion = "2.7"
+        gradleDockerVersion = "1.2"
+        kafkaVersion = "0.8.2.1"
+    }
 
 	repositories {
 		mavenCentral()
 		maven { url "http://repo.spring.io/libs-release" }
-		maven { url "http://clojars.org/repo" }
-		maven { url "http://repository-opensourceagility.forge.cloudbees.com/snapshot" }
+    	maven { url "http://clojars.org/repo" }
 	}
 	
-	dependencies {
-		compile("org.slf4j:slf4j-api")
-	}
-
+	/* disable transitive dependencies for all configurations by default */
 	configurations.all {
-		resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-			def overrideVersion = versionOverrides[details.requested.group + ":" + details.requested.name]
-			if (overrideVersion != null && details.requested.version != overrideVersion) {
-				logger.info "Overriding dependency ${details.requested.group}:${details.requested.name} version ${details.requested.version} --> $overrideVersion"
-				details.useVersion overrideVersion
-			}		
-		}
-	 	/* remove certain logging libraries to avoid complaints */
- 		exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-   	}
+		transitive = false
+	}
+	/* for test configurations let gradle manage dependencies */
+	configurations.testCompile {
+		transitive = true
+	}
+	configurations.testRuntime {
+		transitive = true
+	}
 }
 
 project(':data') { 
@@ -98,11 +127,11 @@ project(':data-dynamodb') {
 }
 
 project(':rest') {
-        dependencies {
-                compile project(':common')
+	dependencies {
+		compile project(':common')
 		compile project(':data')
 		compile project(':device')
-        }
+	}
 }
 
 project(':stream') {	
@@ -195,7 +224,15 @@ project(':storm-kafka') {
 	}
 }
 
-project(':storm-processing') { 
+project(':storm-duplicate') { 
+	dependencies { 
+		compile project(':common')
+		compile project(':data')
+		compile project(':storm')
+	}
+}
+
+project(':storm-usage') { 
 	dependencies { 
 		compile project(':common')
 		compile project(':data')

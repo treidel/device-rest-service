@@ -1,4 +1,4 @@
-package com.fancypants.storm.processing.state;
+package com.fancypants.storm.usage.state;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;

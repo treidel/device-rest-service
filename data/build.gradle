@@ -8,9 +8,8 @@ jar {
 }
 
 dependencies {
-	compile("org.springframework.data:spring-data-commons")
-	testCompile("org.springframework:spring-test")
-	testCompile("com.h2database:h2")           	
-	testCompile("junit:junit:4.+")
+	compile("org.springframework.data:spring-data-commons:$springDataVersion")
+	testCompile("org.springframework:spring-test:$springVersion")
+	testCompile("junit:junit:$junitVersion")
 }
 

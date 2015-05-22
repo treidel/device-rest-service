@@ -8,7 +8,16 @@ jar {
 }
 
 dependencies {
-	compile("org.apache.commons:commons-lang3")
-	compile("org.springframework.boot:spring-boot-starter")
-	compile("com.fasterxml.jackson.core:jackson-databind")
+	compile("org.slf4j:slf4j-api:$slf4jVersion")
+	compile("org.apache.commons:commons-lang3:$apacheCommonsVersion")
+	compile("org.springframework:spring-context:$springVersion")
+	compile("org.springframework:spring-core:$springVersion")
+	compile("org.springframework:spring-beans:$springVersion")
+	compile("org.springframework.boot:spring-boot:$springBootVersion") 
+	compile("org.springframework.boot:spring-boot-autoconfigure:$springBootVersion")
+	compile("org.springframework.boot:spring-boot-starter:$springBootVersion")
+	compile("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion")
+	compile("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")  
+	compile("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+	runtime("ch.qos.logback:logback-classic:$logbackVersion")
 }

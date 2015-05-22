@@ -37,33 +37,42 @@ public class Application {
 	}
 
 	private static Package[] computeSearchPath() {
+		LOG.trace("computeSearchPath enter");
 		// load the package list
 		Resource resource = new ClassPathResource(PACKAGES_RESOURCES);
-		try {
-			// parse the package list
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					resource.getInputStream()));
-			String line = reader.readLine();
-			// setup the list of packages we read
-			List<Package> packageList = new LinkedList<Package>();
-			while (null != line) {
-				// find the package object
-				Package pkg = Class.forName(line).getPackage();
-				// add it to the list
-				packageList.add(pkg);
-				// read next line
-				line = reader.readLine();
+		// assume we won't find any packages
+		Package[] packages = new Package[0];
+
+		if (true == resource.exists()) {
+
+			try {
+				// parse the package list
+				BufferedReader reader = new BufferedReader(
+						new InputStreamReader(resource.getInputStream()));
+				String line = reader.readLine();
+				// setup the list of packages we read
+				List<Package> packageList = new LinkedList<Package>();
+				while (null != line) {
+					// find the package object
+					Package pkg = Class.forName(line).getPackage();
+					// add it to the list
+					packageList.add(pkg);
+					// read next line
+					line = reader.readLine();
+				}
+				// convert to an array
+				packages = new Package[packageList.size()];
+				packageList.toArray(packages);
+				return packages;
+			} catch (IOException e) {
+				LOG.error("IOException reading package list", e);
+				throw new IllegalStateException(e);
+			} catch (ClassNotFoundException e) {
+				LOG.error("ClassNotFoundException reading package list", e);
+				throw new IllegalStateException(e);
 			}
-			// convert to an array
-			Package[] packages = new Package[packageList.size()];
-			packageList.toArray(packages);
-			return packages;
-		} catch (IOException e) {
-			LOG.error("IOException reading package list", e);
-			throw new IllegalStateException(e);
-		} catch (ClassNotFoundException e) {
-			LOG.error("ClassNotFoundException reading package list", e);
-			throw new IllegalStateException(e);
 		}
+		LOG.trace("exit {}", (Object) packages);
+		return packages;
 	}
 }

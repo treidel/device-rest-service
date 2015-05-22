@@ -2,6 +2,8 @@ package com.fancypants.storm.kafka.config;
 
 import java.util.Properties;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,19 +67,12 @@ public class KafkaConfig {
 
 	@Bean
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public IRichBolt filteredBolt() {
+	public Pair<Config, IRichBolt> filteredBolt() {
 		LOG.trace("filteredBolt enter");
 		KafkaBolt kafkaBolt = new KafkaBolt().withTopicSelector(
 				new DefaultTopicSelector(ConfigUtils
 						.retrieveEnvVarOrFail(KafkaConfig.KAFKA_TOPIC_ENVVAR)))
 				.withTupleToKafkaMapper(kafkaMapper);
-		LOG.trace("kafkaBolt exit", kafkaBolt);
-		return kafkaBolt;
-	}
-
-	@Bean
-	public Config filteredConfig() {
-		LOG.trace("filteredConfig enter");
 		Properties props = new Properties();
 		props.put("metadata.broker.list", ConfigUtils
 				.retrieveEnvVarOrFail(KafkaConfig.KAFKA_BROKERS_ENVVAR));
@@ -85,7 +80,9 @@ public class KafkaConfig {
 		props.put("serializer.class", "kafka.serializer.StringEncoder");
 		Config config = new Config();
 		config.put(TridentKafkaState.KAFKA_BROKER_PROPERTIES, props);
-		LOG.trace("filteredConfig exit {}", config);
-		return config;
+		Pair<Config, IRichBolt> pair = new ImmutablePair<Config, IRichBolt>(
+				config, kafkaBolt);
+		LOG.trace("kafkaBolt exit {}", pair);
+		return pair;
 	}
 }

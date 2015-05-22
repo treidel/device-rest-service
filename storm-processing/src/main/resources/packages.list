@@ -1,5 +1,1 @@
-com.fancypants.storm.processing.StormProcessingScanMe
-com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe
-com.fancypants.message.rabbitmq.MessageRabbitMQScanMe
-com.fancypants.storm.kinesis.StormKinesisScanMe
-com.fancypants.storm.kafka.StormKafkaScanMe
+com.fancypants.storm.local.StormLocalScanMe

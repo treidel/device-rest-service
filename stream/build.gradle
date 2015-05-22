@@ -14,7 +14,6 @@ jar {
 }
 
 dependencies {
-	compile("org.springframework:spring-context") 
-	testCompile("junit:junit:4.+")
+	testCompile("junit:junit:$junitVersion")
 }
 

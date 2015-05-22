@@ -8,9 +8,8 @@ jar {
 }
 
 dependencies {
-	compile("com.rabbitmq:amqp-client")
-	compile("org.springframework:spring-context")	
-	testCompile("org.springframework:spring-test")        	
-	testCompile("junit:junit:4.+")
+	compile("com.rabbitmq:amqp-client:$rabbitmqVersion")	
+	testCompile("org.springframework:spring-test:$springVersion")        	
+	testCompile("junit:junit:$junitVersion")
 }
 

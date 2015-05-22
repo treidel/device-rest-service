@@ -14,7 +14,6 @@ jar {
 }
 
 dependencies {
-	compile("com.amazonaws:aws-java-sdk-kinesis")
-	compile("org.springframework:spring-context") 
-	testCompile("junit:junit:4.+")
+	compile("com.amazonaws:aws-java-sdk-kinesis:$amazonAwsVersion")
+	testCompile("junit:junit:$junitVersion")
 }

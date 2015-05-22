@@ -1,4 +1,4 @@
-package com.fancypants.storm.processing.state;
+package com.fancypants.storm.usage.state;
 
 import java.util.List;
 

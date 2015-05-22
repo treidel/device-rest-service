@@ -1,4 +1,4 @@
-package com.fancypants.storm.processing.state;
+package com.fancypants.storm.usage.state;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -15,30 +15,29 @@ import storm.trident.state.StateFactory;
 import backtype.storm.task.IMetricsContext;
 
 import com.fancypants.common.application.util.AnnotationUtils;
-import com.fancypants.data.repository.HourlyRecordRepository;
+import com.fancypants.message.topic.TopicManager;
 
 @Component
-public class UsageStateFactory implements StateFactory {
+public class TopicNotifierStateFactory implements StateFactory {
 
-	private static final long serialVersionUID = 296987272885779417L;
+	private static final long serialVersionUID = -8884066339861949756L;
 
 	@Autowired
-	private HourlyRecordRepository repository;
+	private TopicManager topicManager;
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public State makeState(Map conf, IMetricsContext metrics,
 			int partitionIndex, int numPartitions) {
-		// re-initialize the repository
+		// re-initialize the manager
 		List<Method> methods = AnnotationUtils.findAnnotatedMethods(
-				repository.getClass(), PostConstruct.class);
+				topicManager.getClass(), PostConstruct.class);
 		for (Method method : methods) {
 			ReflectionUtils.makeAccessible(method);
-			ReflectionUtils.invokeMethod(method, repository);
+			ReflectionUtils.invokeMethod(method, topicManager);
 		}
 		// create the backing map
-		UsageState state = new UsageState(repository);
-
+		TopicNotifierState state = new TopicNotifierState(topicManager);
 		return state;
 	}
 

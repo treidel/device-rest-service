@@ -1,10 +1,14 @@
-package com.fancypants.storm.processing.config;
+package com.fancypants.storm.usage.config;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,9 +18,8 @@ import storm.trident.fluent.GroupedStream;
 import storm.trident.spout.IOpaquePartitionedTridentSpout;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
-import backtype.storm.topology.IRichBolt;
-import backtype.storm.topology.IRichSpout;
-import backtype.storm.topology.TopologyBuilder;
+import backtype.storm.StormSubmitter;
+import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
 
 import com.fancypants.common.CommonScanMe;
@@ -30,29 +33,24 @@ import com.fancypants.storm.StormScanMe;
 import com.fancypants.storm.device.record.mapping.EnergyConsumptionEntityMapper;
 import com.fancypants.storm.device.record.mapping.EnergyConsumptionTupleMapper;
 import com.fancypants.storm.device.record.mapping.RawRecordTupleMapper;
-import com.fancypants.storm.processing.StormProcessingScanMe;
-import com.fancypants.storm.processing.aggregate.HourlyEnergyCalculationAggregator;
-import com.fancypants.storm.processing.aggregate.UsageAggregator;
-import com.fancypants.storm.processing.bolt.DuplicateDetectionBolt;
-import com.fancypants.storm.processing.state.TopicNotifierStateFactory;
-import com.fancypants.storm.processing.state.TopicNotifierStateUpdater;
-import com.fancypants.storm.processing.state.UsageStateFactory;
-import com.fancypants.storm.processing.state.UsageStateUpdater;
+import com.fancypants.storm.usage.StormUsageScanMe;
+import com.fancypants.storm.usage.aggregate.HourlyEnergyCalculationAggregator;
+import com.fancypants.storm.usage.aggregate.UsageAggregator;
+import com.fancypants.storm.usage.state.TopicNotifierStateFactory;
+import com.fancypants.storm.usage.state.TopicNotifierStateUpdater;
+import com.fancypants.storm.usage.state.UsageStateFactory;
+import com.fancypants.storm.usage.state.UsageStateUpdater;
 import com.fancypants.usage.UsageScanMe;
 
 @Configuration
 @ComponentScan(basePackageClasses = { CommonScanMe.class, DataScanMe.class,
 		DeviceScanMe.class, UsageScanMe.class, MessageScanMe.class,
-		StormScanMe.class, StormProcessingScanMe.class })
+		StormScanMe.class, StormUsageScanMe.class })
 public class RecordsConfig {
 	private final static Logger LOG = LoggerFactory
 			.getLogger(RecordsConfig.class);
 
-	private final static String STORM_TOPOLOGY = "raw_records_topology";
 	private final static String TRIDENT_TOPOLOGY = "filtered_records_topology";
-	private final static String RAW_RECORDS_SPOUT = "raw_record_spout";
-	private final static String DUPLICATE_DETECTION_BOLT = "duplicate_detection_bolt";
-	private final static String PERSIST_BOLT = "persist_bolt";
 	private final static String FILTERED_RECORDS_TXID = "filtered_records";
 
 	@Autowired
@@ -60,9 +58,6 @@ public class RecordsConfig {
 
 	@Autowired
 	private UsageStateFactory usageStateFactory;
-
-	@Autowired
-	private DuplicateDetectionBolt duplicateDetectionBolt;
 
 	@Autowired
 	private TopicNotifierStateFactory topicNotifierStateFactory;
@@ -79,47 +74,26 @@ public class RecordsConfig {
 	@Autowired
 	private UsageAggregator usageAggregator;
 
-	@Autowired
-	private IRichSpout kinesisSpout;
-
-	@Autowired
-	private IRichBolt filteredBolt;
-
 	@SuppressWarnings("rawtypes")
 	@Autowired
-	private IOpaquePartitionedTridentSpout filteredSpout;
+	private Pair<Config, IOpaquePartitionedTridentSpout> filteredSpout;
 
-	@Autowired
-	private Config filteredConfig;
-
-	@PostConstruct
-	public void init() throws Exception {
-		LOG.trace("RecordsConfig.init enter");
-
-		// config object for all topologies
-		Config conf = new Config();
-
-		// populate the filtered config
-		conf.putAll(filteredConfig);
-
-		// create the regular storm topology
-		TopologyBuilder stormTopology = new TopologyBuilder();
-
-		// setup the raw topology
-		stormTopology.setSpout(RAW_RECORDS_SPOUT, kinesisSpout);
-		// duplicate detection takes records from the spout
-		stormTopology.setBolt(DUPLICATE_DETECTION_BOLT, duplicateDetectionBolt)
-				.shuffleGrouping(RAW_RECORDS_SPOUT);
-		// the kafka bolt takes records from the duplicate detection
-		stormTopology.setBolt(PERSIST_BOLT, filteredBolt).shuffleGrouping(
-				DUPLICATE_DETECTION_BOLT);
+	@Bean
+	public Pair<Config, StormTopology> usageTopology() {
+		LOG.trace("usageTopology enter");
 
 		// create the trident topology
 		TridentTopology tridentTopology = new TridentTopology();
 
+		// create the config
+		Config config = new Config();
+
+		// add the spout config
+		config.putAll(filteredSpout.getKey());
+
 		// setup the filtered stream
 		Stream filteredStream = tridentTopology.newStream(
-				FILTERED_RECORDS_TXID, filteredSpout);
+				FILTERED_RECORDS_TXID, filteredSpout.getValue());
 		Stream node1 = filteredStream.partitionBy(new Fields(
 				RawRecordEntity.DEVICE_ATTRIBUTE));
 		Stream node2 = node1.aggregate(RawRecordTupleMapper.getOutputFields(),
@@ -135,13 +109,24 @@ public class RecordsConfig {
 				usageStateUpdater);
 		node4.partitionPersist(topicNotifierStateFactory, new Fields("result"),
 				topicNotifierUpdater);
+		StormTopology stormTopology = tridentTopology.build();
+		Pair<Config, StormTopology> pair = new ImmutablePair<Config, StormTopology>(
+				new Config(), stormTopology);
+		LOG.trace("usageTopology exit {}", pair);
+		return pair;
+	}
 
-		// for now create a local cluster
-		LocalCluster cluster = new LocalCluster();
-		cluster.submitTopology(STORM_TOPOLOGY, conf,
-				stormTopology.createTopology());
-		cluster.submitTopology(TRIDENT_TOPOLOGY, conf, tridentTopology.build());
+	@PostConstruct
+	@ConditionalOnMissingBean(LocalCluster.class)
+	@Autowired
+	public void init(Pair<Config, StormTopology> usageTopology)
+			throws Exception {
+		LOG.trace("init enter");
 
-		LOG.trace("RecordsConfig.init exit");
+		// send the topology to the cluster
+		StormSubmitter.submitTopology(TRIDENT_TOPOLOGY, usageTopology.getKey(),
+				usageTopology.getValue());
+
+		LOG.trace("init exit");
 	}
 }

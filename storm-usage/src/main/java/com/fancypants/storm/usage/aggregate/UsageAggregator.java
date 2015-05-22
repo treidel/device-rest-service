@@ -1,4 +1,4 @@
-package com.fancypants.storm.processing.aggregate;
+package com.fancypants.storm.usage.aggregate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

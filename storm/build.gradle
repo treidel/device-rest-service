@@ -14,7 +14,7 @@ jar {
 }
 
 dependencies {
-	compile("org.apache.storm:storm-core") 
-	testCompile("junit:junit:4.+")
+	compile("org.apache.storm:storm-core:$apacheStormVersion") 
+	testCompile("junit:junit:$junitVersion")
 }
 

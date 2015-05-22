@@ -8,7 +8,8 @@ jar {
 }
 
 dependencies {
-	compile("org.springframework.security:spring-security-core")
-	compile("org.apache.james:apache-mime4j")
+	compile("org.springframework.security:spring-security-core:$springSecurityVersion")
+	compile("org.apache.james:apache-mime4j-core:$apacheJamesVersion")
+	compile("org.apache.james:apache-mime4j-dom:$apacheJamesVersion")
 }
 

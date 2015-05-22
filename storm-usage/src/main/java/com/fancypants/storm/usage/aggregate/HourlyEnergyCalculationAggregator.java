@@ -1,4 +1,4 @@
-package com.fancypants.storm.processing.aggregate;
+package com.fancypants.storm.usage.aggregate;
 
 import org.springframework.stereotype.Component;
 

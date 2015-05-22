@@ -1,6 +1,5 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
-apply plugin: 'idea'
 
 jar {
 	baseName = 'rest'
@@ -8,18 +7,17 @@ jar {
 }
 
 dependencies {
-	compile("com.fasterxml.jackson.core:jackson-databind")
-	compile("com.fasterxml.jackson.datatype:jackson-datatype-joda")
-	compile("org.springframework.hateoas:spring-hateoas") 
-	compile("org.springframework.plugin:spring-plugin-core")
-	compile("org.springframework.security:spring-security-config")
-	compile("org.springframework.security:spring-security-web")
-	compile("org.springframework.boot:spring-boot-starter-tomcat")
-	compile("com.jayway.jsonpath:json-path")
-	compile("ch.qos.logback:logback-access")
-	runtime("joda-time:joda-time")
-	testCompile("org.springframework.boot:spring-boot-starter-test")
-	testCompile("org.apache.httpcomponents:httpclient")
-	testCompile("org.apache.httpcomponents:httpcore")
+	compile("com.fasterxml.jackson.datatype:jackson-datatype-joda:$jacksonVersion")
+	compile("org.springframework.hateoas:spring-hateoas:$springHateosVersion") 
+	compile("org.springframework.plugin:spring-plugin-core:$springPluginVersion")
+	compile("org.springframework.security:spring-security-config:$springSecurityVersion")
+	compile("org.springframework.security:spring-security-web:$springSecurityVersion")
+	compile("org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion")
+	compile("com.jayway.jsonpath:json-path:$jsonpathVersion")
+	compile("ch.qos.logback:logback-access:$logbackVersion")
+	runtime("joda-time:joda-time:$jodatimeVersion")
+	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
+	testCompile("org.apache.httpcomponents:httpclient:4.3.2")
+	testCompile("org.apache.httpcomponents:httpcore:4.3.2")
 }
 

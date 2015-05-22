@@ -14,8 +14,8 @@ jar {
 }
 
 dependencies {
-	compile("org.apache.kafka:kafka_2.10:0.8.2.1")
-	compile("org.apache.storm:storm-kafka")
-	testCompile("junit:junit:4.+")
+	compile("org.apache.kafka:kafka_2.10:$kafkaVersion")
+	compile("org.apache.storm:storm-kafka:$apacheStormVersion")
+	testCompile("junit:junit:$junitVersion")
 }
 

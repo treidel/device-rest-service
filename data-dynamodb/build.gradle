@@ -8,9 +8,10 @@ jar {
 }
 
 dependencies {
-	compile("com.amazonaws:aws-java-sdk-dynamodb")
-	compile("org.springframework:spring-context")	
-	testCompile("org.springframework:spring-test")        	
-	testCompile("junit:junit:4.+")
+	compile("com.amazonaws:aws-java-sdk-core:$amazonAwsVersion")
+	compile("com.amazonaws:aws-java-sdk-dynamodb:$amazonAwsVersion")
+	compile("org.springframework:spring-context:$springVersion")	
+	testCompile("org.springframework:spring-test:$springVersion")        	
+	testCompile("junit:junit:$junitVersion")
 }
 

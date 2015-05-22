@@ -25,11 +25,11 @@ import com.fancypants.data.entity.RawMeasurementEntity;
 import com.fancypants.data.entity.RawRecordEntity;
 import com.fancypants.data.repository.HourlyRecordRepository;
 import com.fancypants.storm.device.record.mapping.RawRecordTupleMapper;
-import com.fancypants.storm.processing.config.RecordsConfig;
+import com.fancypants.storm.local.config.LocalConfig;
 import com.fancypants.test.storm.processing.config.StormProcessingTestConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { RecordsConfig.class,
+@SpringApplicationConfiguration(classes = { LocalConfig.class,
 		StormProcessingTestConfig.class })
 @IntegrationTest
 public class ProcessingTests {

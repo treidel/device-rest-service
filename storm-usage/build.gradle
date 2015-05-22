@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
-		classpath("se.transmode.gradle:gradle-docker:$gradleDockerVersion")
+		classpath("se.transmode.gradle:gradle-docker:$gradleDockerVersion")        
     }
 }
 
@@ -15,26 +15,28 @@ apply plugin: 'spring-boot'
 apply plugin: 'docker'
 
 jar {
-	baseName = 'websocket-device'
+	baseName = 'storm-usage'
 	version =  '1.0.0'
 }
 
 dependencies {
 	/* create a new configuration for all of the application dependencies */
 	configurations {
+ 		/* create the packaging configuration used for extra libraries for spring boto */
  		bootPackaging {
  			extendsFrom runtime
  		}
 	}
-
-	compile("org.springframework.boot:spring-boot-starter-websocket:$springBootVersion")
+	
+	compile("org.springframework.boot:spring-boot-starter:$springBootVersion")	
+	compile("org.springframework.boot:spring-boot-starter:$springBootVersion")
+	compile("commons-beanutils:commons-beanutils:$beanutilsVersion")
+	runtime("org.springframework.security:spring-security-config:$springSecurityVersion")	
 	//runtime("ch.qos.logback:logback-classic:1.1.3")
 	runtime("org.logback-extensions:logback-ext-loggly:$logbackExtensionsVersion")
-	runtime("org.codehaus.groovy:groovy-all:$groovyVersion")	
-	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
-	testCompile("org.eclipse.jetty.websocket:websocket-client:$jettyVersion")
+	runtime("org.codehaus.groovy:groovy-all:$groovyVersion")
 	bootPackaging project(':data-dynamodb')
-	bootPackaging project(':stream-kinesis')
+	bootPackaging project(':storm-kafka')
 }
 
 /* use the application dependencies */
@@ -50,7 +52,6 @@ applicationDistribution.from(configurations.bootPackaging) {
 /* add application dependencies to the classpath */
 startScripts {
 	classpath += configurations.bootPackaging
-	classpath += files(file('/../$APP_HOME/'))	
 }
 
 /* configure the memory usage for the JVM */
@@ -58,11 +59,5 @@ applicationDefaultJvmArgs = ["-Xms128M", "-Xmx128M"]
 
 group = 'reideltj'
 sourceCompatibility = 1.7
-mainClassName = 'com.fancypants.common.application.Application'
+mainClassName = 'com.fancypants.common.application.Application' 
 
-distDocker {
-	exposePort 8003
-	exposePort 8083
-	addFile('src/main/security/server.jks','/etc/server.jks')
-	setEnvironment('KEYSTORE_FILE', 'file:/etc/server.jks')
-}
