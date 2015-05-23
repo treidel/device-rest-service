@@ -9,7 +9,7 @@ jar {
 
 dependencies {
 	compile("org.slf4j:slf4j-api:$slf4jVersion")
-	compile("org.apache.commons:commons-lang3:$apacheCommonsVersion")
+	compile("org.apache.commons:commons-lang3:$apacheCommonsLang3Version")
 	compile("org.springframework:spring-context:$springVersion")
 	compile("org.springframework:spring-core:$springVersion")
 	compile("org.springframework:spring-beans:$springVersion")
@@ -19,5 +19,6 @@ dependencies {
 	compile("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion")
 	compile("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")  
 	compile("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+	compile("com.esotericsoftware.kryo:kryo:$kryoVersion")
 	runtime("ch.qos.logback:logback-classic:$logbackVersion")
 }

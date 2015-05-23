@@ -31,7 +31,7 @@ import com.fancypants.test.rest.app.config.TestConfiguration;
 @IntegrationTest
 public class DeviceTest {
 	private static final URI BASE_URL = URI
-			.create("http://localhost:8080/app/device");
+			.create("http://localhost:8002/app/device");
 	@Autowired
 	private DeviceRepository deviceRepository;
 

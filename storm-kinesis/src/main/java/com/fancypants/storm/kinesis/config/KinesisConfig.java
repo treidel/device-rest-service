@@ -10,8 +10,6 @@ import backtype.storm.topology.IRichSpout;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.services.kinesis.AmazonKinesis;
-import com.amazonaws.services.kinesis.AmazonKinesisClient;
 import com.amazonaws.services.kinesis.stormspout.InitialPositionInStream;
 import com.amazonaws.services.kinesis.stormspout.KinesisSpout;
 import com.amazonaws.services.kinesis.stormspout.KinesisSpoutConfig;
@@ -33,16 +31,8 @@ public class KinesisConfig {
 	private ObjectMapper objectMapper;
 
 	@Bean
-	public AmazonKinesis amazonKinesis() {
-		LOG.trace("amazonKinesis enter");
-		AmazonKinesis amazonKinesis = new AmazonKinesisClient();
-		LOG.trace("amazonKinesis exit", amazonKinesis);
-		return amazonKinesis;
-	}
-
-	@Bean
-	public IRichSpout kinesisSpout() {
-		LOG.trace("kinesisSpout enter");
+	public IRichSpout spout() {
+		LOG.trace("spout enter");
 		// fetch the stream name
 		String streamName = ConfigUtils
 				.retrieveEnvVarOrFail(AMAZON_KINESIS_STREAM_ENVVAR);
@@ -59,7 +49,7 @@ public class KinesisConfig {
 				new DefaultAWSCredentialsProviderChain(),
 				new ClientConfiguration());
 		// done
-		LOG.trace("kinesisSpout exit", spout);
+		LOG.trace("spout exit", spout);
 		return spout;
 	}
 }

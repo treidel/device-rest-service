@@ -13,7 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.util.Assert;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.internal.StaticCredentialsProvider;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
@@ -25,9 +28,9 @@ import com.amazonaws.services.dynamodbv2.document.ScanOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.ScanSpec;
 import com.amazonaws.services.dynamodbv2.model.Select;
+import com.fancypants.data.device.dynamodb.credentials.SerializableCredentials;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 		implements CrudRepository<T, I>, Serializable {
@@ -37,11 +40,21 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 	private static final Logger LOG = LoggerFactory
 			.getLogger(AbstractDynamoDBRepository.class);
 
-	private transient DynamoDB dynamoDB;
 	private final Class<T> clazz;
 	private final String hashAttribute;
 	private final String rangeAttribute;
-	private final ObjectMapper objectMapper = new ObjectMapper();
+
+	private transient DynamoDB dynamoDB;
+
+	@Autowired
+	private SerializableCredentials awsCredentials;
+
+	@Autowired
+	@Qualifier("amazonDynamoDBEndpoint")
+	private String endpoint;
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Autowired(required = false)
 	@Qualifier("tablePrefix")
@@ -55,14 +68,8 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 			String rangeAttribute) {
 		LOG.trace("AbstractDynamoDBRepository entry");
 
-		// make sure this object is serializable
-		if (false == objectMapper.canSerialize(clazz)) {
-			LOG.error("invalid class", clazz);
-			throw new IllegalAccessError("can not serialize class=" + clazz);
-		}
-
-		// configure the data serialization
-		objectMapper.setDateFormat(new ISO8601DateFormat());
+		// make sure the data is serializable
+		Assert.isTrue(objectMapper.canSerialize(clazz));
 
 		// store variables
 		this.clazz = clazz;
@@ -73,10 +80,17 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 
 	@PostConstruct
 	private void init() {
-		// now that we are initialized create the client
-		AmazonDynamoDB amazonDynamoDB = new AmazonDynamoDBClient();
-		this.dynamoDB = new DynamoDB(amazonDynamoDB);
-
+		LOG.trace("init enter");
+		// create the credential provider
+		AWSCredentialsProvider awsCredentialsProvider = new StaticCredentialsProvider(
+				awsCredentials);
+		// create the client
+		AmazonDynamoDB amazonDynamoDB = new AmazonDynamoDBClient(
+				awsCredentialsProvider);
+		amazonDynamoDB.setEndpoint(endpoint);
+		// now create the dynamoDB object
+		dynamoDB = new DynamoDB(amazonDynamoDB);
+		LOG.trace("init exit {}", dynamoDB);
 	}
 
 	protected DynamoDB getDynamoDB() {

@@ -14,7 +14,6 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import com.fancypants.common.config.util.ConfigUtils;
 import com.fancypants.message.rabbitmq.config.RabbitMQConfig;
-import com.fancypants.message.rabbitmq.topic.RabbitMQTopicManager;
 import com.fancypants.test.message.suite.MessageTests;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -34,11 +33,10 @@ public class RabbitMQMessageTests extends MessageTests {
 	private void init() throws Exception {
 		ConnectionFactory factory = new ConnectionFactory();
 		String password = ConfigUtils
-				.retrieveEnvVarOrFail(RabbitMQTopicManager.RABBITMQ_PASSWORD_ENVVAR);
+				.retrieveEnvVarOrFail(RabbitMQConfig.RABBITMQ_PASSWORD_ENVVAR);
 		factory.setPassword(password);
-		URI uri = URI
-				.create(ConfigUtils
-						.retrieveEnvVarOrFail(RabbitMQTopicManager.RABBITMQ_URI_ENVVAR));
+		URI uri = URI.create(ConfigUtils
+				.retrieveEnvVarOrFail(RabbitMQConfig.RABBITMQ_URI_ENVVAR));
 		factory.setUri(uri);
 		factory.setAutomaticRecoveryEnabled(true);
 		connection = factory.newConnection();

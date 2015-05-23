@@ -48,8 +48,8 @@ public class KafkaConfig {
 
 	@SuppressWarnings("rawtypes")
 	@Bean
-	public IOpaquePartitionedTridentSpout filteredSpout() {
-		LOG.trace("filteredSpout enter");
+	public IOpaquePartitionedTridentSpout spout() {
+		LOG.trace("spout enter");
 		// get the zookeeper host
 		String zookeeperEndpoint = ConfigUtils
 				.retrieveEnvVarOrFail(ZOOKEEPER_ENDPOINT_ENVVAR);
@@ -60,7 +60,6 @@ public class KafkaConfig {
 		kafkaSpoutConf.scheme = rawRecordScheme;
 		OpaqueTridentKafkaSpout kafkaSpout = new OpaqueTridentKafkaSpout(
 				kafkaSpoutConf);
-
 		LOG.trace("filteredSpout exit", kafkaSpout);
 		return kafkaSpout;
 	}

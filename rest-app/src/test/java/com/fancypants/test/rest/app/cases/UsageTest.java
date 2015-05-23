@@ -35,7 +35,7 @@ import com.fancypants.test.rest.app.config.TestConfiguration;
 @IntegrationTest
 public class UsageTest {
 	private static final URI BASE_URL = URI
-			.create("http://localhost:8080/app/usage");
+			.create("http://localhost:8002/app/usage");
 	private static final URI HOURLY_URL = URI.create(BASE_URL + "/hourly");
 
 	@Autowired

@@ -8,11 +8,8 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.fancypants.common.config.util.ConfigUtils;
 import com.fancypants.message.exception.AbstractMessageException;
 import com.fancypants.message.rabbitmq.exception.RabbitMQException;
 import com.fancypants.message.topic.TopicConsumer;
@@ -27,27 +24,35 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 
 	private static final long serialVersionUID = 2706248108381878149L;
 
-	public static final String RABBITMQ_URI_ENVVAR = "RABBITMQ_URI";
-	public static final String RABBITMQ_PASSWORD_ENVVAR = "RABBITMQ_PASSWORD";
-	public static final String RABBITMQ_EXCHANGE_ENVVAR = "RABBITMQ_EXCHANGE";
-
 	private static final Logger LOG = LoggerFactory
 			.getLogger(RabbitMQTopicManager.class);
 
-	@Autowired
-	@Value("${" + RABBITMQ_EXCHANGE_ENVVAR + "}")
-	private String exchange;
+	private final URI uri;
+	private final String password;
+	private final String exchange;
 
 	private transient Connection connection;
 
+	public RabbitMQTopicManager(URI uri, String password, String exchange)
+			throws Exception {
+		LOG.trace("RabbitMQTopicManager enter");
+
+		// store passed variables
+		this.uri = uri;
+		this.password = password;
+		this.exchange = exchange;
+
+		LOG.trace("init exit");
+	}
+
 	@PostConstruct
 	private void init() throws Exception {
-		LOG.trace("init enter");
 		// create the connection
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setPassword(getPassword());
-		factory.setUri(getURI());
+		factory.setPassword(password);
+		factory.setUri(uri);
 		factory.setAutomaticRecoveryEnabled(true);
+		// pre
 		connection = factory.newConnection();
 		// create the exchange (if it doesn't already exist)
 		try {
@@ -61,8 +66,6 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 			LOG.error("unable to create exchange", e);
 			throw new RabbitMQException(e);
 		}
-
-		LOG.trace("init exit");
 	}
 
 	@Override
@@ -117,21 +120,5 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 			LOG.error("can not create consumer", e);
 			throw new RabbitMQException(e);
 		}
-	}
-
-	private URI getURI() {
-		LOG.trace("getURI enter");
-		String value = ConfigUtils.retrieveEnvVarOrFail(RABBITMQ_URI_ENVVAR);
-		URI uri = URI.create(value);
-		LOG.trace("getURI exit {}", uri);
-		return uri;
-	}
-
-	private String getPassword() {
-		LOG.trace("getPassword enter");
-		String password = ConfigUtils
-				.retrieveEnvVarOrFail(RABBITMQ_PASSWORD_ENVVAR);
-		LOG.trace("getPassword exit {}", password);
-		return password;
 	}
 }

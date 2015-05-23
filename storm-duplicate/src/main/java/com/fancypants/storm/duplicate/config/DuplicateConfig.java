@@ -43,10 +43,10 @@ public class DuplicateConfig extends TopologyUploader {
 	private final static String PERSIST_BOLT = "persist_bolt";
 
 	@Autowired
-	private DuplicateDetectionBolt duplicateDetectionBolt;
+	private Pair<Config, DuplicateDetectionBolt> duplicateDetectionBolt;
 
 	@Autowired
-	private IRichSpout kinesisSpout;
+	private Pair<Config, IRichSpout> spout;
 
 	@Autowired
 	private Pair<Config, IRichBolt> filteredBolt;
@@ -58,17 +58,19 @@ public class DuplicateConfig extends TopologyUploader {
 		// config object for all topologies
 		Config config = new Config();
 
-		// populate the spout and bolt config
+		// populate the spout + bolt config
+		config.putAll(spout.getKey());
 		config.putAll(filteredBolt.getKey());
 
 		// create the regular storm topology
 		TopologyBuilder stormTopology = new TopologyBuilder();
 
 		// setup the raw topology
-		stormTopology.setSpout(RAW_RECORDS_SPOUT, kinesisSpout);
+		stormTopology.setSpout(RAW_RECORDS_SPOUT, spout.getValue());
 		// duplicate detection takes records from the spout
-		stormTopology.setBolt(DUPLICATE_DETECTION_BOLT, duplicateDetectionBolt)
-				.shuffleGrouping(RAW_RECORDS_SPOUT);
+		stormTopology.setBolt(DUPLICATE_DETECTION_BOLT,
+				duplicateDetectionBolt.getValue()).shuffleGrouping(
+				RAW_RECORDS_SPOUT);
 		// the kafka bolt takes records from the duplicate detection
 		stormTopology.setBolt(PERSIST_BOLT, filteredBolt.getValue())
 				.shuffleGrouping(DUPLICATE_DETECTION_BOLT);
