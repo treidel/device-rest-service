@@ -9,7 +9,8 @@ import com.fancypants.data.device.dynamodb.config.DynamoDBConfig;
 import com.fancypants.test.data.suite.DeviceTests;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(inheritLocations = false, loader = AnnotationConfigContextLoader.class, classes = DynamoDBConfig.class)
+@ContextConfiguration(inheritLocations = false, loader = AnnotationConfigContextLoader.class, classes = {
+		DynamoDBConfig.class, DynamoDBDeviceTests.class })
 public class DynamoDBDeviceTests extends DeviceTests {
 
 }

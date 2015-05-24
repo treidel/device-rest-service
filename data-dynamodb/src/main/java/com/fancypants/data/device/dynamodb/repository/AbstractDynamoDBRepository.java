@@ -68,9 +68,6 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 			String rangeAttribute) {
 		LOG.trace("AbstractDynamoDBRepository entry");
 
-		// make sure the data is serializable
-		Assert.isTrue(objectMapper.canSerialize(clazz));
-
 		// store variables
 		this.clazz = clazz;
 		this.hashAttribute = hashAttribute;
@@ -81,6 +78,10 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 	@PostConstruct
 	private void init() {
 		LOG.trace("init enter");
+
+		// make sure the data is serializable
+		Assert.isTrue(objectMapper.canSerialize(clazz));
+
 		// create the credential provider
 		AWSCredentialsProvider awsCredentialsProvider = new StaticCredentialsProvider(
 				awsCredentials);

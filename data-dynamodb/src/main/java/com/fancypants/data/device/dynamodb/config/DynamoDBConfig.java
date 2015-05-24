@@ -14,7 +14,8 @@ import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe;
 import com.fancypants.data.device.dynamodb.credentials.SerializableCredentials;
 
 @Configuration
-@ComponentScan(basePackageClasses = { CommonScanMe.class, DataDeviceDynamoDBScanMe.class })
+@ComponentScan(basePackageClasses = { CommonScanMe.class,
+		DataDeviceDynamoDBScanMe.class })
 public class DynamoDBConfig {
 
 	private static final Logger LOG = LoggerFactory
