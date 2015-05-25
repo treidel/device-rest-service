@@ -25,6 +25,7 @@ import backtype.storm.topology.IRichBolt;
 import com.fancypants.common.CommonScanMe;
 import com.fancypants.common.config.util.ConfigUtils;
 import com.fancypants.storm.StormScanMe;
+import com.fancypants.storm.config.AbstractTopologyConfig;
 import com.fancypants.storm.kafka.StormKafkaScanMe;
 import com.fancypants.storm.kafka.mapper.RawRecordToKafkaMapper;
 import com.fancypants.storm.kafka.scheme.RawRecordScheme;
@@ -47,7 +48,7 @@ public class KafkaConfig {
 	private RawRecordToKafkaMapper kafkaMapper;
 
 	@SuppressWarnings("rawtypes")
-	@Bean
+	@Bean(name = AbstractTopologyConfig.TRIDENT_SPOUT_NAME)
 	public IOpaquePartitionedTridentSpout spout() {
 		LOG.trace("spout enter");
 		// get the zookeeper host
@@ -64,7 +65,7 @@ public class KafkaConfig {
 		return kafkaSpout;
 	}
 
-	@Bean
+	@Bean(name = AbstractTopologyConfig.OUTPUT_BOLT_NAME)
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Pair<Config, IRichBolt> filteredBolt() {
 		LOG.trace("filteredBolt enter");

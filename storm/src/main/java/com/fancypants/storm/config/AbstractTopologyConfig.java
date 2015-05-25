@@ -20,10 +20,14 @@ import backtype.storm.utils.Utils;
 
 import com.fancypants.common.config.util.ConfigUtils;
 
-public abstract class TopologyUploader {
+public abstract class AbstractTopologyConfig {
 
 	private static final Logger LOG = LoggerFactory
-			.getLogger(TopologyUploader.class);
+			.getLogger(AbstractTopologyConfig.class);
+
+	public static final String STORM_SPOUT_NAME = "stormSpout";
+	public static final String TRIDENT_SPOUT_NAME = "tridentSpout";
+	public static final String OUTPUT_BOLT_NAME = "outputBolt";
 
 	private static final String NIMBUS_ADDRESS_ENVVAR = "NIMBUS_ADDRESS";
 

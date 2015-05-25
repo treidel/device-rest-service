@@ -7,6 +7,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,7 +25,7 @@ import com.fancypants.data.DataScanMe;
 import com.fancypants.device.DeviceScanMe;
 import com.fancypants.message.MessageScanMe;
 import com.fancypants.storm.StormScanMe;
-import com.fancypants.storm.config.TopologyUploader;
+import com.fancypants.storm.config.AbstractTopologyConfig;
 import com.fancypants.storm.duplicate.StormDuplicateScanMe;
 import com.fancypants.storm.duplicate.bolt.DuplicateDetectionBolt;
 
@@ -32,7 +33,7 @@ import com.fancypants.storm.duplicate.bolt.DuplicateDetectionBolt;
 @ComponentScan(basePackageClasses = { CommonScanMe.class, DataScanMe.class,
 		DeviceScanMe.class, MessageScanMe.class, StormScanMe.class,
 		StormDuplicateScanMe.class })
-public class DuplicateConfig extends TopologyUploader {
+public class DuplicateConfig extends AbstractTopologyConfig {
 
 	private final static Logger LOG = LoggerFactory
 			.getLogger(DuplicateConfig.class);
@@ -43,13 +44,15 @@ public class DuplicateConfig extends TopologyUploader {
 	private final static String PERSIST_BOLT = "persist_bolt";
 
 	@Autowired
-	private Pair<Config, DuplicateDetectionBolt> duplicateDetectionBolt;
+	private DuplicateDetectionBolt duplicateDetectionBolt;
 
 	@Autowired
+	@Qualifier(AbstractTopologyConfig.STORM_SPOUT_NAME)
 	private Pair<Config, IRichSpout> spout;
 
 	@Autowired
-	private Pair<Config, IRichBolt> filteredBolt;
+	@Qualifier(AbstractTopologyConfig.OUTPUT_BOLT_NAME)
+	private Pair<Config, IRichBolt> outputBolt;
 
 	@Bean
 	public Pair<Config, StormTopology> duplicateTopology() {
@@ -60,7 +63,7 @@ public class DuplicateConfig extends TopologyUploader {
 
 		// populate the spout + bolt config
 		config.putAll(spout.getKey());
-		config.putAll(filteredBolt.getKey());
+		config.putAll(outputBolt.getKey());
 
 		// create the regular storm topology
 		TopologyBuilder stormTopology = new TopologyBuilder();
@@ -68,11 +71,10 @@ public class DuplicateConfig extends TopologyUploader {
 		// setup the raw topology
 		stormTopology.setSpout(RAW_RECORDS_SPOUT, spout.getValue());
 		// duplicate detection takes records from the spout
-		stormTopology.setBolt(DUPLICATE_DETECTION_BOLT,
-				duplicateDetectionBolt.getValue()).shuffleGrouping(
-				RAW_RECORDS_SPOUT);
-		// the kafka bolt takes records from the duplicate detection
-		stormTopology.setBolt(PERSIST_BOLT, filteredBolt.getValue())
+		stormTopology.setBolt(DUPLICATE_DETECTION_BOLT, duplicateDetectionBolt)
+				.shuffleGrouping(RAW_RECORDS_SPOUT);
+		// the output bolt takes records from the duplicate detection
+		stormTopology.setBolt(PERSIST_BOLT, outputBolt.getValue())
 				.shuffleGrouping(DUPLICATE_DETECTION_BOLT);
 		Pair<Config, StormTopology> pair = new ImmutablePair<Config, StormTopology>(
 				config, stormTopology.createTopology());
