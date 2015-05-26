@@ -1,13 +1,13 @@
 jar {
 	baseName = 'rest'
-	version =  '1.0.0'
+	version = "$version"
 }
 
 /* force the use of the command line compiler and pass option to avoid complaints about internal APIs */
 compileTestJava {
 	options.compilerArgs = ['-XDignore.symbol.file=true']
-    options.fork = true // may not needed on 1.8
-    options.forkOptions.executable = 'javac' // may not needed on 1.8
+    	options.fork = true 
+    	options.forkOptions.executable = 'javac'
 }
 
 dependencies {
@@ -21,7 +21,7 @@ dependencies {
 	compile("ch.qos.logback:logback-access:$logbackVersion")
 	runtime("joda-time:joda-time:$jodatimeVersion")
 	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
-	testCompile("org.apache.httpcomponents:httpclient:4.3.2")
-	testCompile("org.apache.httpcomponents:httpcore:4.3.2")
+	testCompile("org.apache.httpcomponents:httpclient:$apacheHttpcomponentsVersion")
+	testCompile("org.apache.httpcomponents:httpcore:$apacheHttpcomponentsVersion")
 }
 

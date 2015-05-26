@@ -1,6 +1,6 @@
 jar {
 	baseName = 'storm-kafka'
-	version =  '1.0.0'
+	version = "$version"
 }
 
 dependencies {

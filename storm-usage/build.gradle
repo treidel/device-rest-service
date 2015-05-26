@@ -14,7 +14,7 @@ apply plugin: 'docker'
 
 jar {
 	baseName = 'storm-usage'
-	version =  '1.0.0'
+	version = "$version"
 }
 
 dependencies {

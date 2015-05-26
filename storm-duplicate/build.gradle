@@ -1,12 +1,12 @@
 buildscript {
-    repositories {
-        maven { url "http://repo.spring.io/libs-release" }
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+	repositories {
+        	maven { url "http://repo.spring.io/libs-release" }
+		mavenCentral()
+	}
+    	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
 		classpath("se.transmode.gradle:gradle-docker:$gradleDockerVersion")        
-    }
+    	}
 }
 
 apply plugin: 'spring-boot'
@@ -14,7 +14,7 @@ apply plugin: 'docker'
 
 jar {
 	baseName = 'storm-duplicate'
-	version =  '1.0.0'
+	version = "$version"
 }
 
 dependencies {
@@ -55,7 +55,7 @@ startScripts {
 }
 
 /* configure JVM arguments */
-applicationDefaultJvmArgs = ['-Dstorm.jar=$APP_HOME/libs/storm-duplicate-1.0.0.jar']
+applicationDefaultJvmArgs = ['-Dstorm.jar=$APP_HOME/libs/' + jar.archiveName]
 
 group = 'reideltj'
 sourceCompatibility = 1.7

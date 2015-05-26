@@ -14,7 +14,7 @@ apply plugin: 'docker'
 
 jar {
 	baseName = 'websocket-device'
-	version =  '1.0.0'
+	version = "$version"
 }
 
 dependencies {
