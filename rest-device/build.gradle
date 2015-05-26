@@ -5,10 +5,12 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+	classpath("se.transmode.gradle:gradle-docker:$gradleDockerVersion")
     }
 }
 
 apply plugin: 'spring-boot'
+apply plugin: 'docker'
 
 jar {
 	baseName = 'rest-device'
@@ -16,9 +18,46 @@ jar {
 }
 
 dependencies {
+	/* create a new configuration for all of the application dependencies */
+	configurations {
+ 		bootPackaging {
+ 			extendsFrom runtime
+ 		}
+	}
+
 	compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
 	runtime("org.codehaus.groovy:groovy-all:$groovyVersion")
 	runtime("org.logback-extensions:logback-ext-loggly:$logbackExtensionsVersion")
 	testCompile("com.beust:jcommander:$jcommanderVersion")
+	bootPackaging project(':data-dynamodb')
+}
+/* use the application dependencies */
+bootRepackage {
+	customConfiguration = "bootPackaging"
 }
 
+/* include the application dependencies in the distribution */
+applicationDistribution.from(configurations.bootPackaging) {
+	into "lib"
+}
+
+/* add application dependencies to the classpath */
+startScripts {
+	classpath += configurations.bootPackaging
+	doLast {
+		logger.info(unixScript.text)
+		unixScript.text = unixScript.text.replace('CLASSPATH=', 'CLASSPATH=$APP_HOME:')
+		logger.info(unixScript.text)
+	}
+}
+
+/* configure the memory usage for the JVM */
+applicationDefaultJvmArgs = ["-Xms128M", "-Xmx128M"]
+
+group = 'reideltj'
+sourceCompatibility = 1.7
+mainClassName = 'com.fancypants.common.application.Application'
+
+distDocker {
+	exposePort 8001
+}

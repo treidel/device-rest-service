@@ -1,16 +1,14 @@
 buildscript {
-    repositories {
-        maven { url "http://repo.spring.io/libs-release" }
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+	repositories {
+		mavenCentral()
+		maven { url "http://repo.spring.io/libs-release" }
+	}
+	dependencies {
+        	classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
 		classpath("se.transmode.gradle:gradle-docker:$gradleDockerVersion")                
-    }
+    	}
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 apply plugin: 'docker'
 

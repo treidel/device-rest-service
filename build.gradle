@@ -1,8 +1,18 @@
+/* determine the version code to use */
+def buildNumber = System.getenv("BUILD_NUMBER")
+def buildVersion = null != buildNumber ? buildNumber : "DEVELOPER"
+
 subprojects {
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
+
+	logger.info("using buildVersion=$buildVersion")
+
+	/* configure the common naming + version */
 	group = 'com.fancypants'
-	version = '1.0'
+	version = "$buildVersion"
+
+	/* use JDK 7 */
 	sourceCompatibility = 1.7
 
 	/* define the versions of the major libraries we are using */
