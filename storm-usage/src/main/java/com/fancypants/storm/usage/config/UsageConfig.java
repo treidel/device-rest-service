@@ -7,6 +7,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -18,7 +19,6 @@ import storm.trident.fluent.GroupedStream;
 import storm.trident.spout.IOpaquePartitionedTridentSpout;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
-import backtype.storm.StormSubmitter;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
 
@@ -30,6 +30,7 @@ import com.fancypants.data.repository.HourlyRecordRepository;
 import com.fancypants.device.DeviceScanMe;
 import com.fancypants.message.MessageScanMe;
 import com.fancypants.storm.StormScanMe;
+import com.fancypants.storm.config.AbstractTopologyConfig;
 import com.fancypants.storm.device.record.mapping.EnergyConsumptionEntityMapper;
 import com.fancypants.storm.device.record.mapping.EnergyConsumptionTupleMapper;
 import com.fancypants.storm.device.record.mapping.RawRecordTupleMapper;
@@ -46,9 +47,9 @@ import com.fancypants.usage.UsageScanMe;
 @ComponentScan(basePackageClasses = { CommonScanMe.class, DataScanMe.class,
 		DeviceScanMe.class, UsageScanMe.class, MessageScanMe.class,
 		StormScanMe.class, StormUsageScanMe.class })
-public class RecordsConfig {
+public class UsageConfig extends AbstractTopologyConfig {
 	private final static Logger LOG = LoggerFactory
-			.getLogger(RecordsConfig.class);
+			.getLogger(UsageConfig.class);
 
 	private final static String TRIDENT_TOPOLOGY = "filtered_records_topology";
 	private final static String FILTERED_RECORDS_TXID = "filtered_records";
@@ -76,7 +77,8 @@ public class RecordsConfig {
 
 	@SuppressWarnings("rawtypes")
 	@Autowired
-	private Pair<Config, IOpaquePartitionedTridentSpout> filteredSpout;
+	@Qualifier(AbstractTopologyConfig.TRIDENT_SPOUT_NAME)
+	private Pair<Config, IOpaquePartitionedTridentSpout> spout;
 
 	@Bean
 	public Pair<Config, StormTopology> usageTopology() {
@@ -89,11 +91,11 @@ public class RecordsConfig {
 		Config config = new Config();
 
 		// add the spout config
-		config.putAll(filteredSpout.getKey());
+		config.putAll(spout.getKey());
 
 		// setup the filtered stream
 		Stream filteredStream = tridentTopology.newStream(
-				FILTERED_RECORDS_TXID, filteredSpout.getValue());
+				FILTERED_RECORDS_TXID, spout.getValue());
 		Stream node1 = filteredStream.partitionBy(new Fields(
 				RawRecordEntity.DEVICE_ATTRIBUTE));
 		Stream node2 = node1.aggregate(RawRecordTupleMapper.getOutputFields(),
@@ -118,13 +120,14 @@ public class RecordsConfig {
 
 	@PostConstruct
 	@ConditionalOnMissingBean(LocalCluster.class)
-	@Autowired
-	public void init(Pair<Config, StormTopology> usageTopology)
-			throws Exception {
+	public void init() throws Exception {
 		LOG.trace("init enter");
 
+		// get the topoplogy
+		Pair<Config, StormTopology> usageTopology = usageTopology();
+
 		// send the topology to the cluster
-		StormSubmitter.submitTopology(TRIDENT_TOPOLOGY, usageTopology.getKey(),
+		uploadAndReplaceTopology(TRIDENT_TOPOLOGY, usageTopology.getKey(),
 				usageTopology.getValue());
 
 		LOG.trace("init exit");

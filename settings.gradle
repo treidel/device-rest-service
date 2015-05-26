@@ -1,1 +1,1 @@
-include 'common', 'data', 'data-dynamodb', 'rest', 'app', 'rest-app', 'device', 'records', 'usage', 'stream', 'stream-kinesis', 'websocket', 'websocket-app', 'websocket-device', 'message', 'message-rabbitmq', 'storm', 'storm-kinesis', 'storm-kafka', 'storm-duplicate', 'storm-usage'
+include 'common', 'data', 'data-dynamodb', 'rest', 'app', 'rest-app', 'device', 'rest-device', 'records', 'usage', 'stream', 'stream-kinesis', 'websocket', 'websocket-app', 'websocket-device', 'message', 'message-rabbitmq', 'storm', 'storm-kinesis', 'storm-kafka', 'storm-duplicate', 'storm-usage'

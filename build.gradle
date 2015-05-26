@@ -51,6 +51,7 @@ subprojects {
 		jlineVersion = "2.11"
 		log4jVersion = "1.2.17"
 		zookeeperVersion = "3.4.6"
+		jcommanderVersion = "1.48"
 	}
 
 	/* define the group overrides */
@@ -239,6 +240,16 @@ project(':rest-app') {
 		testCompile project(path: ':data', configuration: 'testOutput')
 		testCompile project(path: ':rest', configuration: 'testOutput')
 		testCompile project(path: ':device', configuration: 'testOutput')
+	}
+}
+
+project(':rest-device') {
+	dependencies {
+		compile project(':common')
+		compile project(':rest')
+		compile project(':device')
+		testCompile project(path: ':data', configuration: 'testOutput')
+		testCompile project(path: ':rest', configuration: 'testOutput')
 	}
 }
 

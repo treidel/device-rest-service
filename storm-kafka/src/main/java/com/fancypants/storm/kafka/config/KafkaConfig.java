@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 import storm.kafka.BrokerHosts;
 import storm.kafka.ZkHosts;
@@ -49,7 +50,8 @@ public class KafkaConfig {
 
 	@SuppressWarnings("rawtypes")
 	@Bean(name = AbstractTopologyConfig.TRIDENT_SPOUT_NAME)
-	public IOpaquePartitionedTridentSpout spout() {
+	@Lazy
+	public Pair<Config, IOpaquePartitionedTridentSpout> spout() {
 		LOG.trace("spout enter");
 		// get the zookeeper host
 		String zookeeperEndpoint = ConfigUtils
@@ -61,11 +63,15 @@ public class KafkaConfig {
 		kafkaSpoutConf.scheme = rawRecordScheme;
 		OpaqueTridentKafkaSpout kafkaSpout = new OpaqueTridentKafkaSpout(
 				kafkaSpoutConf);
-		LOG.trace("filteredSpout exit", kafkaSpout);
-		return kafkaSpout;
+		// create the pair
+		Pair<Config, IOpaquePartitionedTridentSpout> pair = new ImmutablePair<Config, IOpaquePartitionedTridentSpout>(
+				new Config(), kafkaSpout);
+		LOG.trace("filteredSpout exit {}", pair);
+		return pair;
 	}
 
 	@Bean(name = AbstractTopologyConfig.OUTPUT_BOLT_NAME)
+	@Lazy
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Pair<Config, IRichBolt> filteredBolt() {
 		LOG.trace("filteredBolt enter");

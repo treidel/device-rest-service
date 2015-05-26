@@ -8,7 +8,6 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.fancypants.message.exception.AbstractMessageException;
 import com.fancypants.message.rabbitmq.exception.RabbitMQException;
@@ -19,7 +18,6 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-@Component
 public class RabbitMQTopicManager implements TopicManager, Serializable {
 
 	private static final long serialVersionUID = 2706248108381878149L;
@@ -52,7 +50,7 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 		factory.setPassword(password);
 		factory.setUri(uri);
 		factory.setAutomaticRecoveryEnabled(true);
-		// pre
+		// pre-create the connection
 		connection = factory.newConnection();
 		// create the exchange (if it doesn't already exist)
 		try {

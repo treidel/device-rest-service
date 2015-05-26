@@ -9,8 +9,6 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 apply plugin: 'docker'
 
@@ -32,7 +30,7 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter:$springBootVersion")
 	compile("commons-beanutils:commons-beanutils:$commonsBeanutilsVersion")
 	runtime("org.springframework.security:spring-security-config:$springSecurityVersion")	
-	//runtime("ch.qos.logback:logback-classic:1.1.3")
+	runtime("ch.qos.logback:logback-classic:$logbackVersion")
 	runtime("org.logback-extensions:logback-ext-loggly:$logbackExtensionsVersion")
 	runtime("org.codehaus.groovy:groovy-all:$groovyVersion")
 	bootPackaging project(':data-dynamodb')
@@ -54,8 +52,8 @@ startScripts {
 	classpath += configurations.bootPackaging
 }
 
-/* configure the memory usage for the JVM */
-applicationDefaultJvmArgs = ["-Xms128M", "-Xmx128M"]
+/* configure JVM arguments */
+applicationDefaultJvmArgs = ['-Dstorm.jar=$APP_HOME/libs/storm-usage-1.0.0.jar']
 
 group = 'reideltj'
 sourceCompatibility = 1.7

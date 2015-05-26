@@ -54,8 +54,8 @@ startScripts {
 	classpath += configurations.bootPackaging
 }
 
-/* configure the memory usage for the JVM */
-applicationDefaultJvmArgs = ["-Xms128M", "-Xmx128M"]
+/* configure JVM arguments */
+applicationDefaultJvmArgs = ['-Dstorm.jar=$APP_HOME/libs/storm-duplicate-1.0.0.jar']
 
 group = 'reideltj'
 sourceCompatibility = 1.7

@@ -1,0 +1,24 @@
+buildscript {
+    repositories {
+        maven { url "http://repo.spring.io/libs-release" }
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+    }
+}
+
+apply plugin: 'spring-boot'
+
+jar {
+	baseName = 'rest-device'
+	version =  '1.0.0'
+}
+
+dependencies {
+	compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
+	runtime("org.codehaus.groovy:groovy-all:$groovyVersion")
+	runtime("org.logback-extensions:logback-ext-loggly:$logbackExtensionsVersion")
+	testCompile("com.beust:jcommander:$jcommanderVersion")
+}
+
