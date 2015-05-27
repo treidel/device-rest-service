@@ -58,6 +58,8 @@ startScripts {
 applicationDefaultJvmArgs = ['-Dstorm.jar=$APP_HOME/libs/' + jar.archiveName]
 
 group = 'reideltj'
-sourceCompatibility = 1.7
 mainClassName = 'com.fancypants.common.application.Application' 
 
+docker {
+	baseImage 'java:7'
+}

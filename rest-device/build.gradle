@@ -55,8 +55,11 @@ startScripts {
 applicationDefaultJvmArgs = ["-Xms128M", "-Xmx128M"]
 
 group = 'reideltj'
-sourceCompatibility = 1.7
 mainClassName = 'com.fancypants.common.application.Application'
+
+docker {
+	baseImage = 'java:7'
+}
 
 distDocker {
 	exposePort 8001
