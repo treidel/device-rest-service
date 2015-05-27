@@ -53,6 +53,27 @@ public class RawRecord {
 		return measurements;
 	}
 
+	@Override
+	public String toString() {
+		StringBuffer buffer = new StringBuffer("RawRecord[");
+		buffer.append("uuid=");
+		buffer.append(uuid.toString());
+		buffer.append(',');
+		buffer.append("timestamp=");
+		buffer.append(timestamp.toString());
+		buffer.append(',');
+		buffer.append("durationInSeconds=");
+		buffer.append(String.valueOf(durationInSeconds));
+		buffer.append(',');
+		buffer.append("measurements=[");
+		for (RawMeasurement measurement : measurements) {
+			buffer.append(measurement.toString());
+		}
+		buffer.append(']');
+		buffer.append(']');
+		return buffer.toString();
+	}
+
 	public static class TEST {
 		public static final RawRecord RECORD1;
 		public static final RawRecord RECORD2;

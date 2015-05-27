@@ -14,7 +14,8 @@ public class RawMeasurement implements Comparable<RawMeasurement> {
 	private final float amperageInAmps;
 
 	@JsonCreator
-	public RawMeasurement(@JsonProperty(value = CIRCUIT_ATTRIBUTE, required = true) String circuit,
+	public RawMeasurement(
+			@JsonProperty(value = CIRCUIT_ATTRIBUTE, required = true) String circuit,
 			@JsonProperty(value = VOLTAGE_ATTRIBUTE, required = true) float voltageInVolts,
 			@JsonProperty(value = AMPERAGE_ATTRIBUTE, required = true) float amperageInAmps) {
 		this.circuit = circuit;
@@ -45,5 +46,20 @@ public class RawMeasurement implements Comparable<RawMeasurement> {
 	@Override
 	public int hashCode() {
 		return circuit.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		StringBuffer buffer = new StringBuffer("RawMeasurement[");
+		buffer.append("circuit=");
+		buffer.append(circuit);
+		buffer.append(',');
+		buffer.append("voltageInVolts=");
+		buffer.append(String.valueOf(voltageInVolts));
+		buffer.append(',');
+		buffer.append("amperageInAmps=");
+		buffer.append(String.valueOf(amperageInAmps));
+		buffer.append(']');
+		return buffer.toString();
 	}
 }
