@@ -33,10 +33,20 @@ public class DeviceService {
 			throws AbstractServiceException {
 		LOG.trace("DeviceService.getDevice enter deviceId=" + deviceId);
 		// find the device
-		DeviceEntity deviceEntity = repository.findOne(deviceId);
+		DeviceEntity deviceEntity = findDevice(deviceId);
 		if (null == deviceEntity) {
 			throw new BusinessLogicException("device not found");
 		}
+		// done
+		LOG.trace("DeviceService.getDevice exit deviceEntity=" + deviceEntity);
+		return deviceEntity;
+	}
+	
+	public DeviceEntity findDevice(String deviceId)
+			throws AbstractServiceException {
+		LOG.trace("DeviceService.findDevice enter deviceId=" + deviceId);
+		// query for the device
+		DeviceEntity deviceEntity = repository.findOne(deviceId);
 		// done
 		LOG.trace("DeviceService.getDevice exit deviceEntity=" + deviceEntity);
 		return deviceEntity;

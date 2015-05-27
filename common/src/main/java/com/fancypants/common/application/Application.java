@@ -54,7 +54,8 @@ public class Application {
 				List<Package> packageList = new LinkedList<Package>();
 				while (null != line) {
 					// find the package object
-					Package pkg = Class.forName(line).getPackage();
+					Package pkg = Class.forName(line).getPackage();					
+					LOG.info("Adding package={} to component search path", pkg.toString());
 					// add it to the list
 					packageList.add(pkg);
 					// read next line
