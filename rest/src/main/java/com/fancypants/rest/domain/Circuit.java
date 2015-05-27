@@ -11,16 +11,13 @@ public class Circuit implements Comparable<Circuit> {
 
 	private final String name;
 	private final float voltage;
-	private final float amperage;
 
 	@JsonCreator
 	public Circuit(
 			@JsonProperty(value = NAME_ATTRIBUTE, required = true) String name,
-			@JsonProperty(value = VOLTAGE_ATTRIBUTE, required = true) float voltage,
-			@JsonProperty(value = AMPERAGE_ATTRIBUTE, required = true) float amperage) {
+			@JsonProperty(value = VOLTAGE_ATTRIBUTE, required = true) float voltage) {
 		this.name = name;
 		this.voltage = voltage;
-		this.amperage = amperage;
 	}
 
 	@JsonProperty(NAME_ATTRIBUTE)
@@ -31,11 +28,6 @@ public class Circuit implements Comparable<Circuit> {
 	@JsonProperty(VOLTAGE_ATTRIBUTE)
 	public float getVoltage() {
 		return voltage;
-	}
-
-	@JsonProperty(AMPERAGE_ATTRIBUTE)
-	public float getAmperage() {
-		return amperage;
 	}
 
 	@Override

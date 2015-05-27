@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.security.KeyManagementException;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
@@ -13,12 +12,7 @@ import java.security.cert.CertificateException;
 import java.util.List;
 import java.util.TreeSet;
 
-import javax.net.ssl.SSLContext;
-
 import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ssl.SSLContexts;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
@@ -42,19 +36,14 @@ public class DeviceCreator {
 		// reuse the test configuration helper
 		TestConfiguration config = new TestConfiguration();
 
-		// load the keystore
-		KeyStore keystore = loadKeyStore(new FileSystemResource(
-				arguments.keystoreFile), arguments.keystorePassword);
-		// load the SSL context
-		SSLContext sslContext = configureSSLContext(keystore,
-				arguments.keystorePassword);
 		// create the HTTP client
-		HttpClient httpClient = config.adminHttpClient(sslContext);
+		HttpClient httpClient = config.httpClient(arguments.username,
+				arguments.password);
 		// create the HTTP client factory
 		HttpComponentsClientHttpRequestFactory httpClientFactory = config
-				.adminHttpClientFactory(httpClient);
+				.httpClientFactory(httpClient);
 		// create the RestTemplate
-		RestTemplate restTemplate = config.adminRestTemplate(httpClientFactory);
+		RestTemplate restTemplate = config.restTemplate(httpClientFactory);
 
 		// create the device object
 		Device device = new Device(arguments.device, arguments.serialnumber,
@@ -66,6 +55,12 @@ public class DeviceCreator {
 	}
 
 	private static class Arguments {
+		@Parameter(names = { "--username" }, required = true)
+		private String username;
+
+		@Parameter(names = { "--password" }, required = true)
+		private String password;
+
 		@Parameter(names = { "--device" }, required = true)
 		private String device;
 
@@ -74,12 +69,6 @@ public class DeviceCreator {
 
 		@Parameter(names = { "--url" }, converter = URIConverter.class, required = true)
 		private URI url;
-
-		@Parameter(names = { "--keystore-file" }, converter = FileConverter.class, required = true)
-		private File keystoreFile;
-
-		@Parameter(names = { "--keystore-password" }, required = true)
-		private String keystorePassword;
 
 		@Parameter(names = { "--circuit" }, converter = CircuitConverter.class, required = true)
 		private List<Circuit> circuits;
@@ -90,8 +79,7 @@ public class DeviceCreator {
 		@Override
 		public Circuit convert(String value) {
 			String[] s = value.split(":");
-			Circuit circuit = new Circuit(s[0], Float.parseFloat(s[1]),
-					Float.parseFloat(s[2]));
+			Circuit circuit = new Circuit(s[0], Float.parseFloat(s[1]));
 			return circuit;
 		}
 	}
@@ -108,29 +96,5 @@ public class DeviceCreator {
 		public URI convert(String value) {
 			return URI.create(value);
 		}
-	}
-
-	private static KeyStore loadKeyStore(Resource resource, String password)
-			throws NoSuchAlgorithmException, CertificateException, IOException,
-			KeyStoreException {
-		// create a keystore
-		KeyStore keystore = KeyStore.getInstance("JKS");
-		// load the file
-		keystore.load(resource.getInputStream(), password.toCharArray());
-		// done
-		return keystore;
-	}
-
-	private static SSLContext configureSSLContext(KeyStore keystore,
-			String keystorePass) throws KeyManagementException,
-			UnrecoverableKeyException, NoSuchAlgorithmException,
-			KeyStoreException {
-		// initialize an SSL context with the keystore
-		// using all certificate in the keystore for trust material
-		// and the device key as the SSL authentication certificate
-		SSLContext sslContext = SSLContexts.custom()
-				.loadTrustMaterial(keystore)
-				.loadKeyMaterial(keystore, keystorePass.toCharArray()).build();
-		return sslContext;
 	}
 }

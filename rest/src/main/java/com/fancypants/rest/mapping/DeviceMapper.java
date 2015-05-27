@@ -12,8 +12,7 @@ import com.fancypants.rest.domain.Circuit;
 import com.fancypants.rest.domain.Device;
 
 @Component
-public class DeviceMapper implements
-		EntityMapper<Device, DeviceEntity> {
+public class DeviceMapper implements EntityMapper<Device, DeviceEntity> {
 
 	@Override
 	public Device convert(DeviceEntity entity) {
@@ -22,7 +21,7 @@ public class DeviceMapper implements
 		for (CircuitEntity circuitEntity : entity.getCircuits()) {
 			// create the circuit object
 			Circuit circuit = new Circuit(circuitEntity.getName(),
-					circuitEntity.getVoltage(), circuitEntity.getAmperage());
+					circuitEntity.getVoltage());
 			circuits.add(circuit);
 		}
 

@@ -1,2 +1,3 @@
 com.fancypants.rest.device.RestDeviceScanMe
 com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe
+com.fancypants.message.rabbitmq.MessageRabbitMQScanMe

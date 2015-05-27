@@ -21,7 +21,9 @@ public class RESTDeviceWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.sessionManagement()
+		http.authorizeRequests().anyRequest().authenticated().and()
+				.userDetailsService(userDetailsService).httpBasic().and()
+				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.csrf().disable();
 	}

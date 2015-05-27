@@ -17,8 +17,7 @@ public class CircuitEntityMapper implements
 		Circuit circuit = entity.getRight();
 		int index = entity.getLeft();
 		// create the circuit entity
-		return new CircuitEntity(index, circuit.getName(),
-				circuit.getVoltage(), circuit.getAmperage());
+		return new CircuitEntity(index, circuit.getName(), circuit.getVoltage());
 	}
 
 }

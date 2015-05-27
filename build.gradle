@@ -260,6 +260,7 @@ project(':rest-device') {
 		compile project(':device')
 		testCompile project(path: ':data', configuration: 'testOutput')
 		testCompile project(path: ':rest', configuration: 'testOutput')
+		testCompile project(path: ':message', configuration: 'testOutput')
 	}
 }
 

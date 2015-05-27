@@ -7,14 +7,12 @@ import com.fancypants.data.entity.CircuitEntity;
 import com.fancypants.rest.domain.Circuit;
 
 @Component
-public class CircuitMapper implements
-		EntityMapper<Circuit, CircuitEntity> {
+public class CircuitMapper implements EntityMapper<Circuit, CircuitEntity> {
 
 	@Override
 	public Circuit convert(CircuitEntity entity) {
 		// create the circuit object
-		Circuit circuit = new Circuit(entity.getName(), entity.getVoltage(),
-				entity.getAmperage());
+		Circuit circuit = new Circuit(entity.getName(), entity.getVoltage());
 		return circuit;
 	}
 

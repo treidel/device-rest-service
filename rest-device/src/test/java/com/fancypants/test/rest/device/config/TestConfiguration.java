@@ -1,24 +1,13 @@
 package com.fancypants.test.rest.device.config;
 
-import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocket;
-
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ssl.SSLContexts;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,7 +24,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fancypants.test.data.TestDataScanMe;
 import com.fancypants.test.message.TestMessageScanMe;
 import com.fancypants.test.rest.security.KeyStoreCreator;
-import com.fancypants.test.stream.TestStreamScanMe;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -44,57 +32,35 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 @EnableAutoConfiguration
 @ComponentScan(basePackageClasses = { TestConfiguration.class,
-		KeyStoreCreator.class, TestDataScanMe.class, TestMessageScanMe.class,
-		TestStreamScanMe.class })
+		KeyStoreCreator.class, TestDataScanMe.class, TestMessageScanMe.class })
 public class TestConfiguration {
 
-	@Bean
-	@Autowired
-	public SSLContext deviceSSLContext(
-			@Qualifier("deviceKeyStore") KeyStore keystore)
-			throws KeyManagementException, UnrecoverableKeyException,
-			NoSuchAlgorithmException, KeyStoreException {
-		// use the common internal routine
-		return configureSSLContext(keystore, "device");
+	@Bean(name = "username")
+	public String username() {
+		return "admin";
+	}
+
+	@Bean(name = "password")
+	public String password() {
+		return "admin";
 	}
 
 	@Bean
 	@Autowired
-	public SSLContext adminSSLContext(
-			@Qualifier("adminKeyStore") KeyStore keystore)
-			throws KeyStoreException, NoSuchAlgorithmException,
-			CertificateException, IOException, KeyManagementException,
-			UnrecoverableKeyException {
-		// use the common internal routine
-		return configureSSLContext(keystore, "admin");
-	}
-
-	@Bean
-	@Autowired
-	public HttpClient deviceHttpClient(
-			@Qualifier("deviceSSLContext") SSLContext sslContext) {
+	public HttpClient httpClient(@Qualifier("username") String username,
+			@Qualifier("password") String password) {
 		HttpClientBuilder builder = HttpClientBuilder.create();
-		// set the SSL context
-		builder.setSslcontext(sslContext);
-		builder.setHostnameVerifier(new CustomX509HostnameVerifier());
+		CredentialsProvider credsProvider = new BasicCredentialsProvider();
+		credsProvider.setCredentials(new AuthScope("localhost", 8001),
+				new UsernamePasswordCredentials(username, password));
+		builder.setDefaultCredentialsProvider(credsProvider);
 		return builder.build();
 	}
 
 	@Bean
 	@Autowired
-	public HttpClient adminHttpClient(
-			@Qualifier("adminSSLContext") SSLContext sslContext) {
-		HttpClientBuilder builder = HttpClientBuilder.create();
-		// set the SSL context
-		builder.setSslcontext(sslContext);
-		builder.setHostnameVerifier(new CustomX509HostnameVerifier());
-		return builder.build();
-	}
-
-	@Bean
-	@Autowired
-	public HttpComponentsClientHttpRequestFactory deviceHttpClientFactory(
-			@Qualifier("deviceHttpClient") HttpClient client) {
+	public HttpComponentsClientHttpRequestFactory httpClientFactory(
+			HttpClient client) {
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
 		factory.setHttpClient(client);
 		return factory;
@@ -102,38 +68,9 @@ public class TestConfiguration {
 
 	@Bean
 	@Autowired
-	public HttpComponentsClientHttpRequestFactory adminHttpClientFactory(
-			@Qualifier("adminHttpClient") HttpClient client) {
-		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-		factory.setHttpClient(client);
-		return factory;
-	}
-
-	@Bean
-	@Autowired
-	public RestTemplate deviceRestTemplate(
-			@Qualifier("deviceHttpClientFactory") HttpComponentsClientHttpRequestFactory factory) {
+	public RestTemplate restTemplate(
+			HttpComponentsClientHttpRequestFactory factory) {
 		return configureRestTemplate(factory);
-	}
-
-	@Bean
-	@Autowired
-	public RestTemplate adminRestTemplate(
-			@Qualifier("adminHttpClientFactory") HttpComponentsClientHttpRequestFactory factory) {
-		return configureRestTemplate(factory);
-	}
-
-	private SSLContext configureSSLContext(KeyStore keystore,
-			String keystorePass) throws KeyManagementException,
-			UnrecoverableKeyException, NoSuchAlgorithmException,
-			KeyStoreException {
-		// initialize an SSL context with the keystore
-		// using all certificate in the keystore for trust material
-		// and the device key as the SSL authentication certificate
-		SSLContext sslContext = SSLContexts.custom()
-				.loadTrustMaterial(keystore)
-				.loadKeyMaterial(keystore, keystorePass.toCharArray()).build();
-		return sslContext;
 	}
 
 	private RestTemplate configureRestTemplate(
@@ -159,29 +96,5 @@ public class TestConfiguration {
 		objectMapper.registerModule(new Jackson2HalModule());
 		return objectMapper;
 	}
-
-	private static class CustomX509HostnameVerifier implements
-			X509HostnameVerifier {
-
-		@Override
-		public boolean verify(String hostname, SSLSession session) {
-			return true;
-		}
-
-		@Override
-		public void verify(String host, String[] cns, String[] subjectAlts)
-				throws SSLException {
-		}
-
-		@Override
-		public void verify(String host, X509Certificate cert)
-				throws SSLException {
-		}
-
-		@Override
-		public void verify(String host, SSLSocket ssl) throws IOException {
-
-		}
-	};
 
 }

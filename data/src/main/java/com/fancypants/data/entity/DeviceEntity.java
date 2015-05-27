@@ -86,8 +86,7 @@ public class DeviceEntity {
 			// setup the circuits
 			Set<CircuitEntity> circuits = new HashSet<CircuitEntity>();
 			for (int i = 1; i <= DeviceEntity.MAX_CIRCUITS; i++) {
-				CircuitEntity circuit = new CircuitEntity(i, "1-" + i, 120.0f,
-						10.0f);
+				CircuitEntity circuit = new CircuitEntity(i, "1-" + i, 120.0f);
 				circuits.add(circuit);
 			}
 			// setup the device

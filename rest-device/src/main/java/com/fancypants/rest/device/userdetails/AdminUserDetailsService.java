@@ -29,7 +29,7 @@ public class AdminUserDetailsService implements UserDetailsService {
 		authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
 		// create and return the user
-		UserDetails user = new User(username, "", authorities);
+		UserDetails user = new User(username, username, authorities);
 
 		LOG.trace("loadUserByUsername exit {}", user);
 		return user;
