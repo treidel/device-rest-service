@@ -9,12 +9,9 @@ import java.util.Properties;
 import kafka.admin.AdminUtils;
 import kafka.admin.TopicCommand;
 import kafka.admin.TopicCommand.TopicCommandOptions;
-import kafka.utils.ZKStringSerializer;
 import kafka.utils.ZkUtils;
 
 import org.I0Itec.zkclient.ZkClient;
-import org.I0Itec.zkclient.exception.ZkMarshallingError;
-import org.I0Itec.zkclient.serialize.ZkSerializer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -25,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import com.fancypants.stream.kafka.config.KafkaStreamConfig;
 import com.fancypants.test.stream.kafka.config.KafkaStreamTestConfig;
 import com.fancypants.test.stream.suite.StreamTests;
 import com.spotify.docker.client.DefaultDockerClient;
@@ -96,7 +94,7 @@ public class KafkaStreamTests extends StreamTests {
 
 		// connect to zookeeper so that we can query kafka data
 		ZkClient zkClient = new ZkClient(ZOOKEEPER);
-		zkClient.setZkSerializer(new CustomSerializer());
+		zkClient.setZkSerializer(new KafkaStreamConfig.ZkStringSerializer());
 
 		// wait until the broker comes up
 		while (0 == ZkUtils.getSortedBrokerList(zkClient).size()) {
@@ -136,15 +134,4 @@ public class KafkaStreamTests extends StreamTests {
 		LOG.trace("fini exit");
 	}
 
-	private static final class CustomSerializer implements ZkSerializer {
-		@Override
-		public byte[] serialize(Object o) throws ZkMarshallingError {
-			return ZKStringSerializer.serialize(o);
-		}
-
-		@Override
-		public Object deserialize(byte[] bytes) throws ZkMarshallingError {
-			return ZKStringSerializer.deserialize(bytes);
-		}
-	}
 }

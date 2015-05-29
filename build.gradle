@@ -203,6 +203,7 @@ project(':stream-kafka') {
 		compile project(':common')
 		compile project(':stream')
 		compile project(':data')	
+		testCompile project(path: ':stream', configuration: 'testOutput')
 	}
 }
 

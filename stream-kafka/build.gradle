@@ -4,10 +4,10 @@ jar {
 }
 
 dependencies {
-	compile("org.apache.kafka:kafka-clients:$kafkaVersion")
+	compile("org.apache.kafka:kafka_2.10:$kafkaVersion")
 	runtime("org.slf4j:log4j-over-slf4j:$slf4jVersion")	
 	testCompile("junit:junit:$junitVersion")
+	testCompile("org.springframework:spring-test:$springVersion")
 	testCompile("com.spotify:docker-client:$spotifyDockerClientVersion")
-	testCompile("org.apache.kafka:kafka_2.10:$kafkaVersion")
 	
 }
