@@ -1,0 +1,13 @@
+jar {
+	baseName = 'stream-kafka'
+	version = "$version"
+}
+
+dependencies {
+	compile("org.apache.kafka:kafka-clients:$kafkaVersion")
+	runtime("org.slf4j:log4j-over-slf4j:$slf4jVersion")	
+	testCompile("junit:junit:$junitVersion")
+	testCompile("com.spotify:docker-client:$spotifyDockerClientVersion")
+	testCompile("org.apache.kafka:kafka_2.10:$kafkaVersion")
+	
+}

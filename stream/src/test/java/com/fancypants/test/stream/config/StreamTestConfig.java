@@ -8,7 +8,7 @@ import com.fancypants.stream.writer.StreamWriter;
 import com.fancypants.test.stream.writer.TestStreamWriter;
 
 @Configuration
-public class TestStreamConfig {
+public class StreamTestConfig {
 	@Bean
 	public StreamWriter<RawRecordEntity> rawRecordStreamWriter() {
 		TestStreamWriter<RawRecordEntity> streamWriter = new TestStreamWriter<RawRecordEntity>();
