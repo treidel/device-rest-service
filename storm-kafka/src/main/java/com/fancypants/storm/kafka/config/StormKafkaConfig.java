@@ -1,7 +1,6 @@
 package com.fancypants.storm.kafka.config;
 
 import java.util.Properties;
-import java.util.UUID;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -47,7 +46,7 @@ public class StormKafkaConfig {
 
 	private static final String KAFKA_TOPIC_ENVVAR = "KAFKA_TOPIC";
 	private static final String KAFKA_BROKERS_ENVVAR = "KAFKA_BROKERS";
-	private static final String ZOOKEEPER_ENDPOINT_ENVVAR = "ZOOKEEPER_ENDPOINT";
+	private static final String ZOOKEEPER_ENVVAR = "ZOOKEEPER";
 
 	@Autowired
 	private RawRecordScheme rawRecordScheme;
@@ -62,7 +61,7 @@ public class StormKafkaConfig {
 		LOG.trace("tridentSpout enter");
 		// get the zookeeper host
 		String zookeeperEndpoint = ConfigUtils
-				.retrieveEnvVarOrFail(ZOOKEEPER_ENDPOINT_ENVVAR);
+				.retrieveEnvVarOrFail(ZOOKEEPER_ENVVAR);
 		// create the kafka spout
 		BrokerHosts zk = new ZkHosts(zookeeperEndpoint);
 		TridentKafkaConfig kafkaSpoutConf = new TridentKafkaConfig(zk,
@@ -81,11 +80,12 @@ public class StormKafkaConfig {
 	@Lazy
 	public Pair<Config, IRichSpout> stormSpout(@Value("${" + KAFKA_TOPIC_ENVVAR
 			+ "}") String topic,
-			@Value("${" + ZOOKEEPER_ENDPOINT_ENVVAR + "}") String zookeeper) {
+			@Value("${" + ZOOKEEPER_ENVVAR + "}") String zookeeper) {
 		LOG.trace("stormSpout enter");
 		// create the kafka spout
 		BrokerHosts zk = new ZkHosts(zookeeper);
-		SpoutConfig spoutConfig = new SpoutConfig(zk, topic, "/" + topic, AbstractTopologyConfig.STORM_SPOUT_NAME);
+		SpoutConfig spoutConfig = new SpoutConfig(zk, topic, "/" + topic,
+				AbstractTopologyConfig.STORM_SPOUT_NAME);
 		spoutConfig.scheme = new SchemeAsMultiScheme(new StringScheme());
 		IRichSpout kafkaSpout = new KafkaSpout(spoutConfig);
 		// create the pair

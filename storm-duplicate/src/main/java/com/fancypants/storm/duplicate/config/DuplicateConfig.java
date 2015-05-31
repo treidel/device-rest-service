@@ -94,6 +94,9 @@ public class DuplicateConfig extends AbstractTopologyConfig {
 		uploadAndReplaceTopology(STORM_TOPOLOGY, duplicateTopology.getKey(),
 				duplicateTopology.getValue());
 
+		// exit the process
+		System.exit(0);
+		
 		LOG.trace("init exit");
 	}
 }

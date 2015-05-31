@@ -130,6 +130,9 @@ public class UsageConfig extends AbstractTopologyConfig {
 		uploadAndReplaceTopology(TRIDENT_TOPOLOGY, usageTopology.getKey(),
 				usageTopology.getValue());
 
+		// exit the process
+		System.exit(0);
+
 		LOG.trace("init exit");
 	}
 }
