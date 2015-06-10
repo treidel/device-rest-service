@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 		DeviceScanMe.class, RecordsScanMe.class, StreamScanMe.class,
 		RestScanMe.class, WebSocketScanMe.class, WebSocketDeviceScanMe.class })
 @EnableWebSocketMessageBroker
-public class WebsocketDeviceWebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
+public class WSDeviceWebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
 	@Autowired
 	private ObjectMapper objectMapper;

@@ -6,9 +6,10 @@ jar {
 dependencies {
 	compile("org.springframework:spring-websocket:$springVersion")
 	compile("org.springframework:spring-messaging:$springVersion")
-    	compile("org.springframework.session:spring-session:$springSessionVersion") 
-    	compile("org.springframework.security:spring-security-config:$springSecurityVersion")
-    	compile("org.springframework.security:spring-security-messaging:$springSecurityVersion")
-    	compile("org.springframework.security:spring-security-web:$springSecurityVersion")
+    compile("org.springframework.session:spring-session:$springSessionVersion") 
+    compile("org.springframework.security:spring-security-config:$springSecurityVersion")
+    compile("org.springframework.security:spring-security-messaging:$springSecurityVersion")
+	compile("org.springframework.security:spring-security-web:$springSecurityVersion")
+	testCompile("org.eclipse.jetty.websocket:websocket-client:$jettyVersion")    	
 }
 

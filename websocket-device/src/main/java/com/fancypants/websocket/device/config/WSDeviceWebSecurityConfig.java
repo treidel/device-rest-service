@@ -14,7 +14,7 @@ import com.fancypants.device.userdetails.DeviceUserDetailsService;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
-public class WebsocketDeviceWebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WSDeviceWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private DeviceUserDetailsService userDetailsService;

@@ -16,8 +16,10 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.socket.WebSocketHttpHeaders;
-import org.springframework.web.socket.sockjs.client.SockJsClient;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.client.WebSocketClient;
 
 import com.fancypants.data.repository.DeviceRepository;
 import com.fancypants.message.topic.TopicManager;
@@ -26,20 +28,20 @@ import com.fancypants.test.data.values.DeviceValues;
 import com.fancypants.test.data.values.HourlyRecordValues;
 import com.fancypants.test.websocket.app.config.WebsocketAppTestConfig;
 import com.fancypants.test.websocket.util.StompSimulator;
-import com.fancypants.websocket.app.config.WebsocketAppWebSecurityConfig;
-import com.fancypants.websocket.app.config.WebSocketConfig;
-import com.fancypants.websocket.app.config.WebSocketSecurityConfig;
+import com.fancypants.websocket.app.config.WSAppWebSecurityConfig;
+import com.fancypants.websocket.app.config.WSAppWebSocketConfig;
+import com.fancypants.websocket.app.config.WSAppWebSocketSecurityConfig;
 import com.fancypants.websocket.app.domain.ClientInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { WebsocketAppWebSecurityConfig.class,
-		WebSocketConfig.class, WebSocketSecurityConfig.class,
+@SpringApplicationConfiguration(classes = { WSAppWebSecurityConfig.class,
+		WSAppWebSocketConfig.class, WSAppWebSocketSecurityConfig.class,
 		WebsocketAppTestConfig.class })
 @WebAppConfiguration
 @IntegrationTest
 public class WebsocketAppTests {
-	private static final URI TEST_URI = URI.create("ws://localhost:8082/stomp");
+	private static final URI TEST_URI = URI.create("ws://localhost:8004/stomp");
 
 	@Autowired
 	private DeviceRepository deviceRepository;
@@ -48,13 +50,13 @@ public class WebsocketAppTests {
 	private DeviceValues values;
 
 	@Autowired
-	private ObjectMapper mapper;
+	private ObjectMapper objectMapper;
 
 	@Autowired
 	private TopicManager topicManager;
 
 	@Autowired
-	private SockJsClient sockjsClient;
+	private WebSocketClient websocketClient;
 
 	@PostConstruct
 	public void init() throws Exception {
@@ -75,7 +77,7 @@ public class WebsocketAppTests {
 
 		// create the client info body
 		ClientInfo info = new ClientInfo("test", "1.0");
-		String clientInfoJSON = mapper.writeValueAsString(info);
+		String clientInfoJSON = objectMapper.writeValueAsString(info);
 
 		// add a send action
 		simulator.add(new StompSimulator.SendAction("/registration",
@@ -87,7 +89,9 @@ public class WebsocketAppTests {
 		WebSocketHttpHeaders headers = new WebSocketHttpHeaders(
 				createAuthenticationHeaders());
 		// connect
-		sockjsClient.doHandshake(simulator, headers, TEST_URI);
+		ListenableFuture<WebSocketSession> future = websocketClient
+				.doHandshake(simulator, headers, TEST_URI);
+		Assert.assertTrue(future.get().isOpen());
 
 		// wait for the simulator to finish
 		simulator.block(5, TimeUnit.HOURS);
@@ -105,7 +109,7 @@ public class WebsocketAppTests {
 
 		// create the client info body
 		ClientInfo info = new ClientInfo("test", "1.0");
-		String clientInfoJSON = mapper.writeValueAsString(info);
+		String clientInfoJSON = objectMapper.writeValueAsString(info);
 
 		// add a registration action
 		simulator.add(new StompSimulator.SendAction("/registration",
@@ -119,10 +123,12 @@ public class WebsocketAppTests {
 		WebSocketHttpHeaders headers = new WebSocketHttpHeaders(
 				createAuthenticationHeaders());
 		// connect
-		sockjsClient.doHandshake(simulator, headers, TEST_URI);
+		ListenableFuture<WebSocketSession> future = websocketClient
+				.doHandshake(simulator, headers, TEST_URI);
+		Assert.assertTrue(future.get().isOpen());
 
 		// wait for the simulator to finish
-		simulator.block(5, TimeUnit.HOURS);
+		simulator.block(5, TimeUnit.SECONDS);
 
 		// make sure it completed as expected
 		Assert.assertTrue(simulator.finished());
@@ -140,7 +146,7 @@ public class WebsocketAppTests {
 
 		// create the client info body
 		ClientInfo info = new ClientInfo("test", "1.0");
-		String clientInfoJSON = mapper.writeValueAsString(info);
+		String clientInfoJSON = objectMapper.writeValueAsString(info);
 
 		// add a registration action
 		simulator.add(new StompSimulator.SendAction("/registration",
@@ -156,14 +162,17 @@ public class WebsocketAppTests {
 		WebSocketHttpHeaders headers = new WebSocketHttpHeaders(
 				createAuthenticationHeaders());
 		// connect
-		sockjsClient.doHandshake(simulator, headers, TEST_URI);
+		ListenableFuture<WebSocketSession> future = websocketClient
+				.doHandshake(simulator, headers, TEST_URI);
+		Assert.assertTrue(future.get().isOpen());
 
 		// send a notification
-		String json = mapper.writeValueAsString(HourlyRecordValues.RECORD1);
+		String json = objectMapper
+				.writeValueAsString(HourlyRecordValues.RECORD1);
 		producer.sendMessage(json);
 
 		// wait for the simulator to finish
-		simulator.block(5, TimeUnit.HOURS);
+		simulator.block(5, TimeUnit.SECONDS);
 
 		// make sure it completed as expected
 		Assert.assertTrue(simulator.finished());

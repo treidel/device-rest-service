@@ -18,7 +18,7 @@ import com.fancypants.rest.RestScanMe;
 @Configuration
 @ComponentScan(basePackageClasses = { CommonScanMe.class, AppScanMe.class,
 		RestScanMe.class, DataScanMe.class, DeviceScanMe.class })
-public class WebsocketAppWebConfig {
+public class WSAppWebConfig {
 
 	@Bean
 	public EmbeddedServletContainerCustomizer containerCustomizer() {

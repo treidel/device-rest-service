@@ -24,15 +24,15 @@ import com.fancypants.test.data.values.DeviceValues;
 import com.fancypants.test.stream.TestStreamScanMe;
 import com.fancypants.test.websocket.device.config.WebsocketDeviceTestConfig;
 import com.fancypants.test.websocket.util.StompSimulator;
-import com.fancypants.websocket.device.config.WebsocketDeviceWebConfig;
-import com.fancypants.websocket.device.config.WebsocketDeviceWebSecurityConfig;
-import com.fancypants.websocket.device.config.WebsocketDeviceWebSocketConfig;
+import com.fancypants.websocket.device.config.WSDeviceWebConfig;
+import com.fancypants.websocket.device.config.WSDeviceWebSecurityConfig;
+import com.fancypants.websocket.device.config.WSDeviceWebSocketConfig;
 import com.fancypants.websocket.device.domain.DeviceInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { WebsocketDeviceWebSecurityConfig.class,
-		WebsocketDeviceWebSocketConfig.class, WebsocketDeviceWebConfig.class,
+@SpringApplicationConfiguration(classes = { WSDeviceWebSecurityConfig.class,
+		WSDeviceWebSocketConfig.class, WSDeviceWebConfig.class,
 		WebsocketDeviceTestConfig.class, TestStreamScanMe.class })
 @WebAppConfiguration
 @IntegrationTest

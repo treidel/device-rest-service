@@ -5,7 +5,7 @@ import org.springframework.security.config.annotation.web.messaging.MessageSecur
 import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
 
 @Configuration
-public class WebSocketSecurityConfig extends
+public class WSAppWebSocketSecurityConfig extends
 		AbstractSecurityWebSocketMessageBrokerConfigurer {
 
 	@Override

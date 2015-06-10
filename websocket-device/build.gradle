@@ -30,7 +30,6 @@ dependencies {
 	runtime("org.logback-extensions:logback-ext-loggly:$logbackExtensionsVersion")
 	runtime("org.codehaus.groovy:groovy-all:$groovyVersion")	
 	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
-	testCompile("org.eclipse.jetty.websocket:websocket-client:$jettyVersion")
 	bootPackaging project(':data-dynamodb')
 	bootPackaging project(':stream-kinesis')
 }
