@@ -29,6 +29,6 @@ public class WSAppWebSocketConfig extends AbstractWebSocketMessageBrokerConfigur
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/stomp");
+		registry.addEndpoint("/stomp").setAllowedOrigins("*");
 	}
 }

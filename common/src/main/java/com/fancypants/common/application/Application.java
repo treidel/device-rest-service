@@ -21,6 +21,7 @@ public class Application {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(Application.class);
 	private static final String PACKAGES_RESOURCES = "packages.list";
+	private static final String PACKAGES_TEST_RESOURCES = "packages.list.test";
 
 	public static void main(String[] args) throws Exception {
 		LOG.trace("main enter", "args", args);
@@ -38,13 +39,21 @@ public class Application {
 
 	private static Package[] computeSearchPath() {
 		LOG.trace("computeSearchPath enter");
-		// load the package list
-		Resource resource = new ClassPathResource(PACKAGES_RESOURCES);
+
 		// assume we won't find any packages
 		Package[] packages = new Package[0];
 
+		// see if we have a test package list
+		Resource resource = new ClassPathResource(PACKAGES_RESOURCES);
 		if (true == resource.exists()) {
-
+			// see if there's a test override
+			Resource testResource = new ClassPathResource(
+					PACKAGES_TEST_RESOURCES);
+			if (true == testResource.exists()) {
+				LOG.debug("using test packages");
+				resource = testResource;
+			}
+			// now load the package list
 			try {
 				// parse the package list
 				BufferedReader reader = new BufferedReader(
@@ -54,8 +63,9 @@ public class Application {
 				List<Package> packageList = new LinkedList<Package>();
 				while (null != line) {
 					// find the package object
-					Package pkg = Class.forName(line).getPackage();					
-					LOG.info("Adding package={} to component search path", pkg.toString());
+					Package pkg = Class.forName(line).getPackage();
+					LOG.info("Adding package={} to component search path",
+							pkg.toString());
 					// add it to the list
 					packageList.add(pkg);
 					// read next line

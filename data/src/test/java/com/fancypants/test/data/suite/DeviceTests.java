@@ -12,11 +12,11 @@ import org.springframework.util.Assert;
 
 import com.fancypants.data.entity.DeviceEntity;
 import com.fancypants.data.repository.DeviceRepository;
-import com.fancypants.test.data.config.DataTestConfig;
+import com.fancypants.test.data.config.TestDataConfig;
 import com.fancypants.test.data.values.DeviceValues;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = DataTestConfig.class)
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = TestDataConfig.class)
 public class DeviceTests {
 
 	private @Autowired

@@ -39,7 +39,7 @@ public class DeviceUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
-		LOG.trace("loadUserByUsername entry", username);
+		LOG.trace("loadUserByUsername entry {}={}", "username", username);
 		// create the list of authorities
 		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(
 				1);
@@ -63,7 +63,7 @@ public class DeviceUserDetailsService implements UserDetailsService {
 			}
 			// create and return the user
 			UserDetails user = new User(address.getLocalPart(), "", authorities);
-			LOG.trace("loadUserByUsername exit", user);
+			LOG.trace("loadUserByUsername exit {}", user);
 			return user;
 		} catch (AbstractServiceException e) {
 			LOG.warn("User="

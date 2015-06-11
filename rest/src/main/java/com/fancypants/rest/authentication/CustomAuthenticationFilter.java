@@ -2,6 +2,7 @@ package com.fancypants.rest.authentication;
 
 import java.io.IOException;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 
 public class CustomAuthenticationFilter extends
 		AbstractAuthenticationProcessingFilter {
@@ -20,11 +20,14 @@ public class CustomAuthenticationFilter extends
 	private static final Logger LOG = LoggerFactory
 			.getLogger(CustomAuthenticationFilter.class);
 
-	private static final String DEVICE_PARAM = "device";
-	private static final String SERIALNUMBER_PARAM = "serialnumber";
+	public static final String DEVICE_PARAM = "device";
+	public static final String SERIALNUMBER_PARAM = "serialnumber";
 
 	protected CustomAuthenticationFilter() {
+		// use our custom request matcher
 		super(new CustomRequestMatcher());
+		// override the default success handler
+		setAuthenticationSuccessHandler(new CustomAuthenticationSuccessHandler());
 	}
 
 	@Override
@@ -51,17 +54,13 @@ public class CustomAuthenticationFilter extends
 		return authentication;
 	}
 
-	private static final class CustomRequestMatcher implements RequestMatcher {
-
-		@Override
-		public boolean matches(HttpServletRequest request) {
-			LOG.trace("CustomRequestMatcher.matches enter {}={}", "request",
-					request);
-			boolean result = (null != request.getParameter(DEVICE_PARAM))
-					&& (null != request.getParameter(SERIALNUMBER_PARAM));
-			LOG.trace("CustomRequestMatcher.matches exit {}", result);
-			return result;
-		}
-
+	@Override
+	protected void successfulAuthentication(HttpServletRequest request,
+			HttpServletResponse response, FilterChain chain,
+			Authentication authResult) throws IOException, ServletException {
+		// do the normal stuff
+		super.successfulAuthentication(request, response, chain, authResult);
+		// run the rest of the filter chain
+		chain.doFilter(request, response);
 	}
 }
