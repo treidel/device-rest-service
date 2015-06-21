@@ -1,7 +1,10 @@
 package com.fancypants.test.data.values;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 import java.util.TimeZone;
 
 import org.springframework.stereotype.Component;
@@ -28,26 +31,32 @@ public class HourlyRecordValues {
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
-		// find the start time of the hour
-		Date startOfHour = calendar.getTime();
-		// find the nextday of the next
-		calendar.add(Calendar.HOUR, 1);
-		Date endOfHour = calendar.getTime();
 
-		// setup the test records
-		RECORD1 = new EnergyConsumptionRecordEntity(
-				new EnergyConsumptionRecordId("ABCD1234", startOfHour));
-		for (int i = 1; i <= DeviceEntity.MAX_CIRCUITS; i++) {
-			RECORD1.setEnergy(i, 10.0f);
-		}
-		RECORD2 = new EnergyConsumptionRecordEntity(
-				new EnergyConsumptionRecordId("ABCD1234", endOfHour));
-		for (int i = 1; i <= DeviceEntity.MAX_CIRCUITS; i++) {
-			RECORD2.setEnergy(i, 20.0f);
-		}
+		// random number generator for usage
+		Random rand = new Random();
 
+		// list of records
+		List<EnergyConsumptionRecordEntity> records = new ArrayList<>(24);
+		for (int i = 0; i < 24; i++) {
+			// get the timestamp
+			Date timestamp = calendar.getTime();
+			// create the record
+			EnergyConsumptionRecordEntity record = new EnergyConsumptionRecordEntity(
+					new EnergyConsumptionRecordId(
+							DeviceValues.DEVICEENTITY.getDevice(), timestamp));
+			for (int j = 1; j <= DeviceEntity.MAX_CIRCUITS; j++) {
+				record.setEnergy(j, rand.nextFloat() * 100);
+			}
+			// insert record
+			records.add(record);
+			// find the nextday of the next
+			calendar.add(Calendar.HOUR, 1);
+		}
 		// setup the list of records
-		RECORDS = new EnergyConsumptionRecordEntity[] { RECORD1, RECORD2 };
+		RECORDS = new EnergyConsumptionRecordEntity[24];
+		records.toArray(RECORDS);
+		RECORD1 = RECORDS[0];
+		RECORD2 = RECORDS[1];
 	}
 
 }

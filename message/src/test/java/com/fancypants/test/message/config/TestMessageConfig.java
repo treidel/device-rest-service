@@ -9,7 +9,7 @@ import com.fancypants.test.message.TestMessageScanMe;
 
 @Configuration
 @ComponentScan(basePackageClasses = { TestMessageScanMe.class })
-public class MessageTestConfig {
+public class TestMessageConfig {
 
 	@Bean
 	public BrokerService brokerService() throws Exception {

@@ -20,9 +20,12 @@ jar {
 dependencies {
 	/* create a new configuration for all of the application dependencies */
 	configurations {
- 		bootPackaging {
+ 		boot {
  			extendsFrom runtime
  		}
+                testBoot {
+			extendsFrom testRuntime
+                }
 	}
 	
 	compile("org.springframework.boot:spring-boot-starter-websocket:$springBootVersion")
@@ -30,23 +33,23 @@ dependencies {
 	runtime("org.codehaus.groovy:groovy-all:$groovyVersion")	
 	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 	testCompile("commons-codec:commons-codec:$commonsCodecVersion")	
-	bootPackaging project(':data-dynamodb')
-	bootPackaging project(':message-rabbitmq')
+	boot project(':data-dynamodb')
+	boot project(':message-rabbitmq')
 }
 
 /* use the application dependencies */
 bootRepackage {
-	customConfiguration = "bootPackaging"
+	customConfiguration = "boot"
 }
 
 /* include the application dependencies in the distribution */
-applicationDistribution.from(configurations.bootPackaging) {
+applicationDistribution.from(configurations.boot) {
 	into "lib"
 }
 
 /* add application dependencies to the classpath */
 startScripts {
-	classpath += configurations.bootPackaging
+	classpath += configurations.boot
 	classpath += files(file('/../$APP_HOME/'))
 }
 
@@ -62,8 +65,4 @@ docker {
 
 distDocker {
 	exposePort 8004
-}
-
-bootRepackage {
-    customConfiguration = "customRuntime"
 }
