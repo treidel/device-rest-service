@@ -20,6 +20,7 @@ dependencies {
 	compile("com.jayway.jsonpath:json-path:$jsonpathVersion")
 	compile("ch.qos.logback:logback-access:$logbackVersion")
 	runtime("joda-time:joda-time:$jodatimeVersion")
+	runtime("org.codehaus.janino:janino:$janinoVersion")
 	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 	testCompile("org.apache.httpcomponents:httpclient:$apacheHttpcomponentsVersion")
 	testCompile("org.apache.httpcomponents:httpcore:$apacheHttpcomponentsVersion")

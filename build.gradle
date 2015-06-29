@@ -32,7 +32,7 @@ subprojects {
 		apacheHttpcomponentsVersion = "4.3.2"
 		apacheCommonsLang3Version = "3.3.2"
 		jettyVersion = "9.2.8.v20150217"
-        	slf4jVersion = "1.7.7"
+		slf4jVersion = "1.7.7"
 		groovyVersion = "2.4.3"
 		jsonpathVersion = "0.9.1"
 		amazonAwsVersion = "1.9.16"
@@ -63,6 +63,7 @@ subprojects {
 		zookeeperVersion = "3.4.6"
 		jcommanderVersion = "1.48"
 		spotifyDockerClientVersion = "2.7.25"
+		janinoVersion = "2.7.8"		
 	}
 
 	/* define the group overrides */
