@@ -20,30 +20,33 @@ jar {
 dependencies {
 	/* create a new configuration for all of the application dependencies */
 	configurations {
- 		bootPackaging {
+ 		boot {
  			extendsFrom runtime
  		}
+		testBoot {
+			extendsFrom testRuntime
+		}
 	}
 	compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
 	runtime("org.logback-extensions:logback-ext-loggly:$logbackExtensionsVersion")
 	runtime("org.codehaus.groovy:groovy-all:$groovyVersion")	
 	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 	testCompile("org.apache.httpcomponents:httpclient:$apacheHttpcomponentsVersion")
-	bootPackaging project(':data-dynamodb')
+	boot project(':data-dynamodb')
 }
 /* use the application dependencies */
 bootRepackage {
-	customConfiguration = "bootPackaging"
+	customConfiguration = "boot"
 }
 
 /* include the application dependencies in the distribution */
-applicationDistribution.from(configurations.bootPackaging) {
+applicationDistribution.from(configurations.boot) {
 	into "lib"
 }
 
 /* add application dependencies to the classpath */
 startScripts {
-	classpath += configurations.bootPackaging
+	classpath += configurations.boot
 	doLast {
 		logger.info(unixScript.text)
 		unixScript.text = unixScript.text.replace('CLASSPATH=', 'CLASSPATH=$APP_HOME:')
