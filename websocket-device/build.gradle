@@ -33,7 +33,7 @@ dependencies {
 	runtime("org.codehaus.groovy:groovy-all:$groovyVersion")	
 	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 	boot project(':data-dynamodb')
-	boot project(':stream-kinesis')
+	boot project(':stream-kafka')
 }
 
 /* use the application dependencies */
