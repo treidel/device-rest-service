@@ -44,7 +44,9 @@ public class StormKafkaConfig {
 	private final static Logger LOG = LoggerFactory
 			.getLogger(StormKafkaConfig.class);
 
-	private static final String KAFKA_TOPIC_ENVVAR = "KAFKA_TOPIC";
+	private static final String STORM_SPOUT_KAFKA_TOPIC_ENVVAR = "STORM_SPOUT_KAFKA_TOPIC";
+	private static final String TRIDENT_SPOUT_TOPIC_ENVVAR = "TRIDENT_SPOUT_KAFKA_TOPIC";
+	private static final String STORM_BOLT_TOPIC_ENVVAR = "STORM_BOLT_KAFKA_TOPIC";
 	private static final String KAFKA_BROKERS_ENVVAR = "KAFKA_BROKERS";
 	private static final String ZOOKEEPER_ENVVAR = "ZOOKEEPER";
 
@@ -57,15 +59,15 @@ public class StormKafkaConfig {
 	@SuppressWarnings("rawtypes")
 	@Bean(name = AbstractTopologyConfig.TRIDENT_SPOUT_NAME)
 	@Lazy
-	public Pair<Config, IOpaquePartitionedTridentSpout> tridentSpout() {
+	public Pair<Config, IOpaquePartitionedTridentSpout> tridentSpout(
+			@Value("${" + TRIDENT_SPOUT_TOPIC_ENVVAR + "}") String topic) {
 		LOG.trace("tridentSpout enter");
 		// get the zookeeper host
 		String zookeeperEndpoint = ConfigUtils
 				.retrieveEnvVarOrFail(ZOOKEEPER_ENVVAR);
 		// create the kafka spout
 		BrokerHosts zk = new ZkHosts(zookeeperEndpoint);
-		TridentKafkaConfig kafkaSpoutConf = new TridentKafkaConfig(zk,
-				ConfigUtils.retrieveEnvVarOrFail(KAFKA_TOPIC_ENVVAR));
+		TridentKafkaConfig kafkaSpoutConf = new TridentKafkaConfig(zk, topic);
 		kafkaSpoutConf.scheme = rawRecordScheme;
 		OpaqueTridentKafkaSpout kafkaSpout = new OpaqueTridentKafkaSpout(
 				kafkaSpoutConf);
@@ -78,9 +80,9 @@ public class StormKafkaConfig {
 
 	@Bean(name = AbstractTopologyConfig.STORM_SPOUT_NAME)
 	@Lazy
-	public Pair<Config, IRichSpout> stormSpout(@Value("${" + KAFKA_TOPIC_ENVVAR
-			+ "}") String topic,
-			@Value("${" + ZOOKEEPER_ENVVAR + "}") String zookeeper) {
+	public Pair<Config, IRichSpout> stormSpout(@Value("${"
+			+ STORM_SPOUT_KAFKA_TOPIC_ENVVAR + "}") String topic, @Value("${"
+			+ ZOOKEEPER_ENVVAR + "}") String zookeeper) {
 		LOG.trace("stormSpout enter");
 		// create the kafka spout
 		BrokerHosts zk = new ZkHosts(zookeeper);
@@ -98,9 +100,9 @@ public class StormKafkaConfig {
 	@Bean(name = AbstractTopologyConfig.OUTPUT_BOLT_NAME)
 	@Lazy
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Pair<Config, IRichBolt> outputBolt(@Value("${" + KAFKA_TOPIC_ENVVAR
-			+ "}") String topic,
-			@Value("${" + KAFKA_BROKERS_ENVVAR + "}") String brokers) {
+	public Pair<Config, IRichBolt> outputBolt(@Value("${"
+			+ STORM_BOLT_TOPIC_ENVVAR + "}") String topic, @Value("${"
+			+ KAFKA_BROKERS_ENVVAR + "}") String brokers) {
 		LOG.trace("filteredBolt enter");
 		KafkaBolt kafkaBolt = new KafkaBolt().withTopicSelector(
 				new DefaultTopicSelector(topic)).withTupleToKafkaMapper(
