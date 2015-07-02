@@ -1,20 +1,16 @@
 package com.fancypants.storm.duplicate.config;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import backtype.storm.Config;
-import backtype.storm.LocalCluster;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.topology.IRichBolt;
 import backtype.storm.topology.IRichSpout;
@@ -82,21 +78,13 @@ public class DuplicateConfig extends AbstractTopologyConfig {
 		return pair;
 	}
 
-	@PostConstruct
-	@ConditionalOnMissingBean(LocalCluster.class)
-	public void init() throws Exception {
-		LOG.trace("init enter");
+	@Override
+	protected Pair<Config, StormTopology> getTopology() {
+		return duplicateTopology();
+	}
 
-		// get the topoplogy
-		Pair<Config, StormTopology> duplicateTopology = duplicateTopology();
-
-		// send the topology to the cluster
-		uploadAndReplaceTopology(STORM_TOPOLOGY, duplicateTopology.getKey(),
-				duplicateTopology.getValue());
-
-		// exit the process
-		System.exit(0);
-		
-		LOG.trace("init exit");
+	@Override
+	protected String getTopologyPrefix() {
+		return STORM_TOPOLOGY;
 	}
 }

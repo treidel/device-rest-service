@@ -2,11 +2,20 @@ package com.fancypants.storm.config;
 
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.thrift7.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import backtype.storm.Config;
+import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
 import backtype.storm.generated.AlreadyAliveException;
 import backtype.storm.generated.ClusterSummary;
@@ -20,6 +29,7 @@ import backtype.storm.utils.Utils;
 
 import com.fancypants.common.config.util.ConfigUtils;
 
+@EnableScheduling
 public abstract class AbstractTopologyConfig {
 
 	private static final Logger LOG = LoggerFactory
@@ -31,7 +41,42 @@ public abstract class AbstractTopologyConfig {
 
 	private static final String NIMBUS_ADDRESS_ENVVAR = "NIMBUS_ADDRESS";
 
-	protected void uploadAndReplaceTopology(String topologyPrefix,
+	@Autowired
+	private ConfigurableApplicationContext appContext;
+
+	protected abstract Pair<Config, StormTopology> getTopology();
+
+	protected abstract String getTopologyPrefix();
+
+	@PostConstruct
+	@ConditionalOnMissingBean(LocalCluster.class)
+	public void init() throws Exception {
+		LOG.trace("init enter");
+
+		// get the topology
+		String topologyPrefix = getTopologyPrefix();
+		Pair<Config, StormTopology> topology = getTopology();
+
+		// submit the topology
+		uploadAndReplaceTopology(topologyPrefix, topology.getLeft(),
+				topology.getRight());
+
+		LOG.trace("init exit");
+	}
+
+	@Scheduled(fixedDelay = 1000)
+	private void terminate() {
+		LOG.trace("terminate enter");
+
+		LOG.info("initiating shutdown");
+
+		// schedule a thread to terminate this application
+		appContext.close();
+
+		LOG.trace("terminate exit");
+	}
+
+	private void uploadAndReplaceTopology(String topologyPrefix,
 			Config topologyConfig, StormTopology topology) {
 		LOG.trace("uploadAndReplaceTopology enter {}={} {}={} {}={}",
 				"topologyPrefix", topologyPrefix, "topologyConfig",
