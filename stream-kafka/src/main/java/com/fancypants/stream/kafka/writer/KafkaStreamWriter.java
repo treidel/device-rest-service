@@ -55,10 +55,13 @@ public class KafkaStreamWriter<T> implements StreamWriter<T> {
 			future.get(1L, TimeUnit.SECONDS);
 		} catch (JsonProcessingException e) {
 			LOG.error("processing error", e);
+			throw new StreamException(e);
 		} catch (InterruptedException e) {
 			LOG.error("processing error", e);
+			throw new StreamException(e);
 		} catch (ExecutionException e) {
 			LOG.error("processing error", e);
+			throw new StreamException(e);
 		} catch (TimeoutException e) {
 			LOG.warn("timeout on send for hashKey={}", hashKey);
 			throw new StreamException(e);
