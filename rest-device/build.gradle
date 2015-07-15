@@ -20,7 +20,7 @@ jar {
 dependencies {
 	/* create a new configuration for all of the application dependencies */
 	configurations {
- 		bootPackaging {
+ 		boot {
  			extendsFrom runtime
  		}
 	}
@@ -29,21 +29,22 @@ dependencies {
 	runtime("org.codehaus.groovy:groovy-all:$groovyVersion")
 	runtime("org.logback-extensions:logback-ext-loggly:$logbackExtensionsVersion")
 	testCompile("com.beust:jcommander:$jcommanderVersion")
-	bootPackaging project(':data-dynamodb')
+	boot project(':data-dynamodb')
+        boot project(':message-rabbitmq')
 }
 /* use the application dependencies */
 bootRepackage {
-	customConfiguration = "bootPackaging"
+	customConfiguration = "boot"
 }
 
 /* include the application dependencies in the distribution */
-applicationDistribution.from(configurations.bootPackaging) {
+applicationDistribution.from(configurations.boot) {
 	into "lib"
 }
 
 /* add application dependencies to the classpath */
 startScripts {
-	classpath += configurations.bootPackaging
+	classpath += configurations.boot
 	doLast {
 		logger.info(unixScript.text)
 		unixScript.text = unixScript.text.replace('CLASSPATH=', 'CLASSPATH=$APP_HOME:')
