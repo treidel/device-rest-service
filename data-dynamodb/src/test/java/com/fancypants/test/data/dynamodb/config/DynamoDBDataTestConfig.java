@@ -11,7 +11,7 @@ import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -50,7 +50,7 @@ public class DynamoDBDataTestConfig {
 	AWSCredentials awsCredentials;
 
 	private @Autowired
-	@Qualifier(DynamoDBConfig.AMAZON_DYNAMODB_ENDPOINT_NAME)
+	@Value("${" + DynamoDBConfig.AMAZON_DYNAMODB_ENDPOINT_ENVVAR + "}")
 	String endpoint;
 
 	@Bean
@@ -80,7 +80,7 @@ public class DynamoDBDataTestConfig {
 		boolean found = false;
 		List<Image> images = docker.listImages();
 		for (Image image : images) {
-			if (image.repoTags().contains(DOCKER_IMAGE)) {
+			if (image.repoTags().contains(DOCKER_IMAGE + ":latest")) {
 				found = true;
 			}
 		}

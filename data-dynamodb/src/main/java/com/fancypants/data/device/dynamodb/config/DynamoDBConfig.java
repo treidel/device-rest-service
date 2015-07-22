@@ -19,10 +19,9 @@ public class DynamoDBConfig {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(DynamoDBConfig.class);
 
-	public static final String AMAZON_DYNAMODB_ENDPOINT_NAME = "amazonDynamoDBEndpoint";
-	private static final String AMAZON_ACCESS_KEY_ID_ENVVAR = "AWS_ACCESS_KEY_ID";
-	private static final String AMAZON_SECRET_ACCESS_KEY_ENVVAR = "AWS_SECRET_ACCESS_KEY";
-	private static final String AMAZON_DYNAMODB_ENDPOINT_ENVVAR = "AWS_DYNAMODB_ENDPOINT";
+	public static final String AMAZON_ACCESS_KEY_ID_ENVVAR = "AWS_ACCESS_KEY_ID";
+	public static final String AMAZON_SECRET_ACCESS_KEY_ENVVAR = "AWS_SECRET_ACCESS_KEY";
+	public static final String AMAZON_DYNAMODB_ENDPOINT_ENVVAR = "AWS_DYNAMODB_ENDPOINT";
 
 	@Bean
 	public SerializableCredentials serializableCredentials(
@@ -34,11 +33,4 @@ public class DynamoDBConfig {
 		LOG.trace("serializableCredentials exit {}", serializableCredentials);
 		return serializableCredentials;
 	}
-
-	@Bean
-	public String amazonDynamoDBEndpoint(@Value("${"
-			+ AMAZON_DYNAMODB_ENDPOINT_ENVVAR + "}") String dynamoDBEndpoint) {
-		return dynamoDBEndpoint;
-	}
-
 }

@@ -1,36 +1,33 @@
-package com.fancypants.test.stream.kafka.config;
+package com.fancypants.test.message.rabbitmq.config;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import kafka.admin.AdminUtils;
-import kafka.admin.TopicCommand;
-import kafka.admin.TopicCommand.TopicCommandOptions;
-import kafka.utils.ZkUtils;
-
-import org.I0Itec.zkclient.ZkClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.util.Assert;
 
 import com.fancypants.common.CommonScanMe;
-import com.fancypants.stream.kafka.StreamKafkaScanMe;
-import com.fancypants.stream.kafka.config.KafkaStreamConfig;
-import com.fancypants.test.stream.TestStreamScanMe;
+import com.fancypants.message.rabbitmq.MessageRabbitMQScanMe;
+import com.fancypants.message.rabbitmq.config.RabbitMQConfig;
+import com.fancypants.test.message.TestMessageScanMe;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import com.spotify.docker.client.DefaultDockerClient;
-import com.spotify.docker.client.DockerCertificateException;
 import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.HostConfig;
@@ -39,17 +36,28 @@ import com.spotify.docker.client.messages.PortBinding;
 
 @Configuration
 @ComponentScan(basePackageClasses = { CommonScanMe.class,
-		TestStreamScanMe.class, StreamKafkaScanMe.class })
+		TestMessageScanMe.class, MessageRabbitMQScanMe.class })
 @PropertySource("classpath:/test.properties")
-public class KafkaStreamTestConfig {
+public class RabbitMQMessageTestConfig {
+
 	private static final Logger LOG = LoggerFactory
-			.getLogger(KafkaStreamTestConfig.class);
+			.getLogger(RabbitMQMessageTestConfig.class);
 
-	private static final String DOCKER_IMAGE = "spotify/kafka";
-	private static final String ZOOKEEPER = "localhost:2181";
-	private static final String TOPIC = "test";
+	private static final String DOCKER_IMAGE = "rabbitmq";
 
-	private String containerId;
+	private @Autowired
+	@Value("${" + RabbitMQConfig.RABBITMQ_EXCHANGE_ENVVAR + "}")
+	String exchange;
+
+	private @Autowired
+	@Value("${" + RabbitMQConfig.RABBITMQ_PASSWORD_ENVVAR + "}")
+	String password;
+
+	private @Autowired
+	@Value("${" + RabbitMQConfig.RABBITMQ_URI_ENVVAR + "}")
+	String uri;
+
+	private String containerId = null;
 
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
@@ -58,6 +66,7 @@ public class KafkaStreamTestConfig {
 
 	@PostConstruct
 	public void init() throws Exception {
+
 		LOG.trace("init enter");
 
 		// create the docker client
@@ -65,8 +74,9 @@ public class KafkaStreamTestConfig {
 
 		// boolean to indicate if the images already exists
 		boolean found = false;
-		for (Image image : docker.listImages()) {
-			if (image.repoTags().contains(DOCKER_IMAGE)) {
+		List<Image> images = docker.listImages();
+		for (Image image : images) {
+			if (image.repoTags().contains(DOCKER_IMAGE + ":latest")) {
 				found = true;
 			}
 		}
@@ -76,11 +86,9 @@ public class KafkaStreamTestConfig {
 			docker.pull(DOCKER_IMAGE);
 		}
 		// setup the container
-		final String[] ports = { "2181", "9092" };
+		final String[] ports = { "5672" };
 		final ContainerConfig config = ContainerConfig.builder()
-				.image(DOCKER_IMAGE).exposedPorts(ports)
-				.env("ADVERTISED_HOST=localhost", "ADVERTISED_PORT=9092")
-				.build();
+				.image(DOCKER_IMAGE).exposedPorts(ports).build();
 		// bind container ports to host ports
 		final Map<String, List<PortBinding>> portBindings = new HashMap<>();
 		for (String port : ports) {
@@ -100,35 +108,28 @@ public class KafkaStreamTestConfig {
 		LOG.info("starting container {}", containerId);
 		docker.startContainer(containerId, hostConfig);
 
-		// connect to zookeeper so that we can query kafka data
-		ZkClient zkClient = new ZkClient(ZOOKEEPER);
-		zkClient.setZkSerializer(new KafkaStreamConfig.ZkStringSerializer());
+		// wait until we are able to connect to proceed
+		ConnectionFactory factory = new ConnectionFactory();
+		factory.setUri(uri);
 
-		// wait until the broker comes up
-		while (0 == ZkUtils.getSortedBrokerList(zkClient).size()) {
-			LOG.debug("waiting for broker to come up");
-			Thread.sleep(100);
+		// ensure we can connect before proceeding
+		Connection connection = null;
+		for (int count = 0; count < 10; count++) {
+			try {
+				connection = factory.newConnection();
+			} catch (IOException e) {
+				LOG.warn("waiting to connect");
+				Thread.sleep(1000);
+			}
 		}
-
-		LOG.info("kafka broker up");
-
-		// create the topic
-		LOG.info("creating kafka topic={}", TOPIC);
-		AdminUtils.createTopic(zkClient, TOPIC, 1, 1, new Properties());
-
-		// query topic to be sure its ready
-		String[] options = { "--topic", TOPIC };
-		TopicCommand.describeTopic(zkClient, new TopicCommandOptions(options));
-
-		// close zookeeper
-		zkClient.close();
-
-		LOG.trace("init exit");
+		// make sure we were able to connect
+		Assert.notNull(connection);
+		// disconnect
+		connection.close();
 	}
 
 	@PreDestroy
-	public void fini() throws DockerCertificateException, DockerException,
-			InterruptedException {
+	private void cleanup() throws Exception {
 		LOG.trace("fini enter");
 		if (null != containerId) {
 			// stop the container
@@ -141,5 +142,4 @@ public class KafkaStreamTestConfig {
 		}
 		LOG.trace("fini exit");
 	}
-
 }

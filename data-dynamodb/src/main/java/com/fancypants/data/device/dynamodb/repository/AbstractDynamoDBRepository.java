@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.util.Assert;
 
@@ -51,7 +52,7 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 	private SerializableCredentials awsCredentials;
 
 	@Autowired
-	@Qualifier(DynamoDBConfig.AMAZON_DYNAMODB_ENDPOINT_NAME)
+	@Value("${" + DynamoDBConfig.AMAZON_DYNAMODB_ENDPOINT_ENVVAR + "}")
 	private String endpoint;
 
 	@Autowired
