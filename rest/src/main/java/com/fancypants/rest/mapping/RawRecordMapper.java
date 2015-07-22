@@ -3,7 +3,6 @@ package com.fancypants.rest.mapping;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
@@ -41,8 +40,7 @@ public class RawRecordMapper implements
 			measurements.add(measurement);
 		}
 		// create + return the record
-		RawRecord domain = new RawRecord(
-				UUID.fromString(recordEntity.getUUID()),
+		RawRecord domain = new RawRecord(recordEntity.getId().getUUID(),
 				recordEntity.getTimestamp(),
 				recordEntity.getDurationInSeconds(), measurements);
 		return domain;

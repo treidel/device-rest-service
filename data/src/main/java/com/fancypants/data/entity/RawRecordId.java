@@ -15,15 +15,23 @@
  */
 package com.fancypants.data.entity;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.StringTokenizer;
 import java.util.UUID;
 
-/**
- * Composite id for the Thread entity. For spring-data-dynamodb to be able to
- * identify which attribute is the hash key and which is the range key the
- * methods must be annotated with @DynamoDBHashKey or @DynamoDBRangeKey
- * 
- */
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+@JsonSerialize(using = RawRecordId.Serializer.class)
+@JsonDeserialize(using = RawRecordId.Deserializer.class)
 public class RawRecordId implements Comparable<RawRecordId>, Serializable {
 
 	private static final long serialVersionUID = 2392535614010208931L;
@@ -74,5 +82,30 @@ public class RawRecordId implements Comparable<RawRecordId>, Serializable {
 	public String toString() {
 		return "[RawRecordId device=" + device.toString() + ", uuid="
 				+ uuid.toString() + "]";
+	}
+
+	public static final class Serializer extends JsonSerializer<RawRecordId> {
+		@Override
+		public void serialize(RawRecordId value, JsonGenerator jgen,
+				SerializerProvider provider) throws IOException,
+				JsonProcessingException {
+			jgen.writeString(value.getDevice() + ":"
+					+ value.getUUID().toString());
+		}
+	}
+
+	public static final class Deserializer extends
+			JsonDeserializer<RawRecordId> {
+		@Override
+		public RawRecordId deserialize(JsonParser jp,
+				DeserializationContext ctxt) throws IOException,
+				JsonProcessingException {
+			String raw = jp.getText();
+			StringTokenizer tokenizer = new StringTokenizer(raw, ":");
+			String device = tokenizer.nextToken();
+			String uuid = tokenizer.nextToken();
+			RawRecordId id = new RawRecordId(device, UUID.fromString(uuid));
+			return id;
+		}
 	}
 }

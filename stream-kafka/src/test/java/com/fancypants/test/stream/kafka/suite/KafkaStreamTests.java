@@ -58,7 +58,7 @@ public class KafkaStreamTests extends StreamTests {
 		// boolean to indicate if the images already exists
 		boolean found = false;
 		for (Image image : docker.listImages()) {
-			if (image.repoTags().contains("spotify/kafka:latest")) {
+			if (image.repoTags().contains(DOCKER_IMAGE)) {
 				found = true;
 			}
 		}
@@ -70,7 +70,7 @@ public class KafkaStreamTests extends StreamTests {
 		// setup the container
 		final String[] ports = { "2181", "9092" };
 		final ContainerConfig config = ContainerConfig.builder()
-				.image("spotify/kafka").exposedPorts(ports)
+				.image(DOCKER_IMAGE).exposedPorts(ports)
 				.env("ADVERTISED_HOST=localhost", "ADVERTISED_PORT=9092")
 				.build();
 		// bind container ports to host ports

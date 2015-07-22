@@ -1,21 +1,14 @@
 package com.fancypants.data.device.dynamodb.repository;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
-
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.dynamodbv2.document.Expected;
 import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.ItemCollection;
-import com.amazonaws.services.dynamodbv2.document.KeyAttribute;
-import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.fancypants.data.entity.RawRecordEntity;
 import com.fancypants.data.entity.RawRecordId;
 import com.fancypants.data.repository.RawRecordRepository;
- 
+
 @Component
 public class DynamoDBRawRecordRepository extends
 		AbstractDynamoDBRepository<RawRecordEntity, RawRecordId> implements
@@ -25,8 +18,7 @@ public class DynamoDBRawRecordRepository extends
 	private static final String TABLE_NAME = "raw";
 
 	public DynamoDBRawRecordRepository() {
-		super(RawRecordEntity.class, RawRecordEntity.HASH_KEY,
-				RawRecordEntity.RANGE_KEY);
+		super(RawRecordEntity.class, RawRecordEntity.HASH_KEY);
 	}
 
 	@Override
@@ -36,22 +28,22 @@ public class DynamoDBRawRecordRepository extends
 
 	@Override
 	protected String retrieveHashKey(RawRecordEntity entity) {
-		return entity.getDevice();
+		return retrieveHashKey(entity.getId());
 	}
 
 	@Override
 	protected String retrieveHashKey(RawRecordId id) {
-		return id.getDevice();
+		return id.getDevice() + ":" + id.getUUID().toString();
 	}
 
 	@Override
 	protected String retrieveRangeKey(RawRecordEntity entity) {
-		return entity.getUUID().toString();
+		return null;
 	}
 
 	@Override
 	protected String retrieveRangeKey(RawRecordId id) {
-		return id.getUUID().toString();
+		return null;
 	}
 
 	@Override
@@ -68,30 +60,4 @@ public class DynamoDBRawRecordRepository extends
 		}
 		return true;
 	}
-
-	@Override
-	public List<RawRecordEntity> findAllForDevice(String device) {
-		KeyAttribute key = new KeyAttribute(RawRecordEntity.HASH_KEY, device);
-		ItemCollection<QueryOutcome> items = getTable().query(key);
-		List<RawRecordEntity> records = new LinkedList<RawRecordEntity>();
-		for (Item item : items) {
-			RawRecordEntity record = deserialize(item);
-			records.add(record);
-		}
-		return records;
-	}
-
-	@Override
-	public void deleteAllForDevice(String device) {
-		KeyAttribute key = new KeyAttribute(RawRecordEntity.HASH_KEY, device);
-		ItemCollection<QueryOutcome> items = getTable().query(key);
-		for (Item item : items) {
-			RawRecordId id = new RawRecordId(
-					item.getString(RawRecordEntity.DEVICE_ATTRIBUTE),
-					UUID.fromString(item
-							.getString(RawRecordEntity.UUID_ATTRIBUTE)));
-			delete(id);
-		}
-	}
-
 }

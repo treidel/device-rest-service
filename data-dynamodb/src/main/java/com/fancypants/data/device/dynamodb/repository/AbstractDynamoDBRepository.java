@@ -28,6 +28,7 @@ import com.amazonaws.services.dynamodbv2.document.ScanOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.ScanSpec;
 import com.amazonaws.services.dynamodbv2.model.Select;
+import com.fancypants.data.device.dynamodb.config.DynamoDBConfig;
 import com.fancypants.data.device.dynamodb.credentials.SerializableCredentials;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,7 +51,7 @@ public abstract class AbstractDynamoDBRepository<T, I extends Serializable>
 	private SerializableCredentials awsCredentials;
 
 	@Autowired
-	@Qualifier("amazonDynamoDBEndpoint")
+	@Qualifier(DynamoDBConfig.AMAZON_DYNAMODB_ENDPOINT_NAME)
 	private String endpoint;
 
 	@Autowired

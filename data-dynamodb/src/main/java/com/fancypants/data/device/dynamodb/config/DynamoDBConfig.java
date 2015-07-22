@@ -2,14 +2,12 @@ package com.fancypants.data.device.dynamodb.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.fancypants.common.CommonScanMe;
-import com.fancypants.common.config.util.ConfigUtils;
 import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe;
 import com.fancypants.data.device.dynamodb.credentials.SerializableCredentials;
 
@@ -21,24 +19,26 @@ public class DynamoDBConfig {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(DynamoDBConfig.class);
 
+	public static final String AMAZON_DYNAMODB_ENDPOINT_NAME = "amazonDynamoDBEndpoint";
+	private static final String AMAZON_ACCESS_KEY_ID_ENVVAR = "AWS_ACCESS_KEY_ID";
+	private static final String AMAZON_SECRET_ACCESS_KEY_ENVVAR = "AWS_SECRET_ACCESS_KEY";
 	private static final String AMAZON_DYNAMODB_ENDPOINT_ENVVAR = "AWS_DYNAMODB_ENDPOINT";
 
 	@Bean
-	public SerializableCredentials serializableCredentials() {
+	public SerializableCredentials serializableCredentials(
+			@Value("${" + AMAZON_ACCESS_KEY_ID_ENVVAR + "}") String accessKeyId,
+			@Value("${" + AMAZON_SECRET_ACCESS_KEY_ENVVAR + "}") String secretAccessKey) {
 		LOG.trace("serializableCredentials enter");
-		// get the credentials from the environment
-		AWSCredentials credentials = new DefaultAWSCredentialsProviderChain()
-				.getCredentials();
 		SerializableCredentials serializableCredentials = new SerializableCredentials(
-				credentials.getAWSAccessKeyId(), credentials.getAWSSecretKey());
+				accessKeyId, secretAccessKey);
 		LOG.trace("serializableCredentials exit {}", serializableCredentials);
 		return serializableCredentials;
 	}
 
 	@Bean
-	public String amazonDynamoDBEndpoint() {
-		return ConfigUtils
-				.retrieveEnvVarOrFail(AMAZON_DYNAMODB_ENDPOINT_ENVVAR);
+	public String amazonDynamoDBEndpoint(@Value("${"
+			+ AMAZON_DYNAMODB_ENDPOINT_ENVVAR + "}") String dynamoDBEndpoint) {
+		return dynamoDBEndpoint;
 	}
 
 }

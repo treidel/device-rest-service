@@ -1,7 +1,6 @@
 package com.fancypants.records.service;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -51,15 +50,6 @@ public class RecordService {
 		return recordEntity;
 	}
 
-	public Collection<RawRecordEntity> findRecordsForDevice(
-			DeviceEntity deviceEntity) {
-		LOG.trace("findRecordsForDevice entry");
-		List<RawRecordEntity> entities = recordRepository
-				.findAllForDevice(deviceEntity.getDevice());
-		LOG.trace("findRecordsForDevice exit", entities);
-		return entities;
-	}
-
 	public void bulkCreateRecords(DeviceEntity deviceEntity,
 			Collection<RawRecordEntity> entities)
 			throws AbstractServiceException {
@@ -70,19 +60,20 @@ public class RecordService {
 				if (null == recordEntity.getCircuit(circuitEntity.getIndex())) {
 					LOG.debug("bulkCreateRecords validation failure", entities);
 					throw new DataValidationException("no data in record="
-							+ recordEntity.getUUID().toString()
-							+ " for circuit=" + circuitEntity.getIndex());
+							+ recordEntity.getId().toString() + " for circuit="
+							+ circuitEntity.getIndex());
 				}
 			}
 			// insert it into the queue for more processing, dups will be
 			// detected + eliminated later
 			try {
-				streamWriter.putRecord(recordEntity.getDevice(), recordEntity);
+				streamWriter.putRecord(recordEntity.getId().getDevice(),
+						recordEntity);
 			} catch (StreamException e) {
 				LOG.error("stream error", e);
 				throw new DataPersistenceException(
 						"unable to write data to persistent storage for record="
-								+ recordEntity.getUUID().toString());
+								+ recordEntity.getId().toString());
 			}
 		}
 		LOG.trace("bulkCreateRecords exit");

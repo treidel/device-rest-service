@@ -15,8 +15,6 @@
  */
 package com.fancypants.data.repository;
 
-import java.util.List;
-
 import org.springframework.data.repository.CrudRepository;
 
 import com.fancypants.data.entity.RawRecordEntity;
@@ -26,7 +24,5 @@ public interface RawRecordRepository extends
 		CrudRepository<RawRecordEntity, RawRecordId> {
 
 	public boolean insert(RawRecordEntity record);
-	public List<RawRecordEntity> findAllForDevice(String device);
-	public void deleteAllForDevice(String device);
 
 }
