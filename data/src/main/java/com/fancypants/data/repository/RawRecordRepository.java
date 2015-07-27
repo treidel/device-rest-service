@@ -21,7 +21,8 @@ import com.fancypants.data.entity.RawRecordEntity;
 import com.fancypants.data.entity.RawRecordId;
 
 public interface RawRecordRepository extends
-		CrudRepository<RawRecordEntity, RawRecordId> {
+		CrudRepository<RawRecordEntity, RawRecordId>,
+		PartitionedRepository<RawRecordEntity, RawRecordId> {
 
 	public boolean insert(RawRecordEntity record);
 

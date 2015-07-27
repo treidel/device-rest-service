@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import com.fancypants.common.CommonScanMe;
+import com.fancypants.data.DataScanMe;
 import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.data.repository.DeviceRepository;
 import com.fancypants.data.repository.HourlyRecordRepository;
@@ -17,7 +18,8 @@ import com.fancypants.test.data.values.DeviceValues;
 import com.fancypants.test.data.values.HourlyRecordValues;
 
 @Configuration
-@ComponentScan(basePackageClasses = { CommonScanMe.class, TestDataScanMe.class })
+@ComponentScan(basePackageClasses = { CommonScanMe.class, DataScanMe.class,
+		TestDataScanMe.class })
 public class TestDataConfig {
 
 	@Autowired

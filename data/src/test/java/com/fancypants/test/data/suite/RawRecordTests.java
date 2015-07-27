@@ -5,12 +5,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.util.Assert;
 
 import com.fancypants.data.entity.RawRecordEntity;
+import com.fancypants.data.entity.RawRecordId;
+import com.fancypants.data.partitioner.RawRecordPartitioner;
 import com.fancypants.data.repository.RawRecordRepository;
 import com.fancypants.test.data.config.TestDataConfig;
 import com.fancypants.test.data.values.RawRecordValues;
@@ -22,16 +25,26 @@ public class RawRecordTests {
 	private @Autowired
 	RawRecordRepository repository;
 
+	private @Autowired
+	RawRecordPartitioner partitioner;
+
 	@Before
 	public void setup() {
-		// pre-clean
-		cleanup();
+		// make sure a partition exists for all records
+		for (RawRecordEntity entity : RawRecordValues.RECORDS) {
+			String partition = partitioner.partition(entity);
+			repository.createPartition(partition);
+		}
+
 	}
 
 	@After
 	public void cleanup() {
-		// remove all records just in case
-		repository.deleteAll();
+		// clean up all partitions
+		for (RawRecordEntity entity : RawRecordValues.RECORDS) {
+			String partition = partitioner.partition(entity);
+			repository.deletePartition(partition);
+		}
 	}
 
 	@Test
@@ -52,16 +65,12 @@ public class RawRecordTests {
 		// run the create test to create a record
 		createTest();
 		// query for it
-		RawRecordEntity record = repository.findOne(RawRecordValues.RECORD1
+		String partition = partitioner.partition(RawRecordValues.RECORD1);
+		CrudRepository<RawRecordEntity, RawRecordId> crudRepository = repository
+				.retrievePartitionTable(partition);
+		RawRecordEntity record = crudRepository.findOne(RawRecordValues.RECORD1
 				.getId());
 		Assert.isTrue(null != record);
-	}
-
-	@Test
-	public void queryInvalidTest() {
-		RawRecordEntity record = repository
-				.findOne(RawRecordValues.INVALID_RECORD_ID);
-		Assert.isNull(record);
 	}
 
 	@Test
@@ -69,7 +78,6 @@ public class RawRecordTests {
 		for (RawRecordEntity record : RawRecordValues.RECORDS) {
 			repository.insert(record);
 		}
-		Assert.isTrue(RawRecordValues.RECORDS.length == repository.count());
 	}
 
 }

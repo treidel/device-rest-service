@@ -14,12 +14,12 @@ import storm.trident.operation.TridentCollector;
 import storm.trident.operation.TridentOperationContext;
 import storm.trident.tuple.TridentTuple;
 
+import com.fancypants.common.generators.DateIntervalGenerator;
 import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.data.entity.RawMeasurementEntity;
 import com.fancypants.data.entity.RawRecordEntity;
 import com.fancypants.storm.device.record.mapping.EnergyConsumptionTupleMapper;
 import com.fancypants.storm.device.record.mapping.RawRecordEntityMapper;
-import com.fancypants.usage.generators.DateIntervalGenerator;
 
 public abstract class EnergyCalculationAggregator implements
 		Aggregator<RawRecordEntity>, java.util.logging.Filter {

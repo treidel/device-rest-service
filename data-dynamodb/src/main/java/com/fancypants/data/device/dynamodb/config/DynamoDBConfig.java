@@ -8,11 +8,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import com.fancypants.common.CommonScanMe;
+import com.fancypants.data.DataScanMe;
 import com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe;
 import com.fancypants.data.device.dynamodb.credentials.SerializableCredentials;
 
 @Configuration
-@ComponentScan(basePackageClasses = { CommonScanMe.class,
+@ComponentScan(basePackageClasses = { CommonScanMe.class, DataScanMe.class,
 		DataDeviceDynamoDBScanMe.class })
 public class DynamoDBConfig {
 

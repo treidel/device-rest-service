@@ -1,4 +1,4 @@
-package com.fancypants.usage.generators;
+package com.fancypants.common.generators;
 
 import java.util.Date;
 

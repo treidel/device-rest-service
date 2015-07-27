@@ -18,7 +18,7 @@ import com.fancypants.data.repository.HourlyRecordRepository;
 @Component
 public class TestHourlyRecordRepository
 		extends
-		AbstractTestRepository<EnergyConsumptionRecordEntity, EnergyConsumptionRecordId>
+		SimpleTestRepository<EnergyConsumptionRecordEntity, EnergyConsumptionRecordId>
 		implements HourlyRecordRepository {
 
 	private static final long serialVersionUID = -1539444950934709972L;
@@ -26,7 +26,8 @@ public class TestHourlyRecordRepository
 	private static final Map<String, SortedMap<Date, EnergyConsumptionRecordEntity>> DEVICES = new HashMap<String, SortedMap<Date, EnergyConsumptionRecordEntity>>();
 
 	public TestHourlyRecordRepository() {
-		super(EnergyConsumptionRecordEntity.class);
+		super(EnergyConsumptionRecordEntity.class,
+				EnergyConsumptionRecordEntity.class.getName());
 	}
 
 	@Override

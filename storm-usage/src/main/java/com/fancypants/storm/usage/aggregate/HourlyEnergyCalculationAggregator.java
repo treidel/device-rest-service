@@ -2,7 +2,7 @@ package com.fancypants.storm.usage.aggregate;
 
 import org.springframework.stereotype.Component;
 
-import com.fancypants.usage.generators.HourlyDateIntervalGenerator;
+import com.fancypants.common.generators.HourlyDateIntervalGenerator;
 
 @Component
 public class HourlyEnergyCalculationAggregator extends EnergyCalculationAggregator {

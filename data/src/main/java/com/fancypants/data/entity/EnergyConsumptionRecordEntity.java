@@ -14,8 +14,6 @@ public class EnergyConsumptionRecordEntity {
 	public static final String DEVICE_ATTRIBUTE = "device";
 	public static final String DATE_ATTRIBUTE = "date";
 	public static final String ENERGY_IN_KWH_ATTRIBUTE_PREFIX = "energy-in-kwh-";
-	public static final String HASH_KEY = DEVICE_ATTRIBUTE;
-	public static final String RANGE_KEY = DATE_ATTRIBUTE;
 
 	@Id
 	private final EnergyConsumptionRecordId id;

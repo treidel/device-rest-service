@@ -1,49 +1,85 @@
 package com.fancypants.data.device.dynamodb.repository;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.dynamodbv2.document.Expected;
 import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
+import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
+import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
+import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.fancypants.data.entity.RawRecordEntity;
 import com.fancypants.data.entity.RawRecordId;
+import com.fancypants.data.partitioner.RawRecordPartitioner;
 import com.fancypants.data.repository.RawRecordRepository;
 
 @Component
 public class DynamoDBRawRecordRepository extends
-		AbstractDynamoDBRepository<RawRecordEntity, RawRecordId> implements
+		PartitionedDynamoDBRepository<RawRecordEntity, RawRecordId> implements
 		RawRecordRepository {
+
+	private static final Logger LOG = LoggerFactory
+			.getLogger(DynamoDBRawRecordRepository.class);
 
 	private static final long serialVersionUID = -6669041689916234705L;
 	private static final String TABLE_NAME = "raw";
+	private static final Collection<KeySchemaElement> KEY_SCHEMA = Arrays
+			.asList(new KeySchemaElement(RawRecordEntity.RECORDID_ATTRIBUTE,
+					KeyType.HASH));
 
-	public DynamoDBRawRecordRepository() {
-		super(RawRecordEntity.class, RawRecordEntity.HASH_KEY);
+	@Autowired
+	private RawRecordPartitioner partitioner;
+
+	@Autowired
+	public DynamoDBRawRecordRepository(RawRecordPartitioner partitioner) {
+		super(RawRecordEntity.class, partitioner);
+		LOG.trace("PartitionedDynamoDBRepository enter");
+		LOG.trace("PartitionedDynamoDBRepository exit");
 	}
 
 	@Override
-	protected String retrieveTableName() {
+	protected String retrieveBaseTableName() {
 		return TABLE_NAME;
 	}
 
 	@Override
-	protected String retrieveHashKey(RawRecordEntity entity) {
-		return retrieveHashKey(entity.getId());
+	protected Collection<KeySchemaElement> retrieveKeySchema() {
+		return KEY_SCHEMA;
 	}
 
 	@Override
-	protected String retrieveHashKey(RawRecordId id) {
-		return id.getDevice() + ":" + id.getUUID().toString();
+	protected PrimaryKey retrievePrimaryKey(RawRecordEntity entity) {
+		LOG.trace("retrievePrimaryKey enter", "entity", entity);
+		PrimaryKey primaryKey = retrievePrimaryKey(entity.getId());
+		LOG.trace("retrievePrimaryKey exit", primaryKey);
+		return primaryKey;
 	}
 
 	@Override
-	protected String retrieveRangeKey(RawRecordEntity entity) {
-		return null;
+	protected PrimaryKey retrievePrimaryKey(RawRecordId id) {
+		LOG.trace("retrievePrimaryKey enter", "id", id);
+		String hash = id.getDevice() + ":" + id.getUUID().toString();
+		PrimaryKey primaryKey = new PrimaryKey(
+				RawRecordEntity.RECORDID_ATTRIBUTE, hash);
+		LOG.trace("retrievePrimaryKey exit", primaryKey);
+		return primaryKey;
 	}
 
 	@Override
-	protected String retrieveRangeKey(RawRecordId id) {
-		return null;
+	protected PrimaryKey retrievePrimaryKey(Item item) {
+		LOG.trace("retrievePrimaryKey enter", "item", item);
+		PrimaryKey primaryKey = new PrimaryKey(
+				RawRecordEntity.RECORDID_ATTRIBUTE,
+				item.getString(RawRecordEntity.RECORDID_ATTRIBUTE));
+		LOG.trace("retrievePrimaryKey exit", primaryKey);
+		return primaryKey;
 	}
 
 	@Override
@@ -52,9 +88,12 @@ public class DynamoDBRawRecordRepository extends
 		Item item = serialize((RawRecordEntity) record);
 		// setup the expected value
 		Expected expected = new Expected(RawRecordEntity.HASH_KEY).notExist();
-		// run the query
+
 		try {
-			getTable().putItem(item, expected);
+			// get the table
+			Table table = getTable(record);
+			// run the query
+			table.putItem(item, expected);
 		} catch (ConditionalCheckFailedException e) {
 			return false;
 		}
