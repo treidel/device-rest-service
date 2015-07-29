@@ -17,8 +17,7 @@ import com.fancypants.data.repository.HourlyRecordRepository;
 
 @Component
 public class TestHourlyRecordRepository
-		extends
-		SimpleTestRepository<EnergyConsumptionRecordEntity, EnergyConsumptionRecordId>
+		extends SimpleTestRepository<EnergyConsumptionRecordEntity, EnergyConsumptionRecordId>
 		implements HourlyRecordRepository {
 
 	private static final long serialVersionUID = -1539444950934709972L;
@@ -26,14 +25,12 @@ public class TestHourlyRecordRepository
 	private static final Map<String, SortedMap<Date, EnergyConsumptionRecordEntity>> DEVICES = new HashMap<String, SortedMap<Date, EnergyConsumptionRecordEntity>>();
 
 	public TestHourlyRecordRepository() {
-		super(EnergyConsumptionRecordEntity.class,
-				EnergyConsumptionRecordEntity.class.getName());
+		super(EnergyConsumptionRecordEntity.class, EnergyConsumptionRecordEntity.class.getName());
 	}
 
 	@Override
 	public <S extends EnergyConsumptionRecordEntity> S save(S entity) {
-		SortedMap<Date, EnergyConsumptionRecordEntity> records = DEVICES
-				.get(entity.getDevice());
+		SortedMap<Date, EnergyConsumptionRecordEntity> records = DEVICES.get(entity.getDevice());
 		if (null == records) {
 			records = new TreeMap<Date, EnergyConsumptionRecordEntity>();
 			DEVICES.put(entity.getDevice(), records);
@@ -44,24 +41,11 @@ public class TestHourlyRecordRepository
 
 	@Override
 	public List<EnergyConsumptionRecordEntity> findByDevice(String device) {
-		SortedMap<Date, EnergyConsumptionRecordEntity> recordsMap = DEVICES
-				.get(device);
+		SortedMap<Date, EnergyConsumptionRecordEntity> recordsMap = DEVICES.get(device);
 		if (null != recordsMap) {
-			return new ArrayList<EnergyConsumptionRecordEntity>(
-					recordsMap.values());
+			return new ArrayList<EnergyConsumptionRecordEntity>(recordsMap.values());
 		}
 		return Arrays.asList(new EnergyConsumptionRecordEntity[0]);
-	}
-
-	@Override
-	public void deleteAllForDevice(String device) {
-		Map<Date, EnergyConsumptionRecordEntity> records = DEVICES
-				.remove(device);
-		if (null != records) {
-			for (EnergyConsumptionRecordEntity record : records.values()) {
-				delete(record.getId());
-			}
-		}
 	}
 
 	@Override

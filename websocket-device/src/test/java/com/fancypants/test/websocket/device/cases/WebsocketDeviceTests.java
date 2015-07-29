@@ -19,7 +19,6 @@ import org.springframework.web.socket.client.WebSocketClient;
 
 import com.fancypants.data.repository.DeviceRepository;
 import com.fancypants.rest.domain.RawRecord;
-import com.fancypants.rest.mapping.RawRecordMapper;
 import com.fancypants.test.data.values.DeviceValues;
 import com.fancypants.test.stream.TestStreamScanMe;
 import com.fancypants.test.websocket.device.config.WebsocketDeviceTestConfig;
@@ -31,14 +30,12 @@ import com.fancypants.websocket.device.domain.DeviceInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { WSDeviceWebSecurityConfig.class,
-		WSDeviceWebSocketConfig.class, WSDeviceWebConfig.class,
-		WebsocketDeviceTestConfig.class, TestStreamScanMe.class })
+@SpringApplicationConfiguration(classes = { WSDeviceWebSecurityConfig.class, WSDeviceWebSocketConfig.class,
+		WSDeviceWebConfig.class, WebsocketDeviceTestConfig.class, TestStreamScanMe.class })
 @WebAppConfiguration
 @IntegrationTest
 public class WebsocketDeviceTests {
-	private static final URI TEST_URI = URI
-			.create("wss://localhost:8083/stomp");
+	private static final URI TEST_URI = URI.create("wss://localhost:8083/stomp");
 
 	@Autowired
 	private DeviceRepository deviceRepository;
@@ -48,9 +45,6 @@ public class WebsocketDeviceTests {
 
 	@Autowired
 	private WebSocketClient websocketClient;
-
-	@Autowired
-	private RawRecordMapper rawRecordMapper;
 
 	@PostConstruct
 	public void init() throws Exception {
@@ -71,8 +65,7 @@ public class WebsocketDeviceTests {
 		String deviceInfoJSON = objectMapper.writeValueAsString(deviceInfo);
 
 		// add a registration action
-		simulator.add(new StompSimulator.SendAction("/registration",
-				deviceInfoJSON));
+		simulator.add(new StompSimulator.SendAction("/registration", deviceInfoJSON));
 		// add a disconnect action
 		// simulator.add(new StompSimulator.DisconnectAction());
 
@@ -91,8 +84,7 @@ public class WebsocketDeviceTests {
 	@Test
 	public void messageTest() throws Exception {
 		// serialize the records
-		String rawRecordsJSON = objectMapper
-				.writeValueAsString(RawRecord.TEST.RECORDS);
+		String rawRecordsJSON = objectMapper.writeValueAsString(RawRecord.TEST.RECORDS);
 
 		// create the simulator
 		StompSimulator simulator = new StompSimulator();
@@ -104,11 +96,9 @@ public class WebsocketDeviceTests {
 		String deviceInfoJSON = objectMapper.writeValueAsString(deviceInfo);
 
 		// add a send action
-		simulator.add(new StompSimulator.SendAction("/registration",
-				deviceInfoJSON));
+		simulator.add(new StompSimulator.SendAction("/registration", deviceInfoJSON));
 		// add a send action
-		simulator.add(new StompSimulator.SendAction("/records", rawRecordsJSON,
-				UUID.randomUUID().toString()));
+		simulator.add(new StompSimulator.SendAction("/records", rawRecordsJSON, UUID.randomUUID().toString()));
 
 		// HTTP headers
 		WebSocketHttpHeaders headers = new WebSocketHttpHeaders();

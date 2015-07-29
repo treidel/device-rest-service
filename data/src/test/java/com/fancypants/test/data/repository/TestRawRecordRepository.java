@@ -8,17 +8,12 @@ import com.fancypants.data.entity.RawRecordEntity;
 import com.fancypants.data.entity.RawRecordId;
 import com.fancypants.data.partitioner.RawRecordPartitioner;
 import com.fancypants.data.repository.RawRecordRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
-public class TestRawRecordRepository extends
-		PartitionedTestRepository<RawRecordEntity, RawRecordId> implements
-		RawRecordRepository {
+public class TestRawRecordRepository extends PartitionedTestRepository<RawRecordEntity, RawRecordId>
+		implements RawRecordRepository {
 
 	private static final long serialVersionUID = -989745890815966584L;
-
-	@Autowired
-	private ObjectMapper objectMapper;
 
 	@Autowired
 	public TestRawRecordRepository(RawRecordPartitioner partitioner) {

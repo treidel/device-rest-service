@@ -18,15 +18,13 @@ import com.fancypants.device.service.DeviceService;
 import com.fancypants.rest.device.assembler.DeviceResourceAssembler;
 import com.fancypants.rest.device.resource.DeviceResource;
 import com.fancypants.rest.domain.Device;
-import com.fancypants.rest.mapping.DeviceEntityMapper;
 import com.fancypants.rest.mapping.DeviceMapper;
 
 @Controller
 @RequestMapping("/devices")
 public class ClientController {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(ClientController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ClientController.class);
 
 	@Autowired
 	private DeviceResourceAssembler deviceResourceAssembler;
@@ -34,13 +32,10 @@ public class ClientController {
 	private DeviceService deviceService;
 	@Autowired
 	private DeviceMapper deviceMapper;
-	@Autowired
-	private DeviceEntityMapper deviceEntityMapper;
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{deviceId}")
 	@ResponseBody
-	public HttpEntity<DeviceResource> getDevice(
-			@PathVariable("deviceId") String deviceId)
+	public HttpEntity<DeviceResource> getDevice(@PathVariable("deviceId") String deviceId)
 			throws AbstractServiceException {
 		LOG.trace("getDevice enter {}={}", "deviceId", deviceId);
 		// query for the device

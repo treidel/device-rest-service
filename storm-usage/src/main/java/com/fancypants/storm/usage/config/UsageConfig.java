@@ -10,19 +10,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import storm.trident.Stream;
-import storm.trident.TridentTopology;
-import storm.trident.fluent.GroupedStream;
-import storm.trident.spout.IOpaquePartitionedTridentSpout;
-import backtype.storm.Config;
-import backtype.storm.generated.StormTopology;
-import backtype.storm.tuple.Fields;
-
 import com.fancypants.common.CommonScanMe;
 import com.fancypants.data.DataScanMe;
 import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.data.entity.RawRecordEntity;
-import com.fancypants.data.repository.HourlyRecordRepository;
 import com.fancypants.device.DeviceScanMe;
 import com.fancypants.message.MessageScanMe;
 import com.fancypants.storm.StormScanMe;
@@ -39,19 +30,22 @@ import com.fancypants.storm.usage.state.UsageStateFactory;
 import com.fancypants.storm.usage.state.UsageStateUpdater;
 import com.fancypants.usage.UsageScanMe;
 
+import backtype.storm.Config;
+import backtype.storm.generated.StormTopology;
+import backtype.storm.tuple.Fields;
+import storm.trident.Stream;
+import storm.trident.TridentTopology;
+import storm.trident.fluent.GroupedStream;
+import storm.trident.spout.IOpaquePartitionedTridentSpout;
+
 @Configuration
-@ComponentScan(basePackageClasses = { CommonScanMe.class, DataScanMe.class,
-		DeviceScanMe.class, UsageScanMe.class, MessageScanMe.class,
-		StormScanMe.class, StormUsageScanMe.class })
+@ComponentScan(basePackageClasses = { CommonScanMe.class, DataScanMe.class, DeviceScanMe.class, UsageScanMe.class,
+		MessageScanMe.class, StormScanMe.class, StormUsageScanMe.class })
 public class UsageConfig extends AbstractTopologyConfig {
-	private final static Logger LOG = LoggerFactory
-			.getLogger(UsageConfig.class);
+	private final static Logger LOG = LoggerFactory.getLogger(UsageConfig.class);
 
 	private final static String TRIDENT_TOPOLOGY = "filtered_records_topology";
 	private final static String FILTERED_RECORDS_TXID = "filtered_records";
-
-	@Autowired
-	private HourlyRecordRepository hourlyRepository;
 
 	@Autowired
 	private UsageStateFactory usageStateFactory;
@@ -90,26 +84,18 @@ public class UsageConfig extends AbstractTopologyConfig {
 		config.putAll(spout.getKey());
 
 		// setup the filtered stream
-		Stream filteredStream = tridentTopology.newStream(
-				FILTERED_RECORDS_TXID, spout.getValue());
-		Stream node1 = filteredStream.partitionBy(new Fields(
-				RawRecordEntity.DEVICE_ATTRIBUTE));
-		Stream node2 = node1.aggregate(RawRecordTupleMapper.getOutputFields(),
-				hourlyEnergyCalculationAggregator,
+		Stream filteredStream = tridentTopology.newStream(FILTERED_RECORDS_TXID, spout.getValue());
+		Stream node1 = filteredStream.partitionBy(new Fields(RawRecordEntity.DEVICE_ATTRIBUTE));
+		Stream node2 = node1.aggregate(RawRecordTupleMapper.getOutputFields(), hourlyEnergyCalculationAggregator,
 				EnergyConsumptionTupleMapper.getOutputFields());
-		GroupedStream node3 = node2.groupBy(new Fields(
-				EnergyConsumptionRecordEntity.DEVICE_ATTRIBUTE,
+		GroupedStream node3 = node2.groupBy(new Fields(EnergyConsumptionRecordEntity.DEVICE_ATTRIBUTE,
 				EnergyConsumptionRecordEntity.DATE_ATTRIBUTE));
-		Stream node4 = node3.aggregate(new Fields(
-				EnergyConsumptionEntityMapper.ATTRIBUTES), usageAggregator,
+		Stream node4 = node3.aggregate(new Fields(EnergyConsumptionEntityMapper.ATTRIBUTES), usageAggregator,
 				new Fields("result"));
-		node4.partitionPersist(usageStateFactory, new Fields("result"),
-				usageStateUpdater);
-		node4.partitionPersist(topicNotifierStateFactory, new Fields("result"),
-				topicNotifierUpdater);
+		node4.partitionPersist(usageStateFactory, new Fields("result"), usageStateUpdater);
+		node4.partitionPersist(topicNotifierStateFactory, new Fields("result"), topicNotifierUpdater);
 		StormTopology stormTopology = tridentTopology.build();
-		Pair<Config, StormTopology> pair = new ImmutablePair<Config, StormTopology>(
-				new Config(), stormTopology);
+		Pair<Config, StormTopology> pair = new ImmutablePair<Config, StormTopology>(new Config(), stormTopology);
 		LOG.trace("usageTopology exit {}", pair);
 		return pair;
 	}

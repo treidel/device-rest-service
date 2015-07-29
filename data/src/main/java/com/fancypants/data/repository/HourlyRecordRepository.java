@@ -22,12 +22,11 @@ import org.springframework.data.repository.CrudRepository;
 import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.data.entity.EnergyConsumptionRecordId;
 
-public interface HourlyRecordRepository extends CrudRepository<EnergyConsumptionRecordEntity, EnergyConsumptionRecordId>{
+public interface HourlyRecordRepository
+		extends CrudRepository<EnergyConsumptionRecordEntity, EnergyConsumptionRecordId> {
 
-	public List<EnergyConsumptionRecordEntity> findByDevice(String device);
-	
-	public void deleteAllForDevice(String device);
+	List<EnergyConsumptionRecordEntity> findByDevice(String device);
 
-	public void insertOrIncrement(EnergyConsumptionRecordEntity record);
+	void insertOrIncrement(EnergyConsumptionRecordEntity record);
 
 }

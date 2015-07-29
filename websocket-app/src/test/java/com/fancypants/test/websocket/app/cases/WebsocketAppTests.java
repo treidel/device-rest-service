@@ -35,9 +35,8 @@ import com.fancypants.websocket.app.domain.ClientInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { WSAppWebSecurityConfig.class,
-		WSAppWebSocketConfig.class, WSAppWebSocketSecurityConfig.class,
-		WebsocketAppTestConfig.class })
+@SpringApplicationConfiguration(classes = { WSAppWebSecurityConfig.class, WSAppWebSocketConfig.class,
+		WSAppWebSocketSecurityConfig.class, WebsocketAppTestConfig.class })
 @WebAppConfiguration
 @IntegrationTest
 public class WebsocketAppTests {
@@ -45,9 +44,6 @@ public class WebsocketAppTests {
 
 	@Autowired
 	private DeviceRepository deviceRepository;
-
-	@Autowired
-	private DeviceValues values;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -80,17 +76,14 @@ public class WebsocketAppTests {
 		String clientInfoJSON = objectMapper.writeValueAsString(info);
 
 		// add a send action
-		simulator.add(new StompSimulator.SendAction("/registration",
-				clientInfoJSON));
+		simulator.add(new StompSimulator.SendAction("/registration", clientInfoJSON));
 		// add a disconnect action
 		simulator.add(new StompSimulator.DisconnectAction());
 
 		// HTTP headers
-		WebSocketHttpHeaders headers = new WebSocketHttpHeaders(
-				createAuthenticationHeaders());
+		WebSocketHttpHeaders headers = new WebSocketHttpHeaders(createAuthenticationHeaders());
 		// connect
-		ListenableFuture<WebSocketSession> future = websocketClient
-				.doHandshake(simulator, headers, TEST_URI);
+		ListenableFuture<WebSocketSession> future = websocketClient.doHandshake(simulator, headers, TEST_URI);
 		Assert.assertTrue(future.get().isOpen());
 
 		// wait for the simulator to finish
@@ -112,19 +105,15 @@ public class WebsocketAppTests {
 		String clientInfoJSON = objectMapper.writeValueAsString(info);
 
 		// add a registration action
-		simulator.add(new StompSimulator.SendAction("/registration",
-				clientInfoJSON));
+		simulator.add(new StompSimulator.SendAction("/registration", clientInfoJSON));
 		// add a subscription action
-		simulator.add(new StompSimulator.SubscriptionAction("/topic/"
-				+ DeviceValues.DEVICEENTITY.getDevice(), UUID.randomUUID()
-				.toString()));
+		simulator.add(new StompSimulator.SubscriptionAction("/topic/" + DeviceValues.DEVICEENTITY.getDevice(),
+				UUID.randomUUID().toString()));
 
 		// HTTP headers
-		WebSocketHttpHeaders headers = new WebSocketHttpHeaders(
-				createAuthenticationHeaders());
+		WebSocketHttpHeaders headers = new WebSocketHttpHeaders(createAuthenticationHeaders());
 		// connect
-		ListenableFuture<WebSocketSession> future = websocketClient
-				.doHandshake(simulator, headers, TEST_URI);
+		ListenableFuture<WebSocketSession> future = websocketClient.doHandshake(simulator, headers, TEST_URI);
 		Assert.assertTrue(future.get().isOpen());
 
 		// wait for the simulator to finish
@@ -137,8 +126,7 @@ public class WebsocketAppTests {
 	@Test
 	public void notificationTest() throws Exception {
 		// create the topic publisher
-		TopicProducer producer = topicManager
-				.topicProducer(DeviceValues.DEVICEENTITY.getDevice());
+		TopicProducer producer = topicManager.topicProducer(DeviceValues.DEVICEENTITY.getDevice());
 		// create the simulator
 		StompSimulator simulator = new StompSimulator();
 		// add a connection action
@@ -149,26 +137,22 @@ public class WebsocketAppTests {
 		String clientInfoJSON = objectMapper.writeValueAsString(info);
 
 		// add a registration action
-		simulator.add(new StompSimulator.SendAction("/registration",
-				clientInfoJSON));
+		simulator.add(new StompSimulator.SendAction("/registration", clientInfoJSON));
 		// add a subscription action
 		String subscriptionId = UUID.randomUUID().toString();
-		simulator.add(new StompSimulator.SubscriptionAction("/topic/"
-				+ DeviceValues.DEVICEENTITY.getDevice(), subscriptionId));
+		simulator.add(new StompSimulator.SubscriptionAction("/topic/" + DeviceValues.DEVICEENTITY.getDevice(),
+				subscriptionId));
 		// add a notification action
 		simulator.add(new StompSimulator.NotificationAction(subscriptionId));
 
 		// HTTP headers
-		WebSocketHttpHeaders headers = new WebSocketHttpHeaders(
-				createAuthenticationHeaders());
+		WebSocketHttpHeaders headers = new WebSocketHttpHeaders(createAuthenticationHeaders());
 		// connect
-		ListenableFuture<WebSocketSession> future = websocketClient
-				.doHandshake(simulator, headers, TEST_URI);
+		ListenableFuture<WebSocketSession> future = websocketClient.doHandshake(simulator, headers, TEST_URI);
 		Assert.assertTrue(future.get().isOpen());
 
 		// send a notification
-		String json = objectMapper
-				.writeValueAsString(HourlyRecordValues.RECORD1);
+		String json = objectMapper.writeValueAsString(HourlyRecordValues.RECORD1);
 		producer.sendMessage(json);
 
 		// wait for the simulator to finish
@@ -180,8 +164,7 @@ public class WebsocketAppTests {
 
 	private HttpHeaders createAuthenticationHeaders() {
 		HttpHeaders headers = new HttpHeaders();
-		String auth = DeviceValues.DEVICEENTITY.getDevice() + ":"
-				+ DeviceValues.DEVICEENTITY.getSerialNumber();
+		String auth = DeviceValues.DEVICEENTITY.getDevice() + ":" + DeviceValues.DEVICEENTITY.getSerialNumber();
 		String authInBase64 = new String(Base64.encodeBase64(auth.getBytes()));
 		headers.add(HttpHeaders.AUTHORIZATION, "Basic " + authInBase64);
 		return headers;

@@ -16,7 +16,6 @@ import com.fancypants.data.entity.CircuitEntity;
 import com.fancypants.data.entity.DeviceEntity;
 import com.fancypants.data.entity.RawRecordEntity;
 import com.fancypants.data.entity.RawRecordId;
-import com.fancypants.data.repository.DeviceRepository;
 import com.fancypants.data.repository.RawRecordRepository;
 import com.fancypants.stream.exception.StreamException;
 import com.fancypants.stream.writer.StreamWriter;
@@ -24,18 +23,14 @@ import com.fancypants.stream.writer.StreamWriter;
 @Service
 public class RecordService {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(RecordService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RecordService.class);
 
 	@Autowired
 	private RawRecordRepository recordRepository;
 	@Autowired
-	private DeviceRepository deviceRepository;
-	@Autowired
 	private StreamWriter<RawRecordEntity> streamWriter;
 
-	public RawRecordEntity findRecordForDevice(DeviceEntity deviceEntity,
-			UUID uuid) throws AbstractServiceException {
+	public RawRecordEntity findRecordForDevice(DeviceEntity deviceEntity, UUID uuid) throws AbstractServiceException {
 		LOG.trace("findRecordForDevice entry", uuid);
 		// create the record id for the query
 		RawRecordId recordId = new RawRecordId(deviceEntity.getDevice(), uuid);
@@ -50,8 +45,7 @@ public class RecordService {
 		return recordEntity;
 	}
 
-	public void bulkCreateRecords(DeviceEntity deviceEntity,
-			Collection<RawRecordEntity> entities)
+	public void bulkCreateRecords(DeviceEntity deviceEntity, Collection<RawRecordEntity> entities)
 			throws AbstractServiceException {
 		LOG.trace("bulkCreateRecords entry", entities);
 		for (RawRecordEntity recordEntity : entities) {
@@ -59,21 +53,18 @@ public class RecordService {
 			for (CircuitEntity circuitEntity : deviceEntity.getCircuits()) {
 				if (null == recordEntity.getCircuit(circuitEntity.getIndex())) {
 					LOG.debug("bulkCreateRecords validation failure", entities);
-					throw new DataValidationException("no data in record="
-							+ recordEntity.getId().toString() + " for circuit="
-							+ circuitEntity.getIndex());
+					throw new DataValidationException("no data in record=" + recordEntity.getId().toString()
+							+ " for circuit=" + circuitEntity.getIndex());
 				}
 			}
 			// insert it into the queue for more processing, dups will be
 			// detected + eliminated later
 			try {
-				streamWriter.putRecord(recordEntity.getId().getDevice(),
-						recordEntity);
+				streamWriter.putRecord(recordEntity.getId().getDevice(), recordEntity);
 			} catch (StreamException e) {
 				LOG.error("stream error", e);
 				throw new DataPersistenceException(
-						"unable to write data to persistent storage for record="
-								+ recordEntity.getId().toString());
+						"unable to write data to persistent storage for record=" + recordEntity.getId().toString());
 			}
 		}
 		LOG.trace("bulkCreateRecords exit");

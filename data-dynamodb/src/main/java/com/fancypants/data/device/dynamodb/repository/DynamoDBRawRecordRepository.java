@@ -21,21 +21,15 @@ import com.fancypants.data.partitioner.RawRecordPartitioner;
 import com.fancypants.data.repository.RawRecordRepository;
 
 @Component
-public class DynamoDBRawRecordRepository extends
-		PartitionedDynamoDBRepository<RawRecordEntity, RawRecordId> implements
-		RawRecordRepository {
+public class DynamoDBRawRecordRepository extends PartitionedDynamoDBRepository<RawRecordEntity, RawRecordId>
+		implements RawRecordRepository {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(DynamoDBRawRecordRepository.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DynamoDBRawRecordRepository.class);
 
 	private static final long serialVersionUID = -6669041689916234705L;
 	private static final String TABLE_NAME = "raw";
 	private static final Collection<KeySchemaElement> KEY_SCHEMA = Arrays
-			.asList(new KeySchemaElement(RawRecordEntity.RECORDID_ATTRIBUTE,
-					KeyType.HASH));
-
-	@Autowired
-	private RawRecordPartitioner partitioner;
+			.asList(new KeySchemaElement(RawRecordEntity.RECORDID_ATTRIBUTE, KeyType.HASH));
 
 	@Autowired
 	public DynamoDBRawRecordRepository(RawRecordPartitioner partitioner) {
@@ -66,8 +60,7 @@ public class DynamoDBRawRecordRepository extends
 	protected PrimaryKey retrievePrimaryKey(RawRecordId id) {
 		LOG.trace("retrievePrimaryKey enter", "id", id);
 		String hash = id.getDevice() + ":" + id.getUUID().toString();
-		PrimaryKey primaryKey = new PrimaryKey(
-				RawRecordEntity.RECORDID_ATTRIBUTE, hash);
+		PrimaryKey primaryKey = new PrimaryKey(RawRecordEntity.RECORDID_ATTRIBUTE, hash);
 		LOG.trace("retrievePrimaryKey exit", primaryKey);
 		return primaryKey;
 	}
@@ -75,8 +68,7 @@ public class DynamoDBRawRecordRepository extends
 	@Override
 	protected PrimaryKey retrievePrimaryKey(Item item) {
 		LOG.trace("retrievePrimaryKey enter", "item", item);
-		PrimaryKey primaryKey = new PrimaryKey(
-				RawRecordEntity.RECORDID_ATTRIBUTE,
+		PrimaryKey primaryKey = new PrimaryKey(RawRecordEntity.RECORDID_ATTRIBUTE,
 				item.getString(RawRecordEntity.RECORDID_ATTRIBUTE));
 		LOG.trace("retrievePrimaryKey exit", primaryKey);
 		return primaryKey;

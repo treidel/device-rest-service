@@ -114,17 +114,4 @@ public class DynamoDBHourlyRecordRepository
 		getTable().updateItem(spec);
 		LOG.trace("insertOrIncrement exit");
 	}
-
-	@Override
-	public void deleteAllForDevice(String device) {
-		LOG.trace("deleteAllForDevice enter", "device", device);
-		KeyAttribute key = new KeyAttribute(
-				EnergyConsumptionRecordEntity.DEVICE_ATTRIBUTE, device);
-		ItemCollection<QueryOutcome> items = getTable().query(key);
-		for (Item item : items) {
-			EnergyConsumptionRecordEntity entity = deserialize(item);
-			delete(entity);
-		}
-		LOG.trace("deleteAllForDevice exit");
-	}
 }

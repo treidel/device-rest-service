@@ -50,8 +50,7 @@ public class UsageTest {
 	@PostConstruct
 	public void init() {
 		deviceRepository.delete(DeviceValues.DEVICEENTITY.getDevice());
-		usageRepository.deleteAllForDevice(DeviceValues.DEVICEENTITY
-				.getDevice());
+		usageRepository.deleteAll();
 		deviceRepository.save(DeviceValues.DEVICEENTITY);
 		usageRepository.save(Arrays.asList(HourlyRecordValues.RECORDS));
 	}

@@ -25,21 +25,16 @@ import com.fancypants.test.data.values.DeviceValues;
 import com.fancypants.test.rest.app.config.TestConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { RESTAppWebConfig.class,
-		TestConfiguration.class })
+@SpringApplicationConfiguration(classes = { RESTAppWebConfig.class, TestConfiguration.class })
 @WebAppConfiguration
 @IntegrationTest
 public class DeviceTest {
-	private static final URI BASE_URL = URI
-			.create("http://localhost:8002/app/device");
+	private static final URI BASE_URL = URI.create("http://localhost:8002/app/device");
 	@Autowired
 	private DeviceRepository deviceRepository;
 
 	@Autowired
 	private RestTemplate restTemplate;
-	
-	@Autowired
-	private DeviceValues values;
 
 	@PostConstruct
 	public void init() {
@@ -50,26 +45,18 @@ public class DeviceTest {
 	@Test
 	public void queryDeviceTest() {
 		// query the device
-		ResponseEntity<DeviceResource> response = restTemplate
-				.exchange(
-						BASE_URL,
-						HttpMethod.GET,
-						null,
-						new ParameterizedTypeReference<DeviceResource>() {
-						});
+		ResponseEntity<DeviceResource> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, null,
+				new ParameterizedTypeReference<DeviceResource>() {
+				});
 		Assert.assertTrue(HttpStatus.OK.equals(response.getStatusCode()));
 	}
-	
+
 	@Test
 	public void updateDeviceTest() {
 		// query the device
-		ResponseEntity<DeviceResource> response = restTemplate
-				.exchange(
-						BASE_URL,
-						HttpMethod.GET,
-						null,
-						new ParameterizedTypeReference<DeviceResource>() {
-						});
+		ResponseEntity<DeviceResource> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, null,
+				new ParameterizedTypeReference<DeviceResource>() {
+				});
 		Assert.assertTrue(HttpStatus.OK.equals(response.getStatusCode()));
 		// update the device
 		restTemplate.put(BASE_URL, response.getBody().device);
