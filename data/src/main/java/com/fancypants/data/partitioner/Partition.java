@@ -11,4 +11,21 @@ public class Partition {
 	public String getValue() {
 		return value;
 	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (false == (object instanceof Partition)) {
+			return false;
+		}
+		if (object == this) {
+			return true;
+		}
+		Partition partition = (Partition) object;
+		return value.equals(partition.value);
+	}
+
+	@Override
+	public String toString() {
+		return "Partition[value=" + value + "]";
+	}
 }

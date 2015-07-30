@@ -129,7 +129,7 @@ public abstract class PartitionedTestRepository<E, I extends Serializable, T> ex
 	}
 
 	private String computeTableName(Partition partition) {
-		return getEntityClass() + "_" + partition.getValue();
+		return getEntityClass().getCanonicalName() + "_" + partition.getValue();
 	}
 
 	private class PartitionWrapper extends SimpleTestRepository<E, I> {

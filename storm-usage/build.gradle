@@ -27,7 +27,6 @@ dependencies {
 	}
 	
 	compile("org.springframework.boot:spring-boot-starter:$springBootVersion")	
-	compile("org.springframework.boot:spring-boot-starter:$springBootVersion")
 	compile("commons-beanutils:commons-beanutils:$commonsBeanutilsVersion")
 	runtime("org.springframework.security:spring-security-config:$springSecurityVersion")	
 	runtime("ch.qos.logback:logback-classic:$logbackVersion")
