@@ -14,26 +14,36 @@ import com.fancypants.data.entity.RawRecordEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
-public class RawRecordPartitioner implements Partitioner<RawRecordEntity>,
-		Serializable {
+public class RawRecordPartitioner implements Partitioner<RawRecordEntity, Date>, Serializable {
 
 	private static final long serialVersionUID = 2811693714166814268L;
-	private static final Logger LOG = LoggerFactory
-			.getLogger(RawRecordPartitioner.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RawRecordPartitioner.class);
 	private static final DateIntervalGenerator GENERATOR = new HourlyDateIntervalGenerator();
 
 	@Autowired
 	private ObjectMapper objectMapper;
 
 	@Override
-	public String partition(RawRecordEntity entity) {
-		LOG.trace("RawRecordPartitioner.partition enter", "entity", entity);
+	public Partition partitionByEntity(RawRecordEntity entity) {
+		LOG.trace("partitionByEntity enter", "entity", entity);
 		// calculate the start date of the partition
 		Date startDate = GENERATOR.flattenDate(entity.getTimestamp());
 		// calculate the partition
-		String partition = objectMapper.getDeserializationConfig()
-				.getDateFormat().format(startDate);
-		LOG.trace("RawRecordPartitioner.partition exit", partition);
+		String tag = objectMapper.getDeserializationConfig().getDateFormat().format(startDate);
+		Partition partition = new Partition(tag);
+		LOG.trace("partitionByEntity exit", partition);
+		return partition;
+	}
+
+	@Override
+	public Partition partitionByValue(Date value) {
+		LOG.trace("partitionByValue enter", "value", value);
+		// calculate the start date of the partition
+		Date startDate = GENERATOR.flattenDate(value);
+		// calculate the partition
+		String tag = objectMapper.getDeserializationConfig().getDateFormat().format(startDate);
+		Partition partition = new Partition(tag);
+		LOG.trace("partitionByValue exit", partition);
 		return partition;
 	}
 

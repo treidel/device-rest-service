@@ -20,25 +20,23 @@ import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
+import com.fancypants.data.partitioner.Partition;
 import com.fancypants.data.partitioner.Partitioner;
 import com.fancypants.data.repository.PartitionedRepository;
 
-public abstract class PartitionedDynamoDBRepository<E, I extends Serializable>
-		extends AbstractDynamoDBRepository<E, I> implements
-		PartitionedRepository<E, I> {
+public abstract class PartitionedDynamoDBRepository<E, I extends Serializable, T>
+		extends AbstractDynamoDBRepository<E, I>implements PartitionedRepository<E, I> {
 
 	private static final long serialVersionUID = -3291793409692029613L;
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(PartitionedDynamoDBRepository.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PartitionedDynamoDBRepository.class);
 
-	private final Partitioner<E> partitioner;
+	private final Partitioner<E, T> partitioner;
 
 	@Autowired
 	private ApplicationContext applicationContext;
 
-	protected PartitionedDynamoDBRepository(Class<E> clazz,
-			Partitioner<E> partitioner) {
+	protected PartitionedDynamoDBRepository(Class<E> clazz, Partitioner<E, T> partitioner) {
 		super(clazz);
 		LOG.trace("PartitionedDynamoDBRepository enter", "clazz", clazz);
 		this.partitioner = partitioner;
@@ -48,7 +46,7 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable>
 	protected Table getTable(E entity) {
 		LOG.trace("getTable enter", "entity", entity);
 		// run the partitioner
-		String partition = partitioner.partition(entity);
+		Partition partition = partitioner.partitionByEntity(entity);
 		// create the table name
 		String tableName = computeTableName(partition);
 		// fetch the table
@@ -62,7 +60,7 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable>
 	protected abstract Collection<KeySchemaElement> retrieveKeySchema();
 
 	@Override
-	public void createPartition(String partition) {
+	public void createPartition(Partition partition) {
 		LOG.trace("createPartition enter", "partition", partition);
 		// compute the table name
 		String tableName = computeTableName(partition);
@@ -75,11 +73,9 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable>
 			LOG.debug("table not found, creating", tableName);
 			// get the key schema from the child class
 			Collection<KeySchemaElement> elements = retrieveKeySchema();
-			Collection<AttributeDefinition> attributes = new ArrayList<>(
-					elements.size());
+			Collection<AttributeDefinition> attributes = new ArrayList<>(elements.size());
 			for (KeySchemaElement element : elements) {
-				attributes.add(new AttributeDefinition(element
-						.getAttributeName(), ScalarAttributeType.S));
+				attributes.add(new AttributeDefinition(element.getAttributeName(), ScalarAttributeType.S));
 			}
 			// create + populate the API request
 			CreateTableRequest request = new CreateTableRequest();
@@ -100,7 +96,7 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable>
 	}
 
 	@Override
-	public void deletePartition(String partition) {
+	public void deletePartition(Partition partition) {
 		LOG.trace("deletePartition enter", "partition", partition);
 		// compute the table name
 		String tableName = computeTableName(partition);
@@ -122,14 +118,12 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable>
 	}
 
 	@Override
-	public CrudRepository<E, I> retrievePartitionTable(String partition) {
+	public CrudRepository<E, I> retrievePartitionTable(Partition partition) {
 		LOG.trace("partition enter", "partition", partition);
 		// create the wrapper
 		PartitionWrapper wrapper = new PartitionWrapper(partition);
-		applicationContext.getAutowireCapableBeanFactory()
-				.autowireBean(wrapper);
-		applicationContext.getAutowireCapableBeanFactory().initializeBean(
-				wrapper, wrapper.retrieveTableName());
+		applicationContext.getAutowireCapableBeanFactory().autowireBean(wrapper);
+		applicationContext.getAutowireCapableBeanFactory().initializeBean(wrapper, wrapper.retrieveTableName());
 		LOG.trace("partition exit", wrapper);
 		return wrapper;
 	}
@@ -207,18 +201,18 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable>
 		LOG.trace("delete exit");
 	}
 
-	private String computeTableName(String partition) {
+	private String computeTableName(Partition partition) {
 		// substitute dots for colons to ensure a legal table name
-		return retrieveBaseTableName() + "_" + partition.replace(':', '.');
+		return retrieveBaseTableName() + "_" + partition.getValue().replace(':', '.');
 	}
 
 	private class PartitionWrapper extends SimpleDynamoDBRepository<E, I> {
 
 		private static final long serialVersionUID = 6415591338541281719L;
 
-		private final String partition;
+		private final Partition partition;
 
-		public PartitionWrapper(String partition) {
+		public PartitionWrapper(Partition partition) {
 			super(PartitionedDynamoDBRepository.this.getEntityClass());
 			LOG.trace("PartitionWrapper enter", "partition", partition);
 			this.partition = partition;
@@ -236,10 +230,8 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable>
 
 		@Override
 		protected PrimaryKey retrievePrimaryKey(E entity) {
-			LOG.trace("PartitionWrapper.retrievePrimaryKey enter", "entity",
-					entity);
-			PrimaryKey primaryKey = PartitionedDynamoDBRepository.this
-					.retrievePrimaryKey(entity);
+			LOG.trace("PartitionWrapper.retrievePrimaryKey enter", "entity", entity);
+			PrimaryKey primaryKey = PartitionedDynamoDBRepository.this.retrievePrimaryKey(entity);
 			LOG.trace("PartitionWrapper.retrievePrimaryKey exit", primaryKey);
 			return primaryKey;
 		}
@@ -247,8 +239,7 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable>
 		@Override
 		protected PrimaryKey retrievePrimaryKey(I id) {
 			LOG.trace("PartitionWrapper.retrievePrimaryKey enter", "id", id);
-			PrimaryKey primaryKey = PartitionedDynamoDBRepository.this
-					.retrievePrimaryKey(id);
+			PrimaryKey primaryKey = PartitionedDynamoDBRepository.this.retrievePrimaryKey(id);
 			LOG.trace("PartitionWrapper.retrievePrimaryKey exit", primaryKey);
 			return primaryKey;
 		}
@@ -256,8 +247,7 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable>
 		@Override
 		protected PrimaryKey retrievePrimaryKey(Item item) {
 			LOG.trace("PartitionWrapper.retrievePrimaryKey enter", "item", item);
-			PrimaryKey primaryKey = PartitionedDynamoDBRepository.this
-					.retrievePrimaryKey(item);
+			PrimaryKey primaryKey = PartitionedDynamoDBRepository.this.retrievePrimaryKey(item);
 			LOG.trace("PartitionWrapper.retrievePrimaryKey exit", primaryKey);
 			return primaryKey;
 		}

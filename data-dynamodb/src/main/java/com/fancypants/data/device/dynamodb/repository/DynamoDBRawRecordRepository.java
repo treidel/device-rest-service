@@ -2,6 +2,7 @@ package com.fancypants.data.device.dynamodb.repository;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ import com.fancypants.data.partitioner.RawRecordPartitioner;
 import com.fancypants.data.repository.RawRecordRepository;
 
 @Component
-public class DynamoDBRawRecordRepository extends PartitionedDynamoDBRepository<RawRecordEntity, RawRecordId>
+public class DynamoDBRawRecordRepository extends PartitionedDynamoDBRepository<RawRecordEntity, RawRecordId, Date>
 		implements RawRecordRepository {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DynamoDBRawRecordRepository.class);

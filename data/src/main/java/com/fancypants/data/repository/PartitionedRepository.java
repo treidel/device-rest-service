@@ -4,12 +4,14 @@ import java.io.Serializable;
 
 import org.springframework.data.repository.CrudRepository;
 
+import com.fancypants.data.partitioner.Partition;
+
 public interface PartitionedRepository<E, I extends Serializable> {
 
-	void createPartition(String partition);
+	void createPartition(Partition partition);
 
-	void deletePartition(String partition);
+	void deletePartition(Partition partition);
 
-	CrudRepository<E, I> retrievePartitionTable(String partition);
+	CrudRepository<E, I> retrievePartitionTable(Partition partition);
 
 }

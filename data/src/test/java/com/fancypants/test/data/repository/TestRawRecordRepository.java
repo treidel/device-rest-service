@@ -1,16 +1,19 @@
 package com.fancypants.test.data.repository;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 import com.fancypants.data.entity.RawRecordEntity;
 import com.fancypants.data.entity.RawRecordId;
+import com.fancypants.data.partitioner.Partition;
 import com.fancypants.data.partitioner.RawRecordPartitioner;
 import com.fancypants.data.repository.RawRecordRepository;
 
 @Component
-public class TestRawRecordRepository extends PartitionedTestRepository<RawRecordEntity, RawRecordId>
+public class TestRawRecordRepository extends PartitionedTestRepository<RawRecordEntity, RawRecordId, Date>
 		implements RawRecordRepository {
 
 	private static final long serialVersionUID = -989745890815966584L;
@@ -23,7 +26,7 @@ public class TestRawRecordRepository extends PartitionedTestRepository<RawRecord
 	@Override
 	public boolean insert(RawRecordEntity record) {
 		// calculate the partition
-		String partition = getPartitioner().partition(record);
+		Partition partition = getPartitioner().partitionByEntity(record);
 		// get the partition
 		CrudRepository<RawRecordEntity, RawRecordId> partitionTable = retrievePartitionTable(partition);
 		// lookup the record

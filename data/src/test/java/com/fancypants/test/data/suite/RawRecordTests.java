@@ -13,6 +13,7 @@ import org.springframework.util.Assert;
 
 import com.fancypants.data.entity.RawRecordEntity;
 import com.fancypants.data.entity.RawRecordId;
+import com.fancypants.data.partitioner.Partition;
 import com.fancypants.data.partitioner.RawRecordPartitioner;
 import com.fancypants.data.repository.RawRecordRepository;
 import com.fancypants.test.data.config.TestDataConfig;
@@ -22,17 +23,15 @@ import com.fancypants.test.data.values.RawRecordValues;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = TestDataConfig.class)
 public class RawRecordTests {
 
-	private @Autowired
-	RawRecordRepository repository;
+	private @Autowired RawRecordRepository repository;
 
-	private @Autowired
-	RawRecordPartitioner partitioner;
+	private @Autowired RawRecordPartitioner partitioner;
 
 	@Before
 	public void setup() {
 		// make sure a partition exists for all records
 		for (RawRecordEntity entity : RawRecordValues.RECORDS) {
-			String partition = partitioner.partition(entity);
+			Partition partition = partitioner.partitionByEntity(entity);
 			repository.createPartition(partition);
 		}
 
@@ -42,7 +41,7 @@ public class RawRecordTests {
 	public void cleanup() {
 		// clean up all partitions
 		for (RawRecordEntity entity : RawRecordValues.RECORDS) {
-			String partition = partitioner.partition(entity);
+			Partition partition = partitioner.partitionByEntity(entity);
 			repository.deletePartition(partition);
 		}
 	}
@@ -65,11 +64,9 @@ public class RawRecordTests {
 		// run the create test to create a record
 		createTest();
 		// query for it
-		String partition = partitioner.partition(RawRecordValues.RECORD1);
-		CrudRepository<RawRecordEntity, RawRecordId> crudRepository = repository
-				.retrievePartitionTable(partition);
-		RawRecordEntity record = crudRepository.findOne(RawRecordValues.RECORD1
-				.getId());
+		Partition partition = partitioner.partitionByEntity(RawRecordValues.RECORD1);
+		CrudRepository<RawRecordEntity, RawRecordId> crudRepository = repository.retrievePartitionTable(partition);
+		RawRecordEntity record = crudRepository.findOne(RawRecordValues.RECORD1.getId());
 		Assert.isTrue(null != record);
 	}
 

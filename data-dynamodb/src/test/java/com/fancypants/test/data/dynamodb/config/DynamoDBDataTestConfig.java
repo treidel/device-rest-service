@@ -27,6 +27,7 @@ import com.fancypants.data.device.dynamodb.config.DynamoDBConfig;
 import com.fancypants.test.data.dynamodb.TestDynamoDBDataScanMe;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.messages.Container;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.HostConfig;
@@ -34,24 +35,20 @@ import com.spotify.docker.client.messages.Image;
 import com.spotify.docker.client.messages.PortBinding;
 
 @Configuration
-@ComponentScan(basePackageClasses = { CommonScanMe.class,
-		TestDynamoDBDataScanMe.class })
+@ComponentScan(basePackageClasses = { CommonScanMe.class, TestDynamoDBDataScanMe.class })
 @PropertySource("classpath:/test.properties")
 public class DynamoDBDataTestConfig {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(DynamoDBDataTestConfig.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DynamoDBDataTestConfig.class);
 
 	private static final String DOCKER_IMAGE = "reideltj/dynamodb";
 
+	private DockerClient docker = null;
 	private String containerId = null;
 
-	private @Autowired
-	AWSCredentials awsCredentials;
+	private @Autowired AWSCredentials awsCredentials;
 
-	private @Autowired
-	@Value("${" + DynamoDBConfig.AMAZON_DYNAMODB_ENDPOINT_ENVVAR + "}")
-	String endpoint;
+	private @Autowired @Value("${" + DynamoDBConfig.AMAZON_DYNAMODB_ENDPOINT_ENVVAR + "}") String endpoint;
 
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
@@ -74,7 +71,7 @@ public class DynamoDBDataTestConfig {
 		LOG.trace("init enter");
 
 		// create the docker client
-		final DockerClient docker = DefaultDockerClient.fromEnv().build();
+		docker = new DefaultDockerClient("unix:///var/run/docker.sock");
 
 		// boolean to indicate if the images already exists
 		boolean found = false;
@@ -89,10 +86,20 @@ public class DynamoDBDataTestConfig {
 			LOG.info("pulling image {}", DOCKER_IMAGE);
 			docker.pull(DOCKER_IMAGE);
 		}
+
+		// go through existing containers and kill any stale ones
+		List<Container> containers = docker.listContainers();
+		for (Container container : containers) {
+			if (true == container.image().equals(DOCKER_IMAGE)) {
+				LOG.info("killing stale container", container.id());
+				docker.stopContainer(container.id(), 30);
+				docker.removeContainer(container.id());
+			}
+		}
+
 		// setup the container
 		final String[] ports = { "8000" };
-		final ContainerConfig config = ContainerConfig.builder()
-				.image(DOCKER_IMAGE).exposedPorts(ports).build();
+		final ContainerConfig config = ContainerConfig.builder().image(DOCKER_IMAGE).exposedPorts(ports).build();
 		// bind container ports to host ports
 		final Map<String, List<PortBinding>> portBindings = new HashMap<>();
 		for (String port : ports) {
@@ -100,8 +107,7 @@ public class DynamoDBDataTestConfig {
 			hostPorts.add(PortBinding.of("0.0.0.0", port));
 			portBindings.put(port, hostPorts);
 		}
-		final HostConfig hostConfig = HostConfig.builder()
-				.portBindings(portBindings).build();
+		final HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
 
 		LOG.info("creating container");
 		final ContainerCreation creation = docker.createContainer(config);
@@ -119,14 +125,15 @@ public class DynamoDBDataTestConfig {
 	@PreDestroy
 	private void cleanup() throws Exception {
 		LOG.trace("fini enter");
-		if (null != containerId) {
-			// stop the container
-			final DockerClient docker = DefaultDockerClient.fromEnv().build();
-			LOG.info("stopping container {}", containerId);
-			docker.stopContainer(containerId, 30);
-			LOG.info("removing container {}", containerId);
-			// remove the container
-			docker.removeContainer(containerId);
+		if (null != docker) {
+			if (null != containerId) {
+				// stop the container
+				LOG.info("stopping container {}", containerId);
+				docker.stopContainer(containerId, 30);
+				LOG.info("removing container {}", containerId);
+				// remove the container
+				docker.removeContainer(containerId);
+			}
 		}
 		LOG.trace("fini exit");
 	}
