@@ -3,6 +3,7 @@ package com.fancypants.data.device.dynamodb.repository;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -14,9 +15,12 @@ import org.springframework.data.repository.CrudRepository;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.TableCollection;
+import com.amazonaws.services.dynamodbv2.document.spec.ListTablesSpec;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
+import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
@@ -32,6 +36,7 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable, T
 	private static final Logger LOG = LoggerFactory.getLogger(PartitionedDynamoDBRepository.class);
 
 	private final Partitioner<E, T> partitioner;
+	private final String tablePrefix;
 
 	@Autowired
 	private ApplicationContext applicationContext;
@@ -39,7 +44,10 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable, T
 	protected PartitionedDynamoDBRepository(Class<E> clazz, Partitioner<E, T> partitioner) {
 		super(clazz);
 		LOG.trace("PartitionedDynamoDBRepository enter", "clazz", clazz);
+		// store the partitioner
 		this.partitioner = partitioner;
+		// compute the table prefix
+		this.tablePrefix = retrieveBaseTableName() + "_";
 		LOG.trace("PartitionedDynamoDBRepository exit");
 	}
 
@@ -118,8 +126,34 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable, T
 	}
 
 	@Override
+	public List<Partition> listPartitions() {
+		LOG.trace("listPartitions enter");
+		// query for a list of tables starting with our table base name
+		TableCollection<ListTablesResult> tables = getDynamoDB()
+				.listTables(new ListTablesSpec().withExclusiveStartTableName(retrieveBaseTableName()));
+		// create a response list
+		List<Partition> partitions = new LinkedList<>();
+		for (Table table : tables) {
+			// give up if we get to tables that aren't partitions of this
+			// logical table
+			if (false == table.getTableName().startsWith(tablePrefix)) {
+				break;
+			}
+			// the partition name is the portion of the table name after the
+			// prefix with the dots swapped back to dashes
+			String partitionName = table.getTableName().substring(tablePrefix.length()).replace('.', '-');
+			Partition partition = new Partition(partitionName);
+			// add it to the list
+			partitions.add(partition);
+		}
+
+		LOG.trace("listPartitions exit {}", partitions);
+		return partitions;
+	}
+
+	@Override
 	public CrudRepository<E, I> retrievePartitionTable(Partition partition) {
-		LOG.trace("partition enter", "partition", partition);
+		LOG.trace("retrievePartitionTable enter {}={}", "partition", partition);
 		// create the wrapper
 		PartitionWrapper wrapper = new PartitionWrapper(partition);
 		applicationContext.getAutowireCapableBeanFactory().autowireBean(wrapper);
@@ -135,7 +169,21 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable, T
 
 	@Override
 	public long count() {
-		throw new UnsupportedOperationException();
+		LOG.trace("count enter");
+		// get a list of partitions
+		List<Partition> partitions = listPartitions();
+		long value = 0;
+		// iterate through each partition
+		for (Partition partition : partitions) {
+			// get the partition table
+			CrudRepository<?, ?> partitionTable = retrievePartitionTable(partition);
+			if (null != partitionTable) {
+				// query for counts
+				value += partitionTable.count();
+			}
+		}
+		LOG.trace("count exit {}", value);
+		return value;
 	}
 
 	@Override
@@ -203,7 +251,7 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable, T
 
 	private String computeTableName(Partition partition) {
 		// substitute dots for colons to ensure a legal table name
-		return retrieveBaseTableName() + "_" + partition.getValue().replace(':', '.');
+		return this.tablePrefix + partition.getValue().replace(':', '.');
 	}
 
 	private class PartitionWrapper extends SimpleDynamoDBRepository<E, I> {

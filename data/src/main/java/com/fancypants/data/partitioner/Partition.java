@@ -4,7 +4,7 @@ public class Partition {
 
 	private final String value;
 
-	Partition(String value) {
+	public Partition(String value) {
 		this.value = value;
 	}
 

@@ -3,6 +3,8 @@ package com.fancypants.test.data.repository;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -13,8 +15,7 @@ import org.springframework.data.repository.core.support.ReflectionEntityInformat
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public abstract class AbstractTestRepository<E, I extends Serializable>
-		implements CrudRepository<E, I>, Serializable {
+public abstract class AbstractTestRepository<E, I extends Serializable> implements CrudRepository<E, I>, Serializable {
 
 	private static final long serialVersionUID = 5088964975582070882L;
 	private static final Map<String, Map<?, ?>> SINGLETON = new HashMap<String, Map<?, ?>>();
@@ -25,8 +26,7 @@ public abstract class AbstractTestRepository<E, I extends Serializable>
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	protected static Map<?, ?> findOrCreateTable(String tableName,
-			Class<? extends Map<?, ?>> tableClazz) {
+	protected static Map<?, ?> findOrCreateTable(String tableName, Class<? extends Map<?, ?>> tableClazz) {
 		try {
 			synchronized (SINGLETON) {
 				Map<?, ?> table = SINGLETON.get(tableName);
@@ -45,6 +45,14 @@ public abstract class AbstractTestRepository<E, I extends Serializable>
 		synchronized (SINGLETON) {
 			SINGLETON.remove(tableName);
 		}
+	}
+
+	protected static List<String> listTables() {
+		List<String> tables = new LinkedList<>();
+		synchronized (SINGLETON) {
+			tables.addAll(SINGLETON.keySet());
+		}
+		return tables;
 	}
 
 	protected AbstractTestRepository(Class<E> clazz) {

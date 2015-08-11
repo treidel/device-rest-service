@@ -1,7 +1,8 @@
 package com.fancypants.test.data.suite;
 
+import java.util.List;
+
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,27 +28,18 @@ public class RawRecordTests {
 
 	private @Autowired RawRecordPartitioner partitioner;
 
-	@Before
-	public void setup() {
-		// make sure a partition exists for all records
-		for (RawRecordEntity entity : RawRecordValues.RECORDS) {
-			Partition partition = partitioner.partitionByEntity(entity);
-			repository.createPartition(partition);
-		}
-
-	}
-
 	@After
-	public void cleanup() {
-		// clean up all partitions
-		for (RawRecordEntity entity : RawRecordValues.RECORDS) {
-			Partition partition = partitioner.partitionByEntity(entity);
+	public void after() {
+		List<Partition> partitions = repository.listPartitions();
+		for (Partition partition : partitions) {
 			repository.deletePartition(partition);
 		}
 	}
 
 	@Test
 	public void createTest() {
+		Partition partition = partitioner.partitionByEntity(RawRecordValues.RECORD1);
+		repository.createPartition(partition);
 		Assert.isTrue(repository.insert(RawRecordValues.RECORD1));
 	}
 
@@ -73,8 +65,18 @@ public class RawRecordTests {
 	@Test
 	public void bulkInsertTest() {
 		for (RawRecordEntity record : RawRecordValues.RECORDS) {
+			Partition partition = partitioner.partitionByEntity(RawRecordValues.RECORD1);
+			repository.createPartition(partition);
 			repository.insert(record);
 		}
+
 	}
 
+	@Test
+	public void partitionTest() {
+		Partition partition = partitioner.partitionByEntity(RawRecordValues.RECORD1);
+		repository.createPartition(partition);
+		List<Partition> partitions = repository.listPartitions();
+		Assert.isTrue(1 == partitions.size());
+	}
 }

@@ -2,6 +2,7 @@ package com.fancypants.test.data.repository;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,11 +23,14 @@ public abstract class PartitionedTestRepository<E, I extends Serializable, T> ex
 	private ApplicationContext applicationContext;
 
 	private final Partitioner<E, T> partitioner;
+	private final String tablePrefix;
 
 	protected PartitionedTestRepository(Class<E> clazz, Partitioner<E, T> partitioner) {
 		super(clazz);
 		// store the partitioner
 		this.partitioner = partitioner;
+		// compute the table name
+		this.tablePrefix = getEntityClass().getCanonicalName() + "_";
 	}
 
 	protected Partitioner<E, T> getPartitioner() {
@@ -57,13 +61,38 @@ public abstract class PartitionedTestRepository<E, I extends Serializable, T> ex
 	}
 
 	@Override
+	public List<Partition> listPartitions() {
+		List<Partition> partitions = new LinkedList<>();
+		List<String> tables = listTables();
+		for (String table : tables) {
+			if (true == table.startsWith(getEntityClass().getCanonicalName() + "_")) {
+				Partition partition = new Partition(table.substring(tablePrefix.length()));
+				partitions.add(partition);
+			}
+		}
+		return partitions;
+	}
+
+	@Override
 	public void deleteAll() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public long count() {
-		throw new UnsupportedOperationException();
+		// get a list of partitions
+		List<Partition> partitions = listPartitions();
+		long value = 0;
+		// iterate through each partition
+		for (Partition partition : partitions) {
+			// get the partition table
+			CrudRepository<?, ?> partitionTable = retrievePartitionTable(partition);
+			if (null != partitionTable) {
+				// query for counts
+				value += partitionTable.count();
+			}
+		}
+		return value;
 	}
 
 	@Override
@@ -129,7 +158,7 @@ public abstract class PartitionedTestRepository<E, I extends Serializable, T> ex
 	}
 
 	private String computeTableName(Partition partition) {
-		return getEntityClass().getCanonicalName() + "_" + partition.getValue();
+		return tablePrefix + partition.getValue();
 	}
 
 	private class PartitionWrapper extends SimpleTestRepository<E, I> {
