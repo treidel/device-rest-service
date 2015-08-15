@@ -21,10 +21,10 @@ dependencies {
 	/* create a new configuration for all of the application dependencies */
 	configurations {
  		/* create the packaging configuration used for extra libraries for spring boto */
- 		bootPackaging {
+ 		boot {
  			extendsFrom runtime
-			/* exclude the storm libraries as required by storm */
-			exclude group: 'org.apache.storm'
+			/* exclude the storm core library as required by storm */
+			exclude group: 'org.apache.storm', module: 'storm-core'
  		}
 	}
 	
@@ -34,24 +34,24 @@ dependencies {
 	runtime("ch.qos.logback:logback-classic:$logbackVersion")
 	runtime("org.logback-extensions:logback-ext-loggly:$logbackExtensionsVersion")
 	runtime("org.codehaus.groovy:groovy-all:$groovyVersion")
-	bootPackaging project(':data-dynamodb')
-	bootPackaging project(':storm-kinesis')
-	bootPackaging project(':storm-kafka')
+	boot project(':data-dynamodb')
+	boot project(':storm-kinesis')
+	boot project(':storm-kafka')
 }
 
 /* use the application dependencies */
 bootRepackage {
-	customConfiguration = "bootPackaging"
+	customConfiguration = "boot"
 }
 
 /* include the application dependencies in the distribution */
-applicationDistribution.from(configurations.bootPackaging) {
+applicationDistribution.from(configurations.boot) {
 	into "lib"
 }
 
 /* add application dependencies to the classpath */
 startScripts {
-	classpath += configurations.bootPackaging
+	classpath += configurations.boot
 }
 
 /* configure JVM arguments */
