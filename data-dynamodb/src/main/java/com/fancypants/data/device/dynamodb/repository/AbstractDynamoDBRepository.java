@@ -29,8 +29,7 @@ public abstract class AbstractDynamoDBRepository<E, I extends Serializable>
 
 	private static final long serialVersionUID = -3291793409692029613L;
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(AbstractDynamoDBRepository.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractDynamoDBRepository.class);
 
 	private final Class<E> clazz;
 
@@ -47,10 +46,22 @@ public abstract class AbstractDynamoDBRepository<E, I extends Serializable>
 	private ObjectMapper objectMapper;
 
 	protected AbstractDynamoDBRepository(Class<E> clazz) {
-		LOG.trace("AbstractDynamoDBRepository entry");
+		LOG.trace("AbstractDynamoDBRepository entry {}={}", "clazz", clazz);
 		// store variables
 		this.clazz = clazz;
-		LOG.trace("AbstractDynamoDBRepository entry");
+		LOG.trace("AbstractDynamoDBRepository exit");
+	}
+
+	protected AbstractDynamoDBRepository(Class<E> clazz, DynamoDB dynamoDB, SerializableCredentials awsCredentials,
+			ObjectMapper objectMapper, String endpoint) {
+		this(clazz);
+		LOG.trace("AbstractDynamoDBRepository entry {}={} {}={} {}={} {}={} {}={}", "clazz", clazz, "dynamoDB",
+				dynamoDB, "awsCredentials", awsCredentials, "objectMapper", objectMapper, "endpoint", endpoint);
+		this.dynamoDB = dynamoDB;
+		this.awsCredentials = awsCredentials;
+		this.objectMapper = objectMapper;
+		this.endpoint = endpoint;
+		LOG.trace("AbstractDynamoDBRepository exit");
 	}
 
 	@PostConstruct
@@ -61,11 +72,9 @@ public abstract class AbstractDynamoDBRepository<E, I extends Serializable>
 		Assert.isTrue(objectMapper.canSerialize(clazz));
 
 		// create the credential provider
-		AWSCredentialsProvider awsCredentialsProvider = new StaticCredentialsProvider(
-				awsCredentials);
+		AWSCredentialsProvider awsCredentialsProvider = new StaticCredentialsProvider(awsCredentials);
 		// create the client
-		AmazonDynamoDB amazonDynamoDB = new AmazonDynamoDBClient(
-				awsCredentialsProvider);
+		AmazonDynamoDB amazonDynamoDB = new AmazonDynamoDBClient(awsCredentialsProvider);
 		amazonDynamoDB.setEndpoint(endpoint);
 		// now create the dynamoDB object
 		dynamoDB = new DynamoDB(amazonDynamoDB);
@@ -82,6 +91,14 @@ public abstract class AbstractDynamoDBRepository<E, I extends Serializable>
 
 	protected ObjectMapper getObjectMapper() {
 		return objectMapper;
+	}
+
+	protected SerializableCredentials getCredentials() {
+		return awsCredentials;
+	}
+
+	protected String getEndpoint() {
+		return endpoint;
 	}
 
 	protected E deserialize(Item item) {

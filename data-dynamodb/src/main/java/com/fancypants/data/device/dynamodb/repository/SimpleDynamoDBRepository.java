@@ -8,6 +8,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.ItemCollection;
 import com.amazonaws.services.dynamodbv2.document.Page;
@@ -16,19 +17,28 @@ import com.amazonaws.services.dynamodbv2.document.ScanOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.ScanSpec;
 import com.amazonaws.services.dynamodbv2.model.Select;
+import com.fancypants.data.device.dynamodb.credentials.SerializableCredentials;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public abstract class SimpleDynamoDBRepository<E, I extends Serializable>
-		extends AbstractDynamoDBRepository<E, I> {
+public abstract class SimpleDynamoDBRepository<E, I extends Serializable> extends AbstractDynamoDBRepository<E, I> {
 
 	private static final long serialVersionUID = -3291793409692029613L;
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(SimpleDynamoDBRepository.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SimpleDynamoDBRepository.class);
 
 	protected SimpleDynamoDBRepository(Class<E> clazz) {
 		super(clazz);
-		LOG.trace("SimpleDynamoDBRepository enter", "clazz", clazz);
+		LOG.trace("SimpleDynamoDBRepository enter {}={}", "clazz", clazz);
 		LOG.trace("SimpleDynamoDBRepository exit");
+	}
+
+	SimpleDynamoDBRepository(Class<E> clazz, DynamoDB dynamoDB, SerializableCredentials awsCredentials,
+			ObjectMapper objectMapper, String endpoint) {
+		super(clazz, dynamoDB, awsCredentials, objectMapper, endpoint);
+		LOG.trace("SimpleDynamoDBRepository enter {}={} {}={} {}={} {}={} {}={}", "clazz", clazz, "dynamoDB", dynamoDB,
+				"awsCredentials", awsCredentials, "objectMapper", objectMapper, "endpoint", endpoint);
+		LOG.trace("SimpleDynamoDBRepository exit");
+
 	}
 
 	protected Table getTable() {

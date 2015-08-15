@@ -8,8 +8,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.repository.CrudRepository;
 
 import com.amazonaws.services.dynamodbv2.document.Item;
@@ -37,9 +35,6 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable, T
 
 	private final Partitioner<E, T> partitioner;
 	private final String tablePrefix;
-
-	@Autowired
-	private ApplicationContext applicationContext;
 
 	protected PartitionedDynamoDBRepository(Class<E> clazz, Partitioner<E, T> partitioner) {
 		super(clazz);
@@ -156,8 +151,6 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable, T
 		LOG.trace("retrievePartitionTable enter {}={}", "partition", partition);
 		// create the wrapper
 		PartitionWrapper wrapper = new PartitionWrapper(partition);
-		applicationContext.getAutowireCapableBeanFactory().autowireBean(wrapper);
-		applicationContext.getAutowireCapableBeanFactory().initializeBean(wrapper, wrapper.retrieveTableName());
 		LOG.trace("partition exit", wrapper);
 		return wrapper;
 	}
@@ -261,7 +254,10 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable, T
 		private final Partition partition;
 
 		public PartitionWrapper(Partition partition) {
-			super(PartitionedDynamoDBRepository.this.getEntityClass());
+			super(PartitionedDynamoDBRepository.this.getEntityClass(), PartitionedDynamoDBRepository.this.getDynamoDB(),
+					PartitionedDynamoDBRepository.this.getCredentials(),
+					PartitionedDynamoDBRepository.this.getObjectMapper(),
+					PartitionedDynamoDBRepository.this.getEndpoint());
 			LOG.trace("PartitionWrapper enter", "partition", partition);
 			this.partition = partition;
 			LOG.trace("PartitionWrapper exit");
