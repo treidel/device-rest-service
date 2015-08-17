@@ -36,6 +36,7 @@ dependencies {
 	runtime("org.codehaus.groovy:groovy-all:$groovyVersion")
 	boot project(':data-dynamodb')
 	boot project(':storm-kafka')
+	boot project(':message-rabbitmq')
 }
 
 /* use the application dependencies */
