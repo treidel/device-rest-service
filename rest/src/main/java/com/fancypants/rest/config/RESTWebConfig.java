@@ -13,13 +13,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
+import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-
-import ch.qos.logback.access.tomcat.LogbackValve;
 
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
+import ch.qos.logback.access.tomcat.LogbackValve;
+
 @Configuration
+@EnableHypermediaSupport(type = HypermediaType.HAL)
 public class RESTWebConfig {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RESTWebConfig.class);
@@ -35,8 +38,7 @@ public class RESTWebConfig {
 	public void init() {
 		LOG.trace("init enter");
 		// tweak the serialization of dates
-		httpMessageConverter.getObjectMapper().setDateFormat(
-				new ISO8601DateFormat());
+		httpMessageConverter.getObjectMapper().setDateFormat(new ISO8601DateFormat());
 		LOG.trace("init exit");
 	}
 
@@ -47,12 +49,10 @@ public class RESTWebConfig {
 		TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
 		// find the config file
 		File configFile = null;
-		Resource resources[] = resolver.getResources("classpath*:/"
-				+ LOGBACK_ACCESS_FILE);
+		Resource resources[] = resolver.getResources("classpath*:/" + LOGBACK_ACCESS_FILE);
 		switch (resources.length) {
 		case 0:
-			LOG.warn("could not find access log config file: {}",
-					LOGBACK_ACCESS_FILE);
+			LOG.warn("could not find access log config file: {}", LOGBACK_ACCESS_FILE);
 			break;
 		case 1:
 			LOG.info("found access log config file: {}", resources[0]);
@@ -60,8 +60,7 @@ public class RESTWebConfig {
 			break;
 
 		default:
-			LOG.warn("found multiple " + LOGBACK_ACCESS_FILE
-					+ " files, using first found: {}", resources[0]);
+			LOG.warn("found multiple " + LOGBACK_ACCESS_FILE + " files, using first found: {}", resources[0]);
 			configFile = resources[0].getFile();
 			break;
 		}
