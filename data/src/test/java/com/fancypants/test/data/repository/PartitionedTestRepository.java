@@ -1,10 +1,8 @@
 package com.fancypants.test.data.repository;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -37,11 +35,10 @@ public abstract class PartitionedTestRepository<E, I extends Serializable, T> ex
 		return partitioner;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void createPartition(Partition partition) {
 		String tableName = computeTableName(partition);
-		findOrCreateTable(tableName, ((Class<? extends Map<?, ?>>) HashMap.class));
+		findOrCreateTable(tableName);
 	}
 
 	@Override

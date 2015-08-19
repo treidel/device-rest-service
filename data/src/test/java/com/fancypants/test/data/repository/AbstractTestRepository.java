@@ -26,12 +26,12 @@ public abstract class AbstractTestRepository<E, I extends Serializable> implemen
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	protected static Map<?, ?> findOrCreateTable(String tableName, Class<? extends Map<?, ?>> tableClazz) {
+	protected static Map<?, ?> findOrCreateTable(String tableName) {
 		try {
 			synchronized (SINGLETON) {
 				Map<?, ?> table = SINGLETON.get(tableName);
 				if (null == table) {
-					table = tableClazz.newInstance();
+					table = new HashMap<>();
 					SINGLETON.put(tableName, table);
 				}
 				return table;

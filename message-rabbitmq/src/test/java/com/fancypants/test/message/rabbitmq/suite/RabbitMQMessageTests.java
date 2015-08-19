@@ -11,7 +11,7 @@ import com.fancypants.test.message.rabbitmq.config.RabbitMQMessageTestConfig;
 import com.fancypants.test.message.suite.MessageTests;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(inheritLocations = false, loader = AnnotationConfigContextLoader.class, initializers = ConfigFileApplicationContextInitializer.class, classes = {
+@ContextConfiguration(inheritInitializers = false, loader = AnnotationConfigContextLoader.class, initializers = ConfigFileApplicationContextInitializer.class, classes = {
 		RabbitMQConfig.class, RabbitMQMessageTestConfig.class })
 public class RabbitMQMessageTests extends MessageTests {
 

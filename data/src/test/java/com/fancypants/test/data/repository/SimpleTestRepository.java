@@ -1,12 +1,10 @@
 package com.fancypants.test.data.repository;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class SimpleTestRepository<T, I extends Serializable> extends
-		AbstractTestRepository<T, I> {
+public abstract class SimpleTestRepository<T, I extends Serializable> extends AbstractTestRepository<T, I> {
 
 	private static final long serialVersionUID = 5088964975582070882L;
 
@@ -16,8 +14,7 @@ public abstract class SimpleTestRepository<T, I extends Serializable> extends
 	protected SimpleTestRepository(Class<T> clazz, String tableName) {
 		super(clazz);
 		// retrieve the table
-		this.table = (Map<I, T>) AbstractTestRepository.findOrCreateTable(
-				tableName, (Class<? extends Map<?, ?>>) HashMap.class);
+		this.table = (Map<I, T>) AbstractTestRepository.findOrCreateTable(tableName);
 	}
 
 	@Override
