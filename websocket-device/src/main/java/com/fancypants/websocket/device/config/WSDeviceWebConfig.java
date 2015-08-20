@@ -18,6 +18,8 @@ import org.springframework.core.io.Resource;
 @Configuration
 public class WSDeviceWebConfig {
 
+	public static final String KEYSTORE_ALIAS = "server";
+
 	@Autowired
 	private EmbeddedServletContainerFactory servletContainerFactory;
 
@@ -29,8 +31,7 @@ public class WSDeviceWebConfig {
 	}
 
 	public Connector createHTTPConnector() {
-		Connector connector = new Connector(
-				org.apache.coyote.http11.Http11NioProtocol.class.getName());
+		Connector connector = new Connector(org.apache.coyote.http11.Http11NioProtocol.class.getName());
 		connector.setPort(8003);
 		connector.setScheme("http");
 		return connector;
@@ -39,21 +40,17 @@ public class WSDeviceWebConfig {
 	@Bean
 	public EmbeddedServletContainerCustomizer containerCustomizer(
 			@Value("${KEYSTORE_FILE}") final Resource keystoreFile,
-			@Value("${KEYSTORE_PASSWORD}") final String keystorePass)
-			throws Exception {
+			@Value("${KEYSTORE_PASSWORD}") final String keystorePass) throws Exception {
 		String keystoreFilePath = keystoreFile.getFile().getAbsolutePath();
-		return new TomcatClientSSLAuthenticationCustomizer(keystoreFilePath,
-				keystorePass);
+		return new TomcatClientSSLAuthenticationCustomizer(keystoreFilePath, keystorePass);
 	}
 
-	private static class TomcatClientSSLAuthenticationCustomizer implements
-			EmbeddedServletContainerCustomizer {
+	private static class TomcatClientSSLAuthenticationCustomizer implements EmbeddedServletContainerCustomizer {
 
 		private final String keystoreFilePath;
 		private final String keystorePass;
 
-		public TomcatClientSSLAuthenticationCustomizer(String keystoreFilePath,
-				String keystorePass) {
+		public TomcatClientSSLAuthenticationCustomizer(String keystoreFilePath, String keystorePass) {
 			this.keystoreFilePath = keystoreFilePath;
 			this.keystorePass = keystorePass;
 		}
@@ -61,26 +58,24 @@ public class WSDeviceWebConfig {
 		@Override
 		public void customize(ConfigurableEmbeddedServletContainer factory) {
 			TomcatEmbeddedServletContainerFactory tomcatFactory = (TomcatEmbeddedServletContainerFactory) factory;
-			tomcatFactory
-					.addConnectorCustomizers(new TomcatConnectorCustomizer() {
-						@Override
-						public void customize(Connector connector) {
-							connector.setPort(8083);
-							connector.setSecure(true);
-							connector.setScheme("https");
-							Http11NioProtocol proto = (Http11NioProtocol) connector
-									.getProtocolHandler();
-							proto.setSSLEnabled(true);
-							proto.setTruststoreFile(keystoreFilePath);
-							proto.setTruststorePass(keystorePass);
-							proto.setTruststoreType("JKS");
-							proto.setKeystoreFile(keystoreFilePath);
-							proto.setKeystorePass(keystorePass);
-							proto.setKeystoreType("JKS");
-							proto.setKeyAlias("server");
-							proto.setClientAuth("true");
-						}
-					});
+			tomcatFactory.addConnectorCustomizers(new TomcatConnectorCustomizer() {
+				@Override
+				public void customize(Connector connector) {
+					connector.setPort(8083);
+					connector.setSecure(true);
+					connector.setScheme("https");
+					Http11NioProtocol proto = (Http11NioProtocol) connector.getProtocolHandler();
+					proto.setSSLEnabled(true);
+					proto.setTruststoreFile(keystoreFilePath);
+					proto.setTruststorePass(keystorePass);
+					proto.setTruststoreType("JKS");
+					proto.setKeystoreFile(keystoreFilePath);
+					proto.setKeystorePass(keystorePass);
+					proto.setKeystoreType("JKS");
+					proto.setKeyAlias(KEYSTORE_ALIAS);
+					proto.setClientAuth("true");
+				}
+			});
 		}
 
 	}

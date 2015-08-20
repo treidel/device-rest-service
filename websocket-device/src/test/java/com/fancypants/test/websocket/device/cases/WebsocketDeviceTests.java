@@ -22,6 +22,7 @@ import com.fancypants.rest.domain.RawRecord;
 import com.fancypants.test.data.values.DeviceValues;
 import com.fancypants.test.stream.TestStreamScanMe;
 import com.fancypants.test.websocket.device.config.WebsocketDeviceTestConfig;
+import com.fancypants.test.websocket.device.context.KeyStoreApplicationContextInitializer;
 import com.fancypants.test.websocket.util.StompSimulator;
 import com.fancypants.websocket.device.config.WSDeviceWebConfig;
 import com.fancypants.websocket.device.config.WSDeviceWebSecurityConfig;
@@ -31,7 +32,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = { WSDeviceWebSecurityConfig.class, WSDeviceWebSocketConfig.class,
-		WSDeviceWebConfig.class, WebsocketDeviceTestConfig.class, TestStreamScanMe.class })
+		WSDeviceWebConfig.class, WebsocketDeviceTestConfig.class,
+		TestStreamScanMe.class }, initializers = { KeyStoreApplicationContextInitializer.class })
 @WebAppConfiguration
 @IntegrationTest
 public class WebsocketDeviceTests {

@@ -187,6 +187,7 @@ project(':rest') {
 project(':stream') {	
 	dependencies {
 		compile project(':common')
+  		testCompile project(':data')
 		testCompile project(path: ':data', configuration: 'testOutput')
 	}
 }
