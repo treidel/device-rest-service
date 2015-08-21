@@ -10,9 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
+
+import com.fancypants.common.config.util.ConfigUtils;
 
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
@@ -27,13 +32,10 @@ import backtype.storm.generated.TopologySummary;
 import backtype.storm.utils.NimbusClient;
 import backtype.storm.utils.Utils;
 
-import com.fancypants.common.config.util.ConfigUtils;
-
-@EnableScheduling
+@EnableAsync
 public abstract class AbstractTopologyConfig {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(AbstractTopologyConfig.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractTopologyConfig.class);
 
 	public static final String STORM_SPOUT_NAME = "stormSpout";
 	public static final String TRIDENT_SPOUT_NAME = "tridentSpout";
@@ -58,43 +60,42 @@ public abstract class AbstractTopologyConfig {
 		Pair<Config, StormTopology> topology = getTopology();
 
 		// submit the topology
-		uploadAndReplaceTopology(topologyPrefix, topology.getLeft(),
-				topology.getRight());
+		uploadAndReplaceTopology(topologyPrefix, topology.getLeft(), topology.getRight());
 
 		LOG.trace("init exit");
 	}
 
-	@Scheduled(fixedDelay = 1000)
-	private void terminate() {
-		LOG.trace("terminate enter");
-
-		LOG.info("initiating shutdown");
-
-		// schedule a thread to terminate this application
-		appContext.close();
-
-		LOG.trace("terminate exit");
+	@Bean
+	public ApplicationListener<ContextRefreshedEvent> contextRefreshedListener() {
+		LOG.trace("ContextRefreshedEvent enter");
+		ApplicationListener<ContextRefreshedEvent> listener = new ApplicationStartedListener();
+		LOG.trace("ContextRefreshedEvent exit {}", listener);
+		return listener;
 	}
 
-	private void uploadAndReplaceTopology(String topologyPrefix,
-			Config topologyConfig, StormTopology topology) {
-		LOG.trace("uploadAndReplaceTopology enter {}={} {}={} {}={}",
-				"topologyPrefix", topologyPrefix, "topologyConfig",
-				topologyConfig, "topology", topology);
+	@Bean
+	public ShutdownBean shutdownBean() {
+		LOG.trace("shutdownBean enter");
+		ShutdownBean bean = new ShutdownBean();
+		LOG.trace("shutdownBean exit {}", bean);
+		return bean;
+	}
+
+	private void uploadAndReplaceTopology(String topologyPrefix, Config topologyConfig, StormTopology topology) {
+		LOG.trace("uploadAndReplaceTopology enter {}={} {}={} {}={}", "topologyPrefix", topologyPrefix,
+				"topologyConfig", topologyConfig, "topology", topology);
 		// compute the storm config
 		Config stormConfig = computeStormConfig();
 		// add it the topology's config
 		stormConfig.putAll(topologyConfig);
 
-		// get the client
-		Nimbus.Iface client = NimbusClient.getConfiguredClient(stormConfig)
-				.getClient();
-
 		try {
 
+			// get the client
+			Nimbus.Iface client = NimbusClient.getConfiguredClient(stormConfig).getClient();
+
 			// create a new topology name
-			String topologyName = topologyPrefix + "-"
-					+ UUID.randomUUID().toString();
+			String topologyName = topologyPrefix + "-" + UUID.randomUUID().toString();
 
 			// first query the current topologies
 			ClusterSummary clusterSummary = client.getClusterInfo();
@@ -103,18 +104,15 @@ public abstract class AbstractTopologyConfig {
 			StormSubmitter.submitTopology(topologyName, stormConfig, topology);
 
 			// look at the old topologies to find old copies of this topology
-			for (TopologySummary topologySummary : clusterSummary
-					.get_topologies()) {
+			for (TopologySummary topologySummary : clusterSummary.get_topologies()) {
 				// if this matches the topology prefix we remove it
-				if (true == topologySummary.get_name().startsWith(
-						topologyPrefix)) {
+				if (true == topologySummary.get_name().startsWith(topologyPrefix)) {
 					LOG.info("removing topology={}", topologySummary.get_name());
 					// remove
 					try {
 						client.killTopology(topologySummary.get_name());
 					} catch (NotAliveException e) {
-						LOG.warn("topology={} not active",
-								topologySummary.get_name());
+						LOG.warn("topology={} not active", topologySummary.get_name());
 					}
 				}
 			}
@@ -125,6 +123,9 @@ public abstract class AbstractTopologyConfig {
 			LOG.error("thrift error", e);
 		} catch (InvalidTopologyException e) {
 			LOG.error("thrift error", e);
+		} catch (RuntimeException e) {
+			LOG.error("runtime error", e);
+			throw e;
 		}
 
 		LOG.trace("uploadAndReplaceTopology exit");
@@ -142,5 +143,36 @@ public abstract class AbstractTopologyConfig {
 		config.put(Config.NIMBUS_THRIFT_PORT, 6627);
 		LOG.trace("getStormConfig exit {}", config);
 		return config;
+	}
+
+	public class ShutdownBean {
+
+		@Async
+		public void shutdown() {
+			LOG.trace("ShutdownBean.shutdown enter");
+
+			LOG.info("initiating shutdown");
+
+			// close the app context
+			appContext.close();
+			// exit?
+			System.exit(0);
+
+			LOG.trace("ShutdownBean.shutdown exit");
+		}
+
+	}
+
+	private class ApplicationStartedListener implements ApplicationListener<ContextRefreshedEvent> {
+
+		@Override
+		public void onApplicationEvent(ContextRefreshedEvent event) {
+			LOG.trace("ApplicationStartedListener.onApplicationEvent enter {}={}", "event", event);
+
+			shutdownBean().shutdown();
+
+			LOG.trace("ApplicationStartedListener.onApplicationEvent exit");
+
+		}
 	}
 }

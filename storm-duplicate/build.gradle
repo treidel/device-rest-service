@@ -52,10 +52,16 @@ applicationDistribution.from(configurations.boot) {
 /* add application dependencies to the classpath */
 startScripts {
 	classpath += configurations.boot
+	doLast {
+		logger.info(unixScript.text)
+		unixScript.text = unixScript.text.replace('CLASSPATH=', 'CLASSPATH=$APP_HOME:')
+                unixScript.text = unixScript.text.replace('\\', '')
+		logger.info(unixScript.text)
+	}
 }
 
 /* configure JVM arguments */
-applicationDefaultJvmArgs = ['-Dstorm.jar=$APP_HOME/libs/' + jar.archiveName]
+applicationDefaultJvmArgs = ['-Dstorm.jar=$APP_HOME/lib/' + jar.archiveName]
 
 group = 'reideltj'
 mainClassName = 'com.fancypants.common.application.Application' 
