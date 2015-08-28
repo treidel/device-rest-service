@@ -69,6 +69,6 @@ docker {
 distDocker {
 	exposePort 8003
 	exposePort 8083
-	addFile('src/main/security/server.jks','/etc/server.jks')
-	setEnvironment('KEYSTORE_FILE', 'file:/etc/server.jks')
+	addFile('src/main/security/websocket-device.jks','/etc/websocket-device.jks')
+	setEnvironment('KEYSTORE_FILE', 'file:/etc/websocket-device.jks')
 }
