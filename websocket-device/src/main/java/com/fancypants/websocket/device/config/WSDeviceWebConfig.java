@@ -18,7 +18,7 @@ import org.springframework.core.io.Resource;
 @Configuration
 public class WSDeviceWebConfig {
 
-	public static final String KEYSTORE_ALIAS = "server";
+	public static final String KEYSTORE_ALIAS = "websocket-device";
 
 	@Autowired
 	private EmbeddedServletContainerFactory servletContainerFactory;
