@@ -39,7 +39,7 @@ fi
 
 # step 8 - create the certificate chain for the websocket-device certificate
 if [ ! -e websocket-device.chn ]; then
-	cat root.crt servers.crt websocket-device.crt > websocket-device.chn
+	cat websocket-device.crt servers.crt root.crt > websocket-device.chn
 fi
 
 # step 9 - create the devices key
