@@ -62,7 +62,8 @@ if [ ! -e websocket-device.p12 ]; then
 	openssl pkcs12 -export -in websocket-device.chn -inkey websocket-device.key -out websocket-device.p12 -password pass:websocket-device -name websocket-device
 fi
 
-# step 13 - conver the websocket-device keystore to JKS format
+# step 13 - convert the websocket-device keystore to JKS format
 if [ ! -e websocket-device.jks ]; then
 	keytool -importkeystore -srckeystore websocket-device.p12 -srcstoretype pkcs12 -srcstorepass websocket-device -srcalias websocket-device -destkeystore websocket-device.jks -deststoretype jks -deststorepass websocket-device -destalias websocket-device
+	keytool -importcert -file devices.crt -alias devices -keystore websocket-device.jks -storepass websocket-device -noprompt
 fi
