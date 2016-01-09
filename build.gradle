@@ -184,31 +184,6 @@ project(':rest') {
 	}
 }
 
-project(':stream') {	
-	dependencies {
-		compile project(':common')
-  		testCompile project(':data')
-		testCompile project(path: ':data', configuration: 'testOutput')
-	}
-}
-
-project(':stream-kinesis') {
-	dependencies {
-		compile project(':common')
-		compile project(':stream')
-		compile project(':data')
-	}
-}
-
-project(':stream-kafka') {
-	dependencies {
-		compile project(':common')
-		compile project(':stream')
-		compile project(':data')	
-		testCompile project(path: ':stream', configuration: 'testOutput')
-	}
-}
-
 project(':message') {
 	dependencies {
 		compile project(':common')
@@ -235,15 +210,7 @@ project(':device') {
 	dependencies {
 		compile project(':common')
 		compile project(':data')
-		compile project(':stream')
 		compile project(':message')
-	}
-}
-
-project(':records') { 
-	dependencies {
-		compile project(':common')
-		compile project(':device')
 	}
 }
 
@@ -286,45 +253,6 @@ project(':rest-device') {
 	}
 }
 
-project(':storm') {
-	dependencies {
-		compile project(':common')
-		compile project(':records')
-	}
-}
-
-project(':storm-kinesis') {
-	dependencies {
-		compile project(':common')
-		compile project(':storm')
-	}
-}
-
-project(':storm-kafka') {
-	dependencies {
-		compile project(':common')
-		compile project(':storm')
-	}
-}
-
-project(':storm-duplicate') { 
-	dependencies { 
-		compile project(':common')
-		compile project(':data')
-		compile project(':storm')
-	}
-}
-
-project(':storm-usage') { 
-	dependencies { 
-		compile project(':common')
-		compile project(':data')
-		compile project(':storm')
-		compile project(':usage')
-		compile project(':message')
-	}
-}
-
 project(':websocket') {
 	dependencies {
 		compile project(':common')
@@ -341,21 +269,6 @@ project(':websocket-app') {
 		testCompile project(path: ':data', configuration: 'testOutput')
 		testCompile project(path: ':websocket', configuration: 'testOutput')
 		testCompile project(path: ':message', configuration: 'testOutput')
-	}
-}
-
-project(':websocket-device') {
-	dependencies {
-		compile project(':common')
-		compile project(':websocket')
-		compile project(':device')
-		compile project(':records')
-		compile project(':usage')
-		compile project(':data')
-		testCompile project(path: ':data', configuration: 'testOutput')
-		testCompile project(path: ':rest', configuration: 'testOutput')
-		testCompile project(path: ':stream', configuration: 'testOutput')
-		testCompile project(path: ':websocket', configuration: 'testOutput')
 	}
 }
 
