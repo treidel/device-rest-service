@@ -1,9 +1,0 @@
-jar {
-	baseName = 'stream-kinesis'
-	version = "$version"
-}
-
-dependencies {
-	compile("com.amazonaws:aws-java-sdk-kinesis:$amazonAwsVersion")
-	testCompile("junit:junit:$junitVersion")
-}

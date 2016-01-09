@@ -1,9 +1,0 @@
-jar {
-	baseName = 'stream'
-	version = "$version"
-}
-
-dependencies {
-	testCompile("junit:junit:$junitVersion")
-}
-
