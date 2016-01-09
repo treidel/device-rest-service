@@ -223,6 +223,14 @@ project(':message-rabbitmq') {
 	}
 }
 
+project(':message-sns') {
+        dependencies {
+                compile project(':common')
+                compile project(':message')
+                testCompile project(path: ':message', configuration: 'testOutput')
+        }
+}
+
 project(':device') { 
 	dependencies {
 		compile project(':common')

@@ -1,0 +1,13 @@
+jar {
+	baseName = 'message-sns'
+	version = "$version"
+}
+
+dependencies {
+	compile("com.amazonaws:aws-java-sdk-core:$amazonAwsVersion")
+	compile("com.amazonaws:aws-java-sdk-dynamodb:$amazonAwsVersion")
+	compile("org.springframework:spring-context:$springVersion")	
+	testCompile("org.springframework:spring-test:$springVersion")        	
+	testCompile("junit:junit:$junitVersion")
+}
+
