@@ -1,3 +1,0 @@
-com.fancypants.storm.kafka.StormKafkaScanMe
-com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe
-com.fancypants.storm.duplicate.StormDuplicateScanMe
