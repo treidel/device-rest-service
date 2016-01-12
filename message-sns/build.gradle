@@ -5,7 +5,9 @@ jar {
 
 dependencies {
 	compile("com.amazonaws:aws-java-sdk-core:$amazonAwsVersion")
-	compile("com.amazonaws:aws-java-sdk-dynamodb:$amazonAwsVersion")
+	compile("com.amazonaws:aws-java-sdk-sns:$amazonAwsVersion")
+	compile("com.amazonaws:aws-java-sdk-sqs:$amazonAwsVersion")
+	compile("com.amazonaws:aws-java-sdk-iam:$amazonAwsVersion")
 	compile("org.springframework:spring-context:$springVersion")	
 	testCompile("org.springframework:spring-test:$springVersion")        	
 	testCompile("junit:junit:$junitVersion")
