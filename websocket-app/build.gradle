@@ -34,7 +34,7 @@ dependencies {
 	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 	testCompile("commons-codec:commons-codec:$commonsCodecVersion")	
 	boot project(':data-dynamodb')
-	boot project(':message-rabbitmq')
+	boot project(':message-sns')
 }
 
 /* use the application dependencies */
@@ -69,4 +69,5 @@ docker {
 
 distDocker {
 	exposePort 8004
+	setEnvironment('SNS_TOPIC_PRFIX', 'device-') 
 }

@@ -166,6 +166,8 @@ public class SubscriptionManager {
 						accessor.getSubscriptionId());
 				// create the topic consumer
 				TopicConsumer topicConsumer = topicManager.topicConsumer(topic, listener);
+				// start the consumer
+				topicConsumer.start();
 				// now create the subscription state
 				SubscriptionState subscriptionState = new SubscriptionState(topicConsumer,
 						accessor.getSubscriptionId());

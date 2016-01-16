@@ -4,7 +4,7 @@ jar {
 }
 
 dependencies {
-	testCompile("org.apache.activemq:activemq-broker:5.11.1")
+	testCompile("org.apache.activemq:activemq-broker:$activemqVersion")
 	testCompile("org.springframework:spring-jms:$springVersion") 
 	testCompile("org.springframework:spring-test:$springVersion")
 }

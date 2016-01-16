@@ -65,6 +65,7 @@ subprojects {
 		spotifyDockerClientVersion = "2.7.25"
 		janinoVersion = "2.7.8"		
 		jffi = "1.2.10"
+		activemqVersion = "5.11.1"
 	}
 
 	/* define the group overrides */

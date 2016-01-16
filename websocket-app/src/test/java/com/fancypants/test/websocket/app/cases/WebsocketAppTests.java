@@ -127,6 +127,7 @@ public class WebsocketAppTests {
 	public void notificationTest() throws Exception {
 		// create the topic publisher
 		TopicProducer producer = topicManager.topicProducer(DeviceValues.DEVICEENTITY.getDevice());
+		producer.start();
 		// create the simulator
 		StompSimulator simulator = new StompSimulator();
 		// add a connection action
