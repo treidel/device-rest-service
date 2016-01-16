@@ -11,19 +11,14 @@ import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.fancypants.common.CommonScanMe;
-import com.fancypants.data.device.dynamodb.config.DynamoDBConfig;
 import com.fancypants.test.data.dynamodb.TestDynamoDBDataScanMe;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
@@ -43,26 +38,15 @@ public class DynamoDBDataTestConfig {
 
 	private static final String DOCKER_IMAGE = "reideltj/dynamodb";
 
+	@Autowired
+	private DynamoDB dynamoDB;
+
 	private DockerClient docker = null;
 	private String containerId = null;
-
-	private @Autowired AWSCredentials awsCredentials;
-
-	private @Autowired @Value("${" + DynamoDBConfig.AMAZON_DYNAMODB_ENDPOINT_ENVVAR + "}") String endpoint;
 
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
-	}
-
-	@Bean
-	@Autowired
-	public DynamoDB dynamoDB() {
-		// create the dynamodb client
-		AmazonDynamoDB amazonDynamoDB = new AmazonDynamoDBClient(awsCredentials);
-		amazonDynamoDB.setEndpoint(endpoint);
-		// create the wrapper
-		return new DynamoDB(amazonDynamoDB);
 	}
 
 	@PostConstruct
@@ -119,7 +103,7 @@ public class DynamoDBDataTestConfig {
 		docker.startContainer(containerId, hostConfig);
 
 		// wait until we can query the list of tables
-		dynamoDB().listTables();
+		dynamoDB.listTables();
 	}
 
 	@PreDestroy

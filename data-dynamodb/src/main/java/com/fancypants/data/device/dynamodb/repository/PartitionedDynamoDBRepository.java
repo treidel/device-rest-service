@@ -254,10 +254,9 @@ public abstract class PartitionedDynamoDBRepository<E, I extends Serializable, T
 		private final Partition partition;
 
 		public PartitionWrapper(Partition partition) {
-			super(PartitionedDynamoDBRepository.this.getEntityClass(), PartitionedDynamoDBRepository.this.getDynamoDB(),
-					PartitionedDynamoDBRepository.this.getCredentials(),
+			super(PartitionedDynamoDBRepository.this.getEntityClass(),
 					PartitionedDynamoDBRepository.this.getObjectMapper(),
-					PartitionedDynamoDBRepository.this.getEndpoint());
+					PartitionedDynamoDBRepository.this.getDynamoDB());
 			LOG.trace("PartitionWrapper enter", "partition", partition);
 			this.partition = partition;
 			LOG.trace("PartitionWrapper exit");
