@@ -29,8 +29,7 @@ public class TestTopicManager implements TopicManager, Serializable {
 
 	@PostConstruct
 	private void init() {
-		ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(
-				"vm://localhost");
+		ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("vm://localhost");
 		template = new JmsTemplate(factory);
 		template.setPubSubDomain(true);
 	}
@@ -54,8 +53,7 @@ public class TestTopicManager implements TopicManager, Serializable {
 	}
 
 	@Override
-	public TopicProducer topicProducer(String topic)
-			throws AbstractMessageException {
+	public TopicProducer topicProducer(String topic) throws AbstractMessageException {
 
 		// create the topic
 		Destination destination = new ActiveMQTopic(topic);
@@ -65,13 +63,12 @@ public class TestTopicManager implements TopicManager, Serializable {
 	}
 
 	@Override
-	public TopicConsumer topicConsumer(String topic)
-			throws AbstractMessageException {
+	public TopicConsumer topicConsumer(String topic, TopicConsumer.Handler handler) throws AbstractMessageException {
 
 		// find the topic
 		Destination destination = new ActiveMQTopic(topic);
 		// create the consumer
-		TopicConsumer consumer = new TestTopicConsumer(template, destination);
+		TopicConsumer consumer = new TestTopicConsumer(template, destination, handler);
 		return consumer;
 
 	}

@@ -6,5 +6,7 @@ public interface TopicProducer {
 
 	void sendMessage(String message) throws AbstractMessageException;
 
+	void start() throws AbstractMessageException;
+
 	void close();
 }

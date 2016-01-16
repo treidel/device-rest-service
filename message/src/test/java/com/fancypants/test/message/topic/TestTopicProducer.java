@@ -37,6 +37,11 @@ public class TestTopicProducer implements TopicProducer {
 	}
 
 	@Override
+	public void start() throws AbstractMessageException {
+		// nothing to do as we open a new connection for each message
+	}
+	
+	@Override
 	public void close() {
 		// nothing to do as we open a new connection for each message
 	}

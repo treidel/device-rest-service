@@ -22,8 +22,7 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 
 	private static final long serialVersionUID = 2706248108381878149L;
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(RabbitMQTopicManager.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RabbitMQTopicManager.class);
 
 	private final URI uri;
 	private final String password;
@@ -31,8 +30,7 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 
 	private transient Connection connection;
 
-	public RabbitMQTopicManager(URI uri, String password, String exchange)
-			throws Exception {
+	public RabbitMQTopicManager(URI uri, String password, String exchange) throws Exception {
 		LOG.trace("RabbitMQTopicManager enter");
 
 		// store passed variables
@@ -82,15 +80,13 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 	}
 
 	@Override
-	public TopicProducer topicProducer(String topic)
-			throws AbstractMessageException {
+	public TopicProducer topicProducer(String topic) throws AbstractMessageException {
 		LOG.trace("topicProducer enter {}={}", "topic", topic);
 		try {
 			// create the channel
 			Channel channel = connection.createChannel();
 			// wrap the channel
-			TopicProducer producer = new RabbitMQTopicProducer(channel,
-					exchange, topic);
+			TopicProducer producer = new RabbitMQTopicProducer(channel, exchange, topic);
 			LOG.trace("topicProducer exit {}={}", "producer", producer);
 			return producer;
 		} catch (IOException e) {
@@ -100,9 +96,8 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 	}
 
 	@Override
-	public TopicConsumer topicConsumer(String topic)
-			throws AbstractMessageException {
-		LOG.trace("topicConsumer enter {}={}", "topic", topic);
+	public TopicConsumer topicConsumer(String topic, TopicConsumer.Handler handler) throws AbstractMessageException {
+		LOG.trace("topicConsumer enter {}={} {}={}", "topic", topic, "handler", handler);
 		try {
 			// create the channel
 			Channel channel = connection.createChannel();
@@ -111,7 +106,7 @@ public class RabbitMQTopicManager implements TopicManager, Serializable {
 			// bind the queue to the exchange and filter on the topic name
 			channel.queueBind(queue, exchange, topic);
 			// wrap the channel + queue
-			TopicConsumer consumer = new RabbitMQTopicConsumer(channel, queue);
+			TopicConsumer consumer = new RabbitMQTopicConsumer(channel, queue, handler);
 			LOG.trace("topicConsumer exit {}", consumer);
 			return consumer;
 		} catch (IOException e) {

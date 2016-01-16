@@ -13,6 +13,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClient;
+import com.amazonaws.services.identitymanagement.model.GetUserResult;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.fancypants.common.CommonScanMe;
@@ -72,7 +73,10 @@ public class SNSConfig {
 		// create the credentials
 		AWSCredentials credentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
 		AmazonIdentityManagementClient amazonIdentityClient = new AmazonIdentityManagementClient(credentials);
-		String accountId = amazonIdentityClient.getUser().getUser().getUserId();
+		GetUserResult result = amazonIdentityClient.getUser();
+		String arn = result.getUser().getArn();
+		String parts[] = arn.split(":");
+		String accountId = parts[4];
 		LOG.trace("amazonAccountIdentifier exit {}", accountId);
 		return accountId;
 	}

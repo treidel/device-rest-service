@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.fancypants.message.exception.AbstractMessageException;
+import com.fancypants.message.sns.exception.SNSException;
 import com.fancypants.message.topic.TopicProducer;
 
 public class SNSTopicProducer implements TopicProducer {
@@ -24,8 +25,20 @@ public class SNSTopicProducer implements TopicProducer {
 	@Override
 	public void sendMessage(String message) throws AbstractMessageException {
 		LOG.trace("sendMessage enter {}={}", "message", message);
-		client.publish(this.topicARN, message);
+		try {
+			client.publish(this.topicARN, message);
+		} catch (Throwable t) {
+			// any exception is a problem
+			LOG.error("exception={}", t);
+			throw new SNSException(t);
+		}
 		LOG.trace("sendMessage exit");
+	}
+
+	@Override
+	public void start() throws AbstractMessageException {
+		LOG.trace("start enter");
+		LOG.trace("start exit");
 	}
 
 	@Override

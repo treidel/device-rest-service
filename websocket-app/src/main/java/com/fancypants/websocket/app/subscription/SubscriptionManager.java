@@ -26,8 +26,7 @@ import com.fancypants.message.topic.TopicManager;
 
 @Component
 public class SubscriptionManager {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(SubscriptionManager.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SubscriptionManager.class);
 
 	private static final Map<String, SessionState> SESSIONS = new ConcurrentHashMap<>();
 
@@ -74,8 +73,7 @@ public class SubscriptionManager {
 		private Map<String, SubscriptionState> subscriptions = new ConcurrentHashMap<>();
 
 		public void addSubscription(SubscriptionState subscriptionState) {
-			subscriptions.put(subscriptionState.getSubscriptionId(),
-					subscriptionState);
+			subscriptions.put(subscriptionState.getSubscriptionId(), subscriptionState);
 		}
 
 		public SubscriptionState removeSubscription(String subscriptionId) {
@@ -84,8 +82,7 @@ public class SubscriptionManager {
 
 		public void cleanup() {
 			LOG.trace("SessionState.cleanup enter");
-			for (Map.Entry<String, SubscriptionState> entry : subscriptions
-					.entrySet()) {
+			for (Map.Entry<String, SubscriptionState> entry : subscriptions.entrySet()) {
 				entry.getValue().cleanup();
 			}
 			LOG.trace("SessionState.cleanup exit");
@@ -96,10 +93,8 @@ public class SubscriptionManager {
 		private final TopicConsumer topicConsumer;
 		private final String subscriptionId;
 
-		public SubscriptionState(TopicConsumer topicConsumer,
-				String subscriptionId) {
-			LOG.trace("SubscriptionState.SubscriptionState enter",
-					"topicConsumer", topicConsumer, "subscriptionId",
+		public SubscriptionState(TopicConsumer topicConsumer, String subscriptionId) {
+			LOG.trace("SubscriptionState.SubscriptionState enter", "topicConsumer", topicConsumer, "subscriptionId",
 					subscriptionId);
 			this.topicConsumer = topicConsumer;
 			this.subscriptionId = subscriptionId;
@@ -118,16 +113,13 @@ public class SubscriptionManager {
 		}
 	}
 
-	private class SessionConnectedListener implements
-			ApplicationListener<SessionConnectedEvent> {
+	private class SessionConnectedListener implements ApplicationListener<SessionConnectedEvent> {
 
 		@Override
 		public void onApplicationEvent(SessionConnectedEvent event) {
-			LOG.trace("SessionConnectedListener.onApplicationEvent enter",
-					"event", event);
+			LOG.trace("SessionConnectedListener.onApplicationEvent enter", "event", event);
 			// decode the message
-			StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event
-					.getMessage());
+			StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
 			// create the session state
 			SESSIONS.put(accessor.getSessionId(), new SessionState());
 			LOG.trace("SessionConnectedListener.onApplicationEvent exit");
@@ -136,16 +128,13 @@ public class SubscriptionManager {
 
 	}
 
-	private class SessionDisconnectedListener implements
-			ApplicationListener<SessionDisconnectEvent> {
+	private class SessionDisconnectedListener implements ApplicationListener<SessionDisconnectEvent> {
 
 		@Override
 		public void onApplicationEvent(SessionDisconnectEvent event) {
-			LOG.trace("SessionDisconnectedListener.onApplicationEvent enter",
-					"event", event);
+			LOG.trace("SessionDisconnectedListener.onApplicationEvent enter", "event", event);
 			// decode the message
-			StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event
-					.getMessage());
+			StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
 			// remove the session state
 			SessionState state = SESSIONS.remove(accessor.getSessionId());
 			if (null != state) {
@@ -157,16 +146,13 @@ public class SubscriptionManager {
 
 	}
 
-	private class SessionSubscribeListener implements
-			ApplicationListener<SessionSubscribeEvent> {
+	private class SessionSubscribeListener implements ApplicationListener<SessionSubscribeEvent> {
 
 		@Override
 		public void onApplicationEvent(SessionSubscribeEvent event) {
-			LOG.trace("SessionSubscribeListener.onApplicationEvent enter",
-					"event", event);
+			LOG.trace("SessionSubscribeListener.onApplicationEvent enter", "event", event);
 			// decode the message
-			StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event
-					.getMessage());
+			StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
 			// make sure we got a subscription id
 			Assert.notNull(accessor.getSubscriptionId());
 			// get the session state
@@ -175,16 +161,14 @@ public class SubscriptionManager {
 			// extract the topic
 			String topic = accessor.getUser().getName();
 			try {
-				// create the topic consumer
-				TopicConsumer topicConsumer = topicManager.topicConsumer(topic);
 				// setup the listener
-				TopicConsumer.Handler listener = new TopicListener(
-						accessor.getDestination(), accessor.getSessionId(),
-						accessor.getSubscriptionId()); 
-				topicConsumer.receiveMessages(listener);
+				TopicConsumer.Handler listener = new TopicListener(accessor.getDestination(), accessor.getSessionId(),
+						accessor.getSubscriptionId());
+				// create the topic consumer
+				TopicConsumer topicConsumer = topicManager.topicConsumer(topic, listener);
 				// now create the subscription state
-				SubscriptionState subscriptionState = new SubscriptionState(
-						topicConsumer, accessor.getSubscriptionId());
+				SubscriptionState subscriptionState = new SubscriptionState(topicConsumer,
+						accessor.getSubscriptionId());
 				// store the state
 				sessionState.addSubscription(subscriptionState);
 			} catch (AbstractMessageException e) {
@@ -194,22 +178,18 @@ public class SubscriptionManager {
 		}
 	}
 
-	private class SessionUnsubscribeListener implements
-			ApplicationListener<SessionUnsubscribeEvent> {
+	private class SessionUnsubscribeListener implements ApplicationListener<SessionUnsubscribeEvent> {
 
 		@Override
 		public void onApplicationEvent(SessionUnsubscribeEvent event) {
-			LOG.trace("SessionUnsubscribeListener.onApplicationEvent enter",
-					"event", event);
+			LOG.trace("SessionUnsubscribeListener.onApplicationEvent enter", "event", event);
 			// decode the message
-			StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event
-					.getMessage());
+			StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
 			// get the session state
 			SessionState sessionState = SESSIONS.get(accessor.getSessionId());
 			Assert.notNull(sessionState);
 			// get the subscription state
-			SubscriptionState subscriptionState = sessionState
-					.removeSubscription(accessor.getSubscriptionId());
+			SubscriptionState subscriptionState = sessionState.removeSubscription(accessor.getSubscriptionId());
 			if (null != subscriptionState) {
 				subscriptionState.cleanup();
 			}
@@ -222,8 +202,7 @@ public class SubscriptionManager {
 		private final String sessionId;
 		private final String subscriptionId;
 
-		public TopicListener(String destination, String sessionId,
-				String subscriptionId) {
+		public TopicListener(String destination, String sessionId, String subscriptionId) {
 			this.destination = destination;
 			this.sessionId = sessionId;
 			this.subscriptionId = subscriptionId;
@@ -233,14 +212,12 @@ public class SubscriptionManager {
 		public void handle(String body) {
 			LOG.trace("TopicListener.handle enter", "body", body);
 			// create a stomp message
-			StompHeaderAccessor accessor = StompHeaderAccessor
-					.create(StompCommand.MESSAGE);
+			StompHeaderAccessor accessor = StompHeaderAccessor.create(StompCommand.MESSAGE);
 			accessor.setDestination(destination);
 			accessor.setSessionId(sessionId);
 			accessor.setSubscriptionId(subscriptionId);
 			// create the message
-			Message<byte[]> message = MessageBuilder.createMessage(
-					body.getBytes(), accessor.getMessageHeaders());
+			Message<byte[]> message = MessageBuilder.createMessage(body.getBytes(), accessor.getMessageHeaders());
 			// send it
 			clientOutboundChannel.send(message);
 			LOG.trace("TopicListener.handle exit");

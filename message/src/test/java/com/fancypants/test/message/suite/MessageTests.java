@@ -25,14 +25,13 @@ public class MessageTests {
 	private static final String TEST_TOPIC = "TEST";
 	private static final String TEST_MESSAGE = "Hello World";
 
-	private @Autowired
-	TopicManager topicManager;
+	private @Autowired TopicManager topicManager;
 
 	@After
 	public void after() throws Exception {
 		topicManager.topicDestroy(TEST_TOPIC);
 	}
-	
+
 	@Test
 	public void createTest() throws Exception {
 		topicManager.topicCreate(TEST_TOPIC);
@@ -51,7 +50,7 @@ public class MessageTests {
 		// now delete
 		topicManager.topicDestroy(TEST_TOPIC);
 	}
-	
+
 	@Test
 	public void doubleDeleteTest() throws Exception {
 		deleteTest();
@@ -69,35 +68,65 @@ public class MessageTests {
 	public void publishTest() throws Exception {
 		createTest();
 		TopicProducer producer = topicManager.topicProducer(TEST_TOPIC);
-		producer.sendMessage(TEST_MESSAGE);
+		try {
+			producer.start();
+			producer.sendMessage(TEST_MESSAGE);
+		} finally {
+			producer.close();
+		}
 	}
-	
+
+	@Test
+	public void createConsumerTest() throws Exception {
+		createTest();
+		// create the handler
+		TopicConsumer.Handler handler = new TopicConsumer.Handler() {
+			@Override
+			public void handle(String message) {
+				// nothing to do
+			}
+		};
+
+		TopicConsumer consumer = topicManager.topicConsumer(TEST_TOPIC, handler);
+		Assert.notNull(consumer);
+		consumer.close();
+	}
+ 
 	@Test
 	public void publishAndConsumeTest() throws Exception {
 		// create the topic
 		createTest();
 		// setup a counter that is triggered when a message is received
 		final AtomicInteger counter = new AtomicInteger(0);
-		// create a producer + consumer
-		TopicProducer producer = topicManager.topicProducer(TEST_TOPIC);
-		TopicConsumer consumer = topicManager.topicConsumer(TEST_TOPIC);
 		// setup a semaphore to trigger when the message is received
 		final Semaphore semaphore = new Semaphore(0);
-		// setup the message handler
-		consumer.receiveMessages(new TopicConsumer.Handler() {
+		// create the handler
+		TopicConsumer.Handler handler = new TopicConsumer.Handler() {
 
 			@Override
 			public void handle(String message) {
 				Assert.isTrue(TEST_MESSAGE.equals(message));
 				counter.incrementAndGet();
 				semaphore.release();
-			} });
-		// send the message
-		producer.sendMessage(TEST_MESSAGE);
-		// wait a little while for the response
-		semaphore.tryAcquire(1, TimeUnit.SECONDS);
-		// make sure we got a response
-		Assert.isTrue(1 == counter.get());
+			}
+		};
+		// create a producer + consumer
+		TopicProducer producer = topicManager.topicProducer(TEST_TOPIC);
+		TopicConsumer consumer = topicManager.topicConsumer(TEST_TOPIC, handler);
+		try {
+			// start the consumer + producer
+			producer.start();
+			consumer.start();
+			// send the message
+			producer.sendMessage(TEST_MESSAGE);
+			// wait a little while for the response
+			semaphore.tryAcquire(1, TimeUnit.SECONDS);
+			// make sure we got a response
+			Assert.isTrue(1 == counter.get());
+		} finally {
+			producer.close();
+			consumer.close();
+		}
 	}
 
 }

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.amazonaws.regions.Region;
 import com.amazonaws.services.sns.AmazonSNSClient;
@@ -15,10 +16,12 @@ import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.model.CreateQueueRequest;
 import com.amazonaws.services.sqs.model.CreateQueueResult;
 import com.fancypants.message.exception.AbstractMessageException;
+import com.fancypants.message.sns.exception.SNSException;
 import com.fancypants.message.topic.TopicConsumer;
 import com.fancypants.message.topic.TopicManager;
 import com.fancypants.message.topic.TopicProducer;
 
+@Component
 public class SNSTopicManager implements TopicManager {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SNSTopicManager.class);
@@ -69,8 +72,13 @@ public class SNSTopicManager implements TopicManager {
 		LOG.trace("topicProducer enter {}={}", "topic", topic);
 		// compute the ARN
 		String topicARN = computeTopicARN(topic);
-		// make sure its a real topic
-		amazonSNSClient.getTopicAttributes(topicARN);
+		try {
+			// make sure its a real topic
+			amazonSNSClient.getTopicAttributes(topicARN);
+		} catch (Exception e) {
+			LOG.error("exception={}", e);
+			throw new SNSException(e);
+		}
 		// create the producer
 		TopicProducer producer = new SNSTopicProducer(amazonSNSClient, topicARN);
 		LOG.trace("topicProducer exit {}", producer);
@@ -78,7 +86,7 @@ public class SNSTopicManager implements TopicManager {
 	}
 
 	@Override
-	public TopicConsumer topicConsumer(String topic) throws AbstractMessageException {
+	public TopicConsumer topicConsumer(String topic, TopicConsumer.Handler handler) throws AbstractMessageException {
 		LOG.trace("topicConsumer enter {}={}", "topic", topic);
 		// compute the ARN
 		String topicARN = computeTopicARN(topic);
@@ -89,11 +97,17 @@ public class SNSTopicManager implements TopicManager {
 		CreateQueueResult createQueueResult = amazonSQSClient.createQueue(createQueueRequest);
 		String queueURL = createQueueResult.getQueueUrl();
 		LOG.debug("subscribing queue={} to topic={}", queueURL, topicARN);
-		String subscriptionARN = Topics.subscribeQueue(amazonSNSClient, amazonSQSClient, topicARN, queueURL);
-		// create the consumer
-		TopicConsumer consumer = new SNSTopicConsumer(amazonSNSClient, amazonSQSClient, subscriptionARN, queueURL);
-		LOG.trace("topicConsumer exit {}", consumer);
-		return consumer;
+		try {
+			String subscriptionARN = Topics.subscribeQueue(amazonSNSClient, amazonSQSClient, topicARN, queueURL);
+			// create the consumer
+			TopicConsumer consumer = new SNSTopicConsumer(amazonSNSClient, amazonSQSClient, subscriptionARN, queueURL,
+					handler);
+			LOG.trace("topicConsumer exit {}", consumer);
+			return consumer;
+		} catch (Exception e) {
+			LOG.error("exception={}", e);
+			throw new SNSException(e);
+		}
 	}
 
 	private String computeTopicARN(String topic) {

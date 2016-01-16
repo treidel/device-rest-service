@@ -14,25 +14,24 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
 public class RabbitMQTopicConsumer implements TopicConsumer {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(RabbitMQTopicConsumer.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RabbitMQTopicConsumer.class);
 
 	private final Channel channel;
 	private final String queue;
+	private final Handler handler;
 
-	public RabbitMQTopicConsumer(Channel channel, String queue) {
-		LOG.trace("RabbitMQTopicConsumer enter {}={} {}={}", "channel",
-				channel, "queue", queue);
+	public RabbitMQTopicConsumer(Channel channel, String queue, Handler handler) {
+		LOG.trace("RabbitMQTopicConsumer enter {}={} {}={}", "channel", channel, "queue", queue, "handler", handler);
 		// store data
 		this.channel = channel;
 		this.queue = queue;
+		this.handler = handler;
 		LOG.trace("RabbitMQTopicConsumer exit");
 	}
 
 	@Override
-	public void receiveMessages(Handler handler)
-			throws AbstractMessageException {
-		LOG.trace("receiveMessages enter {}={}", "handler", handler);
+	public void start() throws AbstractMessageException {
+		LOG.trace("start enter");
 		// let the channel do its thing
 		try {
 			channel.basicConsume(queue, new MessageConsumer(channel, handler));
@@ -40,7 +39,7 @@ public class RabbitMQTopicConsumer implements TopicConsumer {
 			LOG.error("unable to receive message", e);
 			throw new RabbitMQException(e);
 		}
-		LOG.trace("receiveMessages exit");
+		LOG.trace("start exit");
 	}
 
 	@Override
@@ -65,12 +64,10 @@ public class RabbitMQTopicConsumer implements TopicConsumer {
 		}
 
 		@Override
-		public void handleDelivery(String consumerTag, Envelope envelope,
-				AMQP.BasicProperties properties, byte[] body)
+		public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
 				throws IOException {
-			LOG.trace("MessageConsumer.handleDelivery enter {}={} {}={} {}={}",
-					"consumerTag", consumerTag, "envelope", envelope,
-					"properties", properties, "body", body);
+			LOG.trace("MessageConsumer.handleDelivery enter {}={} {}={} {}={}", "consumerTag", consumerTag, "envelope",
+					envelope, "properties", properties, "body", body);
 			// convert the body into a string
 			String message = new String(body);
 			// handle it
