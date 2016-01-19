@@ -61,17 +61,22 @@ public class SNSTopicConsumer implements TopicConsumer {
 		try {
 			// first delete the subscription
 			snsClient.unsubscribe(this.subscriptionARN);
+		} catch (Exception e) {
+			LOG.error("exception={}", e);
+		}
+		try {
+			// interrupt the thread
+			this.thread.interrupt();
+			// wait for the thread to exit
+			this.thread.join();
+		} catch (InterruptedException e) {
+			LOG.error("join={}", e);
+		}
+		try {
 			// now delete the queue
 			sqsClient.deleteQueue(sqsURL);
 		} catch (Exception e) {
 			LOG.error("exception={}", e);
-		} finally {
-			try {
-				// always wait for the thread to exit
-				this.thread.join();
-			} catch (InterruptedException e) {
-				LOG.error("join={}", e);
-			}
 		}
 		LOG.trace("close exit");
 	}
@@ -98,8 +103,8 @@ public class SNSTopicConsumer implements TopicConsumer {
 						// now provide the message inside
 						handler.handle(jsonObject.getString("Message"));
 						// schedule for deletion
-						DeleteMessageBatchRequestEntry deleteMessageEntry = new DeleteMessageBatchRequestEntry(null,
-								message.getReceiptHandle());
+						DeleteMessageBatchRequestEntry deleteMessageEntry = new DeleteMessageBatchRequestEntry(
+								message.getMessageId(), message.getReceiptHandle());
 						deleteMessages.add(deleteMessageEntry);
 					}
 					// ack all messages

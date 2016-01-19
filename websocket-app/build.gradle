@@ -69,5 +69,5 @@ docker {
 
 distDocker {
 	exposePort 8004
-	setEnvironment('SNS_TOPIC_PRFIX', 'device-') 
+	setEnvironment 'SNS_TOPIC_PREFIX', 'device-'
 }

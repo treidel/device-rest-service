@@ -25,28 +25,30 @@ public class SNSConfig {
 
 	private static final String AMAZON_ACCESS_KEY_ID_ENVVAR = "AWS_ACCESS_KEY_ID";
 	private static final String AMAZON_SECRET_ACCESS_KEY_ENVVAR = "AWS_SECRET_ACCESS_KEY";
-	private static final String AMAZON_REGION_ENVVAR = "AWS_REGION";
+	private static final String AMAZON_SNS_ENDPOINT_ENVVAR = "AWS_SNS_ENDPOINT";
 
 	private static final Logger LOG = LoggerFactory.getLogger(SNSConfig.class);
 
 	@Bean
-	public Region awsRegion(@Value("${" + AMAZON_REGION_ENVVAR + "}") String awsRegion) {
-		LOG.trace("awsRegion enter {}={}", "awsRegion", awsRegion);
-		Region region = Region.getRegion(Regions.fromName(awsRegion));
+	public Region awsRegion(@Value("${" + AMAZON_SNS_ENDPOINT_ENVVAR + "}") String endpoint) {
+		LOG.trace("awsRegion enter {}={}", "endpoint", endpoint);
+		// split the domain
+		String domain[] = endpoint.split("[.]");
+		Region region = Region.getRegion(Regions.fromName(domain[1]));
 		LOG.trace("awsRegion exit {}", region);
 		return region;
 	}
 
 	@Bean
-	@Autowired
 	public AmazonSNSClient amazonSNSClient(@Value("${" + AMAZON_ACCESS_KEY_ID_ENVVAR + "}") String accessKeyId,
-			@Value("${" + AMAZON_SECRET_ACCESS_KEY_ENVVAR + "}") String secretAccessKey, Region awsRegion) {
+			@Value("${" + AMAZON_SECRET_ACCESS_KEY_ENVVAR + "}") String secretAccessKey,
+			@Value("${" + AMAZON_SNS_ENDPOINT_ENVVAR + "}") String endpoint) {
 		LOG.trace("amazonSNSClient enter {}={} {}={} {}={}", "accessKeyId", accessKeyId, "secretAcessKey",
-				secretAccessKey, "awsRegion", awsRegion);
+				secretAccessKey, "endpoint", endpoint);
 		// create the credentials
 		AWSCredentials credentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
 		// create the SNS client
-		AmazonSNSClient client = new AmazonSNSClient(credentials).withRegion(awsRegion);
+		AmazonSNSClient client = new AmazonSNSClient(credentials).withEndpoint(endpoint);
 		LOG.trace("amazonSNSClient exit {}", client);
 		return client;
 	}

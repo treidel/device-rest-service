@@ -20,11 +20,11 @@ public class SNSMessageTests extends MessageTests {
 
 	@Override
 	public void after() throws Exception {
-		// pause for thirty seconds to let SNS cleanup
-		LOG.debug("waiting 30 seconds for SNS to cleanup");
-		Thread.sleep(30 * 1000);
 		// call base class
 		super.after();
+		// pause for thirty seconds to let SNS cleanup
+		LOG.debug("waiting 60 seconds for SNS to cleanup");
+		Thread.sleep(60 * 1000);
 	}
 
 }
