@@ -281,6 +281,7 @@ project(':websocket-app') {
 		compile project(':common')
 		compile project(':websocket')
 		compile project(':app')
+		compile project(':message')
 		compile project(':data')
 		testCompile project(path: ':data', configuration: 'testOutput')
 		testCompile project(path: ':websocket', configuration: 'testOutput')
