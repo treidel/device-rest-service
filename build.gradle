@@ -289,13 +289,6 @@ project(':websocket-app') {
 	}
 }
 
-project(':jobs') {
-	dependencies {
-		compile project(':common')
-		compile project(':data')
-	}
-}
-
 task wrapper(type: Wrapper) {
     gradleVersion = '2.5'
 }
