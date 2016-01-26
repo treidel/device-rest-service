@@ -1,3 +1,3 @@
 com.fancypants.websocket.app.WebSocketAppScanMe
-com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe
+com.fancypants.device.service.proxy.DeviceServiceProxyScanMe
 com.fancypants.message.sns.MessageSNSScanMe

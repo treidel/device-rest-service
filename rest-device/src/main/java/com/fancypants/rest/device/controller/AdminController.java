@@ -41,23 +41,20 @@ public class AdminController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/devices")
 	@ResponseBody
-	public ResponseEntity<Void> postDevice(@RequestBody Device device)
-			throws AbstractServiceException {
+	public ResponseEntity<Void> postDevice(@RequestBody Device device) throws AbstractServiceException {
 		// map the device
 		DeviceEntity deviceEntity = deviceEntityMapper.convert(device);
 		// do the creation
 		deviceService.createDevice(deviceEntity);
 		// create the response
 		HttpHeaders headers = new HttpHeaders();
-		headers.setLocation(linkTo(
-				methodOn(getClass()).getDevice(device.getName())).toUri());
+		headers.setLocation(linkTo(methodOn(getClass()).getDevice(device.getName())).toUri());
 		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/devices/{deviceId}")
 	@ResponseBody
-	public HttpEntity<DeviceResource> getDevice(
-			@PathVariable("deviceId") String deviceId)
+	public HttpEntity<DeviceResource> getDevice(@PathVariable("deviceId") String deviceId)
 			throws AbstractServiceException {
 		// query for the device
 		DeviceEntity deviceEntity = deviceService.getDevice(deviceId);
@@ -70,9 +67,8 @@ public class AdminController {
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/devices/{deviceId}")
 	@ResponseBody
-	public HttpEntity<DeviceResource> putDevice(
-			@PathVariable("deviceId") String deviceId,
-			@RequestBody Device device) throws AbstractServiceException {
+	public HttpEntity<DeviceResource> putDevice(@PathVariable("deviceId") String deviceId, @RequestBody Device device)
+			throws AbstractServiceException {
 		// map the device
 		DeviceEntity deviceEntity = deviceEntityMapper.convert(device);
 		// do the update
@@ -84,9 +80,7 @@ public class AdminController {
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/devices/{deviceId}")
 	@ResponseBody
-	public ResponseEntity<Void> putDevice(
-			@PathVariable("deviceId") String deviceId)
-			throws AbstractServiceException {
+	public ResponseEntity<Void> putDevice(@PathVariable("deviceId") String deviceId) throws AbstractServiceException {
 		// delete the device
 		deviceService.deleteDevice(deviceId);
 		return new ResponseEntity<Void>(HttpStatus.OK);

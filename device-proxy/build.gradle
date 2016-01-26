@@ -1,0 +1,10 @@
+jar {
+	baseName = 'device-proxy'
+	version = "$version"
+}
+
+dependencies {
+	compile("org.springframework:spring-web:$springVersion")
+	compile("org.apache.httpcomponents:httpclient:$apacheHttpcomponentsVersion")
+}
+

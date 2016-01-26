@@ -33,6 +33,7 @@ dependencies {
 	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 	testCompile("org.apache.httpcomponents:httpclient:$apacheHttpcomponentsVersion")
 	boot project(':data-dynamodb')
+	boot project(':device-proxy')
 }
 /* use the application dependencies */
 bootRepackage {

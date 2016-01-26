@@ -212,8 +212,22 @@ project(':device') {
 	dependencies {
 		compile project(':common')
 		compile project(':data')
-		compile project(':message')
 	}
+}
+
+project(':device-service') {
+       dependencies {
+                compile project(':common')
+		compile project(':device')
+                compile project(':message')
+        }
+}
+
+project(':device-proxy') {
+       dependencies {
+                compile project(':common')
+                compile project(':device')
+        }
 }
 
 project(':usage') {

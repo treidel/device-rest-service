@@ -18,10 +18,10 @@ import org.springframework.core.io.Resource;
 @EnableAutoConfiguration
 public class Application {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(Application.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 	private static final String PACKAGES_RESOURCES = "packages.list";
 	private static final String PACKAGES_TEST_RESOURCES = "packages.list.test";
+	private static final String IGNORE_TEST_PACKAGES_ENVVAR = "IGNORE_TEST_PACKAGES";
 
 	public static void main(String[] args) throws Exception {
 		LOG.trace("main enter", "args", args);
@@ -43,29 +43,27 @@ public class Application {
 		// assume we won't find any packages
 		Package[] packages = new Package[0];
 
-		// see if we have a test package list
+		// see if we have a package list
 		Resource resource = new ClassPathResource(PACKAGES_RESOURCES);
 		if (true == resource.exists()) {
 			// see if there's a test override
-			Resource testResource = new ClassPathResource(
-					PACKAGES_TEST_RESOURCES);
-			if (true == testResource.exists()) {
+			Resource testResource = new ClassPathResource(PACKAGES_TEST_RESOURCES);
+			// only use the override if the ignore envvar isn't set
+			if ((true == testResource.exists()) && (null == System.getenv(IGNORE_TEST_PACKAGES_ENVVAR))) {
 				LOG.debug("using test packages");
 				resource = testResource;
 			}
 			// now load the package list
 			try {
 				// parse the package list
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(resource.getInputStream()));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()));
 				String line = reader.readLine();
 				// setup the list of packages we read
 				List<Package> packageList = new LinkedList<Package>();
 				while (null != line) {
 					// find the package object
 					Package pkg = Class.forName(line).getPackage();
-					LOG.info("Adding package={} to component search path",
-							pkg.toString());
+					LOG.info("Adding package={} to component search path", pkg.toString());
 					// add it to the list
 					packageList.add(pkg);
 					// read next line
