@@ -1,4 +1,4 @@
 com.fancypants.rest.device.RestDeviceScanMe
 com.fancypants.device.service.impl.DeviceServiceImplScanMe
 com.fancypants.data.device.dynamodb.DataDeviceDynamoDBScanMe
-com.fancypants.message.rabbitmq.MessageRabbitMQScanMe
+com.fancypants.message.sns.MessageSNSScanMe

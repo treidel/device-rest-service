@@ -21,6 +21,7 @@ dependencies {
 	compile("ch.qos.logback:logback-access:$logbackVersion")
 	runtime("joda-time:joda-time:$jodatimeVersion")
 	runtime("org.codehaus.janino:janino:$janinoVersion")
+        runtime("org.codehaus.groovy:groovy-all:$groovyVersion")
 	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 	testCompile("org.apache.httpcomponents:httpclient:$apacheHttpcomponentsVersion")
 	testCompile("org.apache.httpcomponents:httpcore:$apacheHttpcomponentsVersion")

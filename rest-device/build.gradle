@@ -23,14 +23,18 @@ dependencies {
  		boot {
  			extendsFrom runtime
  		}
+                testBoot {
+                        extendsFrom testRuntime
+                }
 	}
 
 	compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
-	runtime("org.codehaus.groovy:groovy-all:$groovyVersion")
 	runtime("org.logback-extensions:logback-ext-loggly:$logbackExtensionsVersion")
+        testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 	testCompile("com.beust:jcommander:$jcommanderVersion")
 	boot project(':data-dynamodb')
-        boot project(':message-rabbitmq')
+	boot project(':message-sns')
+	boot project(':device-service')
 }
 /* use the application dependencies */
 bootRepackage {
