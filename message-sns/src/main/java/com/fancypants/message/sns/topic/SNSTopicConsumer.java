@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.AbortedException;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.model.DeleteMessageBatchRequestEntry;
@@ -109,6 +110,8 @@ public class SNSTopicConsumer implements TopicConsumer {
 					}
 					// ack all messages
 					sqsClient.deleteMessageBatch(sqsURL, deleteMessages);
+				} catch (AbortedException e) {
+					LOG.debug("aborted blocking waiting for message");
 				} catch (Exception e) {
 					LOG.error("exception={}", e);
 				}

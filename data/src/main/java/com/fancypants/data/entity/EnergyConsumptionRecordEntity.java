@@ -8,8 +8,10 @@ import org.springframework.data.annotation.Id;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EnergyConsumptionRecordEntity {
 	public static final String DEVICE_ATTRIBUTE = "device";
 	public static final String DATE_ATTRIBUTE = "date";
@@ -20,15 +22,13 @@ public class EnergyConsumptionRecordEntity {
 	private final Map<Integer, Float> energyMap;
 
 	@JsonCreator
-	public EnergyConsumptionRecordEntity(
-			@JsonProperty(DEVICE_ATTRIBUTE) String device,
+	public EnergyConsumptionRecordEntity(@JsonProperty(DEVICE_ATTRIBUTE) String device,
 			@JsonProperty(DATE_ATTRIBUTE) Date date) {
 		this.id = new EnergyConsumptionRecordId(device, date);
 		this.energyMap = new TreeMap<Integer, Float>();
 	}
 
-	public EnergyConsumptionRecordEntity(EnergyConsumptionRecordId id,
-			Map<Integer, Float> energy) {
+	public EnergyConsumptionRecordEntity(EnergyConsumptionRecordId id, Map<Integer, Float> energy) {
 		this.id = id;
 		this.energyMap = energy;
 	}

@@ -76,7 +76,7 @@ public abstract class AbstractDynamoDBRepository<E, I extends Serializable>
 			E entity = objectMapper.readValue(json, clazz);
 			return entity;
 		} catch (IOException e) {
-			LOG.error("invalid json", json);
+			LOG.error("invalid json {}", json);
 			return null;
 		}
 	}
