@@ -86,7 +86,8 @@ subprojects {
 		"jline":"$jlineVersion",
 		"log4j":"$log4jVersion",
 		"org.apache.zookeeper":"$zookeeperVersion",
-		"junit":"$junitVersion"
+		"junit":"$junitVersion",
+		"com.amazonaws":"$amazonAwsVersion"
 	]
 	/* define the package overrides */
 	def packageOverrides = [
