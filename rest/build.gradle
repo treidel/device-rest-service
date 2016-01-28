@@ -3,6 +3,14 @@ jar {
 	version = "$version"
 }
 
+repositories {
+	mavenCentral()
+        maven { url "http://repo.spring.io/libs-release" }
+        maven { url "http://clojars.org/repo" }
+	maven { url "https://oss.sonatype.org/content/repositories/snapshots"}
+}
+
+
 /* force the use of the command line compiler and pass option to avoid complaints about internal APIs */
 compileTestJava {
 	options.compilerArgs = ['-XDignore.symbol.file=true']
@@ -22,6 +30,8 @@ dependencies {
 	runtime("joda-time:joda-time:$jodatimeVersion")
 	runtime("org.codehaus.janino:janino:$janinoVersion")
         runtime("org.codehaus.groovy:groovy-all:$groovyVersion")
+	runtime("org.eluder.logback:logback-ext-cloudwatch-appender:1.0-SNAPSHOT")
+	runtime("org.eluder.logback:logback-ext-jackson:1.0-SNAPSHOT")
 	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 	testCompile("org.apache.httpcomponents:httpclient:$apacheHttpcomponentsVersion")
 	testCompile("org.apache.httpcomponents:httpcore:$apacheHttpcomponentsVersion")

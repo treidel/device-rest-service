@@ -29,7 +29,6 @@ dependencies {
 	}
 	
 	compile("org.springframework.boot:spring-boot-starter-websocket:$springBootVersion")
-	runtime("org.logback-extensions:logback-ext-loggly:$logbackExtensionsVersion")
 	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 	testCompile("commons-codec:commons-codec:$commonsCodecVersion")	
 	boot project(':device-proxy')
@@ -69,4 +68,5 @@ docker {
 distDocker {
 	exposePort 8004
 	setEnvironment 'SNS_TOPIC_PREFIX', 'device-'
+        setEnvironment 'CLOUDWATCH_LOGGROUPNAME', 'websocket-app'
 }

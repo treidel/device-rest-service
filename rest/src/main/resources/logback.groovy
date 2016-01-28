@@ -1,4 +1,5 @@
-import ch.qos.logback.ext.loggly.LogglyAppender;
+import org.eluder.logback.ext.cloudwatch.appender.CloudWatchAppender;
+import org.eluder.logback.ext.jackson.JacksonEncoder; 
 
 // report logging status to the console
 statusListener(OnConsoleStatusListener)
@@ -10,16 +11,23 @@ appender("CONSOLE", ConsoleAppender) {
   }
 }
 
-// see if we have a LOGGLY key
-def LOGGLY_KEY = System.getenv("LOGGLY_KEY")
-if (LOGGLY_KEY) {
-	// create the LOGGLY appender
-	appender("LOGGLY", LogglyAppender) {
-  		endpointUrl = "http://logs-01.loggly.com/inputs/${LOGGLY_KEY}/tag/logback"
-  		pattern = "%d{ISO8601} %p %t %c{0}.%M - %m%n"
+// see if we are using AWS cloudwatch
+def AWS_CLOUDWATCH_REGION = System.getenv("AWS_CLOUDWATCH_REGION")
+def CLOUDWATCH_LOGGROUPNAME = System.getenv("CLOUDWATCH_LOGGROUPNAME")
+if (AWS_CLOUDWATCH_REGION && CLOUDWATCH_LOGGROUPNAME) {
+	// use the hostname as the log stream name
+	def CLOUDWATCH_LOGSTREAMNAME = java.net.InetAddress.getLocalHost().getHostName();
+	// create the CloudWatch appender
+	appender("CLOUDWATCH", CloudWatchAppender) {
+  		region = "${AWS_CLOUDWATCH_REGION}"
+  		logGroup = "${CLOUDWATCH_LOGGROUPNAME}"
+  		logStream = "${CLOUDWATCH_LOGSTREAMNAME}"
+  		encoder(JacksonEncoder) {
+  			 timeStampFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+  		}
 	}
 	// send logs to both appenders
-	root(INFO, ["CONSOLE", "LOGGLY"])
+	root(INFO, ["CONSOLE", "CLOUDWATCH"])
 } else {
 	root(INFO, ["CONSOLE"])
 }

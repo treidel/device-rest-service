@@ -28,7 +28,6 @@ dependencies {
 		}
 	}
 	compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
-	runtime("org.logback-extensions:logback-ext-loggly:$logbackExtensionsVersion")
 	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 	testCompile("org.apache.httpcomponents:httpclient:$apacheHttpcomponentsVersion")
 	boot project(':data-dynamodb')
@@ -66,4 +65,5 @@ docker {
 
 distDocker {
 	exposePort 8002
+        setEnvironment 'CLOUDWATCH_LOGGROUPNAME', 'rest-app'
 }
