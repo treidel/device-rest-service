@@ -1,9 +1,6 @@
 language: java
-sudo: required
 jdk:
   - openjdk7
-services:
-  - docker
 before_install:
   - cat /etc/hosts # optionally check the content *before*
   - sudo hostname "$(hostname | cut -c1-63)"
