@@ -99,6 +99,7 @@ subprojects {
 		mavenCentral()
 		maven { url "http://repo.spring.io/libs-release" }
 		maven { url "http://clojars.org/repo" }
+		maven { url "https://oss.sonatype.org/content/repositories/snapshots"}
 	}
 	
 	/* global dependencies */

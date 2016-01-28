@@ -1,5 +1,5 @@
 <configuration>
-	<!-- always a good activate OnConsoleStatusListener -->
+	<!-- always a good idea to activate OnConsoleStatusListener -->
 	<statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
 
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -9,19 +9,19 @@
 		</encoder>
 	</appender>
 
-	<if condition='isDefined("LOGGLY_KEY")'>
+	<if condition='isDefined("AWS_CLOUDWATCH_REGION")'>
 		<then>
-			<appender name="LOGGLY"
-				class="ch.qos.logback.ext.loggly.LogglyBatchAppender">
-				<endpointUrl>http://logs-01.loggly.com/inputs/${LOGGLY_KEY}/tag/logback
-				</endpointUrl>
-				<layout class="ch.qos.logback.access.PatternLayout">
-					<pattern>%h %l %u [%t] "%r" %s %b "%i{Referer}" "%i{User-Agent}"
-					</pattern>
-				</layout>
+			<appender name="CLOUDWATCH"
+				class="org.eluder.logback.ext.cloudwatch.appender.CloudWatchAppender">
+				<region>${AWS_CLOUDWATCH_REGION}</region>
+				<logGroup>${CLOUDWATCH_LOGGROUPNAME}-access</logGroup>
+				<logStream>${HOSTNAME}</logStream>
+				<encoder>
+					<pattern>combined</pattern>
+				</encoder>
 			</appender>
 			<appender-ref ref="CONSOLE" />
-			<appender-ref ref="LOGGLY" />
+			<appender-ref ref="CLOUDWATCH" />
 		</then>
 		<else>
 			<appender-ref ref="CONSOLE" />
