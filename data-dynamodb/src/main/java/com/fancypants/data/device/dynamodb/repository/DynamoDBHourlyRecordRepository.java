@@ -29,7 +29,7 @@ public class DynamoDBHourlyRecordRepository
 			.getLogger(DynamoDBHourlyRecordRepository.class);
 
 	private static final long serialVersionUID = -1966466045228650857L;
-	private static final String TABLE_NAME = "hourly";
+	public static final String TABLE_NAME = "hourly";
 
 	public DynamoDBHourlyRecordRepository() {
 		super(EnergyConsumptionRecordEntity.class);

@@ -17,7 +17,7 @@ public class DynamoDBDeviceRepository extends
 			.getLogger(DynamoDBDeviceRepository.class);
 
 	private static final long serialVersionUID = 5702619783287693597L;
-	private static final String TABLE_NAME = "devices";
+	public static final String TABLE_NAME = "devices";
 
 	public DynamoDBDeviceRepository() {
 		super(DeviceEntity.class);

@@ -1,9 +1,7 @@
 package com.fancypants.test.data.dynamodb.config;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -18,16 +16,20 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.TableCollection;
+import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
+import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
+import com.amazonaws.services.dynamodbv2.model.KeyType;
+import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
+import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
 import com.fancypants.common.CommonScanMe;
+import com.fancypants.data.device.dynamodb.repository.DynamoDBDeviceRepository;
+import com.fancypants.data.device.dynamodb.repository.DynamoDBHourlyRecordRepository;
+import com.fancypants.data.entity.DeviceEntity;
+import com.fancypants.data.entity.EnergyConsumptionRecordEntity;
 import com.fancypants.test.data.dynamodb.TestDynamoDBDataScanMe;
-import com.spotify.docker.client.DefaultDockerClient;
-import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.messages.Container;
-import com.spotify.docker.client.messages.ContainerConfig;
-import com.spotify.docker.client.messages.ContainerCreation;
-import com.spotify.docker.client.messages.HostConfig;
-import com.spotify.docker.client.messages.Image;
-import com.spotify.docker.client.messages.PortBinding;
 
 @Configuration
 @ComponentScan(basePackageClasses = { CommonScanMe.class, TestDynamoDBDataScanMe.class })
@@ -36,13 +38,8 @@ public class DynamoDBDataTestConfig {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DynamoDBDataTestConfig.class);
 
-	private static final String DOCKER_IMAGE = "reideltj/dynamodb";
-
 	@Autowired
 	private DynamoDB dynamoDB;
-
-	private DockerClient docker = null;
-	private String containerId = null;
 
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
@@ -54,70 +51,45 @@ public class DynamoDBDataTestConfig {
 
 		LOG.trace("init enter");
 
-		// create the docker client
-		docker = new DefaultDockerClient("unix:///var/run/docker.sock");
+		// cleanup first
+		cleanup();
 
-		// boolean to indicate if the images already exists
-		boolean found = false;
-		List<Image> images = docker.listImages();
-		for (Image image : images) {
-			if (image.repoTags().contains(DOCKER_IMAGE + ":latest")) {
-				found = true;
-			}
+		// create the static tables
+		{
+			List<KeySchemaElement> deviceKeys = new ArrayList<>(1);
+			deviceKeys.add(new KeySchemaElement(DeviceEntity.HASH_ATTRIBUTE, KeyType.HASH));
+			List<AttributeDefinition> deviceAttributes = new ArrayList<>();
+			deviceAttributes.add(new AttributeDefinition(DeviceEntity.HASH_ATTRIBUTE, ScalarAttributeType.S));
+			Table deviceTable = dynamoDB.createTable(DynamoDBDeviceRepository.TABLE_NAME, deviceKeys, deviceAttributes,
+					new ProvisionedThroughput(1L, 1L));
+			deviceTable.waitForActive();
 		}
 
-		if (false == found) {
-			LOG.info("pulling image {}", DOCKER_IMAGE);
-			docker.pull(DOCKER_IMAGE);
+		{
+			List<KeySchemaElement> monthlyKeys = new ArrayList<>(1);
+			monthlyKeys.add(new KeySchemaElement(EnergyConsumptionRecordEntity.HASH_ATTRIBUTE, KeyType.HASH));
+			monthlyKeys.add(new KeySchemaElement(EnergyConsumptionRecordEntity.RANGE_ATTRIBUTE, KeyType.RANGE));
+			List<AttributeDefinition> monthlyAttributes = new ArrayList<>();
+			monthlyAttributes
+					.add(new AttributeDefinition(EnergyConsumptionRecordEntity.HASH_ATTRIBUTE, ScalarAttributeType.S));
+			monthlyAttributes
+					.add(new AttributeDefinition(EnergyConsumptionRecordEntity.RANGE_ATTRIBUTE, ScalarAttributeType.S));
+			Table monthlyTable = dynamoDB.createTable(DynamoDBHourlyRecordRepository.TABLE_NAME, monthlyKeys,
+					monthlyAttributes, new ProvisionedThroughput(1L, 1L));
+			monthlyTable.waitForActive();
 		}
 
-		// go through existing containers and kill any stale ones
-		List<Container> containers = docker.listContainers();
-		for (Container container : containers) {
-			if (true == container.image().equals(DOCKER_IMAGE)) {
-				LOG.info("killing stale container", container.id());
-				docker.stopContainer(container.id(), 30);
-				docker.removeContainer(container.id());
-			}
-		}
-
-		// setup the container
-		final String[] ports = { "8000" };
-		final ContainerConfig config = ContainerConfig.builder().image(DOCKER_IMAGE).exposedPorts(ports).build();
-		// bind container ports to host ports
-		final Map<String, List<PortBinding>> portBindings = new HashMap<>();
-		for (String port : ports) {
-			List<PortBinding> hostPorts = new ArrayList<>();
-			hostPorts.add(PortBinding.of("0.0.0.0", port));
-			portBindings.put(port, hostPorts);
-		}
-		final HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
-
-		LOG.info("creating container");
-		final ContainerCreation creation = docker.createContainer(config);
-		containerId = creation.id();
-		LOG.info("container {} created", containerId);
-
-		// Start container
-		LOG.info("starting container {}", containerId);
-		docker.startContainer(containerId, hostConfig);
-
-		// wait until we can query the list of tables
-		dynamoDB.listTables();
 	}
 
 	@PreDestroy
 	private void cleanup() throws Exception {
-		LOG.trace("fini enter");
-		if (null != docker) {
-			if (null != containerId) {
-				// stop the container
-				LOG.info("stopping container {}", containerId);
-				docker.stopContainer(containerId, 30);
-				LOG.info("removing container {}", containerId);
-				// remove the container
-				docker.removeContainer(containerId);
-			}
+		// query the list of tables
+		TableCollection<ListTablesResult> tables = dynamoDB.listTables();
+		// delete all existing tables
+		for (Table table : tables) {
+			LOG.info("removing old table: {}", table.getTableName());
+			table.delete();
+			table.waitForDelete();
 		}
 		LOG.trace("fini exit");
 	}
