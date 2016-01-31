@@ -26,10 +26,10 @@ import com.fancypants.rest.app.config.RESTAppWebConfig;
 import com.fancypants.rest.app.resource.PowerConsumptionRecordResource;
 import com.fancypants.test.data.values.DeviceValues;
 import com.fancypants.test.data.values.HourlyRecordValues;
-import com.fancypants.test.rest.app.config.TestConfiguration;
+import com.fancypants.test.rest.app.config.RestAppTestConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { RESTAppWebConfig.class, TestConfiguration.class })
+@SpringApplicationConfiguration(classes = { RESTAppWebConfig.class, RestAppTestConfig.class })
 @WebAppConfiguration
 @IntegrationTest
 public class UsageTest {

@@ -2,3 +2,4 @@ com.fancypants.websocket.app.WebSocketAppScanMe
 com.fancypants.test.data.TestDataScanMe
 com.fancypants.test.message.TestMessageScanMe
 com.fancypants.test.websocket.app.TestWebsocketAppScanMe
+com.fancypants.device.service.impl.DeviceServiceImplScanMe

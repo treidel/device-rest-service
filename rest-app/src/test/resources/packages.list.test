@@ -1,2 +1,3 @@
 com.fancypants.rest.app.RestAppScanMe
 com.fancypants.test.data.TestDataScanMe
+com.fancypants.device.service.impl.DeviceServiceImplScanMe

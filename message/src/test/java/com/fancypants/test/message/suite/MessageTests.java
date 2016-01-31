@@ -68,12 +68,9 @@ public class MessageTests {
 	public void publishTest() throws Exception {
 		createTest();
 		TopicProducer producer = topicManager.topicProducer(TEST_TOPIC);
-		try {
-			producer.start();
-			producer.sendMessage(TEST_MESSAGE);
-		} finally {
-			producer.close();
-		}
+		producer.start();
+		producer.sendMessage(TEST_MESSAGE);
+		producer.close();
 	}
 
 	@Test
@@ -89,9 +86,8 @@ public class MessageTests {
 
 		TopicConsumer consumer = topicManager.topicConsumer(TEST_TOPIC, handler);
 		Assert.notNull(consumer);
-		consumer.close();
 	}
- 
+
 	@Test
 	public void publishAndConsumeTest() throws Exception {
 		// create the topic
@@ -113,20 +109,19 @@ public class MessageTests {
 		// create a producer + consumer
 		TopicProducer producer = topicManager.topicProducer(TEST_TOPIC);
 		TopicConsumer consumer = topicManager.topicConsumer(TEST_TOPIC, handler);
-		try {
-			// start the consumer + producer
-			producer.start();
-			consumer.start();
-			// send the message
-			producer.sendMessage(TEST_MESSAGE);
-			// wait a little while for the response
-			semaphore.tryAcquire(1, TimeUnit.SECONDS);
-			// make sure we got a response
-			Assert.isTrue(1 == counter.get());
-		} finally {
-			producer.close();
-			consumer.close();
-		}
+
+		// start the consumer + producer
+		producer.start();
+		consumer.start();
+		// send the message
+		producer.sendMessage(TEST_MESSAGE);
+		// wait a little while for the response
+		semaphore.tryAcquire(1, TimeUnit.SECONDS);
+		// make sure we got a response
+		Assert.isTrue(1 == counter.get());
+		// stop both
+		producer.close();
+		consumer.close();
 	}
 
 }

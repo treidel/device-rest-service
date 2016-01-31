@@ -6,6 +6,7 @@ import javax.jms.Message;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 
@@ -17,8 +18,10 @@ public class TestTopicProducer implements TopicProducer {
 	private final JmsTemplate template;
 	private final Destination topic;
 
-	public TestTopicProducer(JmsTemplate template, Destination topic) {
-		this.template = template;
+	public TestTopicProducer(Destination topic) {
+		ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("vm://localhost");
+		template = new JmsTemplate(factory);
+		template.setPubSubDomain(true);		
 		this.topic = topic;
 	}
 
@@ -37,8 +40,8 @@ public class TestTopicProducer implements TopicProducer {
 	}
 
 	@Override
-	public void start() throws AbstractMessageException {
-		// nothing to do as we open a new connection for each message
+	public void start() {
+		// nothing to do as JMSTemplate will auto-connect as needed
 	}
 	
 	@Override

@@ -6,9 +6,9 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
 import com.fancypants.message.exception.AbstractMessageException;
@@ -21,9 +21,10 @@ public class TestTopicConsumer implements TopicConsumer {
 	private final SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 	private final TopicConsumer.Handler handler;
 
-	public TestTopicConsumer(JmsTemplate template, Destination topic, final Handler handler) {
+	public TestTopicConsumer(Destination topic, final Handler handler) {
+		ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("vm://localhost");
 		// setup the container
-		container.setConnectionFactory(template.getConnectionFactory());
+		container.setConnectionFactory(factory);
 		container.setDestination(topic);
 		// store the handler
 		this.handler = handler;

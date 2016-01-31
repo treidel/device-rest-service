@@ -252,7 +252,7 @@ project(':rest-app') {
 		compile project(':data')
 		testCompile project(path: ':data', configuration: 'testOutput')
 		testCompile project(path: ':rest', configuration: 'testOutput')
-		testCompile project(path: ':device', configuration: 'testOutput')
+		testCompile project(':device-service')
 	}
 }
 
@@ -264,6 +264,7 @@ project(':rest-device') {
 		testCompile project(path: ':data', configuration: 'testOutput')
 		testCompile project(path: ':rest', configuration: 'testOutput')
 		testCompile project(path: ':message', configuration: 'testOutput')
+		testCompile project(':device-service')
 	}
 }
 
@@ -284,6 +285,7 @@ project(':websocket-app') {
 		testCompile project(path: ':data', configuration: 'testOutput')
 		testCompile project(path: ':websocket', configuration: 'testOutput')
 		testCompile project(path: ':message', configuration: 'testOutput')
+		testCompile project(':device-service')
 	}
 }
 
