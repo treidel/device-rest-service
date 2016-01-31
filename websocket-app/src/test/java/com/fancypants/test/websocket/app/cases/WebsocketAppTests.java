@@ -84,10 +84,10 @@ public class WebsocketAppTests {
 		WebSocketHttpHeaders headers = new WebSocketHttpHeaders(createAuthenticationHeaders());
 		// connect
 		ListenableFuture<WebSocketSession> future = websocketClient.doHandshake(simulator, headers, TEST_URI);
-		Assert.assertTrue(future.get().isOpen());
+		future.get();
 
 		// wait for the simulator to finish
-		simulator.block(5, TimeUnit.HOURS);
+		simulator.block(5, TimeUnit.SECONDS);
 
 		// make sure it completed as expected
 		Assert.assertTrue(simulator.finished());
@@ -114,7 +114,7 @@ public class WebsocketAppTests {
 		WebSocketHttpHeaders headers = new WebSocketHttpHeaders(createAuthenticationHeaders());
 		// connect
 		ListenableFuture<WebSocketSession> future = websocketClient.doHandshake(simulator, headers, TEST_URI);
-		Assert.assertTrue(future.get().isOpen());
+		future.get();
 
 		// wait for the simulator to finish
 		simulator.block(5, TimeUnit.SECONDS);
@@ -150,13 +150,16 @@ public class WebsocketAppTests {
 		WebSocketHttpHeaders headers = new WebSocketHttpHeaders(createAuthenticationHeaders());
 		// connect
 		ListenableFuture<WebSocketSession> future = websocketClient.doHandshake(simulator, headers, TEST_URI);
-		Assert.assertTrue(future.get().isOpen());
+		future.get();
+
+		// wait a second to send a notification
+		Thread.sleep(1000);
 
 		// send a notification
 		String json = objectMapper.writeValueAsString(HourlyRecordValues.RECORD1);
 		producer.sendMessage(json);
 
-		// wait for the simulator to finish
+		// wait for the STOMP connection to finish
 		simulator.block(5, TimeUnit.SECONDS);
 
 		// make sure it completed as expected
