@@ -38,35 +38,14 @@ dependencies {
 /* use the application dependencies */
 bootRepackage {
 	customConfiguration = "boot"
+	mainClass = 'com.fancypants.common.application.Application'
 }
-
-/* include the application dependencies in the distribution */
-applicationDistribution.from(configurations.boot) {
-	into "lib"
-}
-
-/* add application dependencies to the classpath */
-startScripts {
-	classpath += configurations.boot
-	doLast {
-		logger.info(unixScript.text)
-		unixScript.text = unixScript.text.replace('CLASSPATH=', 'CLASSPATH=$APP_HOME:')
-		logger.info(unixScript.text)
-	}
-}
-
-/* configure the memory usage for the JVM */
-applicationDefaultJvmArgs = ["-Xms128M", "-Xmx128M"]
 
 group = 'reideltj'
-mainClassName = 'com.fancypants.common.application.Application'
 
-docker {
-	baseImage = 'java:7'
-}
-
-distDocker {
-	exposePort 8004
-	setEnvironment 'SNS_TOPIC_PREFIX', 'device-'
-        setEnvironment 'CLOUDWATCH_LOGGROUPNAME', 'websocket-app'
+task buildDocker(type: Docker) {
+	/* use the Dockerfile as a baseline */
+	dockerfile file('src/main/docker/Dockerfile')
+	/* add the built jar file */
+	addFile jar.archivePath, '/lib/app.jar'
 }

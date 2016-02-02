@@ -2,7 +2,6 @@ package com.fancypants.test.data.config;
 
 import javax.annotation.PostConstruct;
 
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.context.annotation.ComponentScan;
@@ -18,8 +17,7 @@ import com.fancypants.test.data.values.DeviceValues;
 import com.fancypants.test.data.values.HourlyRecordValues;
 
 @Configuration
-@ComponentScan(basePackageClasses = { CommonScanMe.class, DataScanMe.class,
-		TestDataScanMe.class })
+@ComponentScan(basePackageClasses = { CommonScanMe.class, DataScanMe.class, TestDataScanMe.class })
 public class TestDataConfig {
 
 	@Autowired
@@ -29,7 +27,7 @@ public class TestDataConfig {
 	private HourlyRecordRepository hourlyRecordRepository;
 
 	@PostConstruct
-	@ConditionalOnMissingClass(Test.class)
+	@ConditionalOnMissingClass("org.junit.Test")
 	private void init() {
 		// inject default data
 		deviceRepository.save(DeviceValues.DEVICEENTITY);

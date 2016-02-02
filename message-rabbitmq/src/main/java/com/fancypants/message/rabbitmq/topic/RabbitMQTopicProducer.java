@@ -1,6 +1,7 @@
 package com.fancypants.message.rabbitmq.topic;
 
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,7 @@ public class RabbitMQTopicProducer implements TopicProducer {
 		// close the channel
 		try {
 			channel.close();
-		} catch (IOException e) {
+		} catch (IOException | TimeoutException e) {
 			LOG.error("error closing channel", e);
 		}
 		LOG.trace("close exit");
