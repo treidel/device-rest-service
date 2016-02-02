@@ -43,7 +43,7 @@ bootRepackage {
 
 group = 'reideltj'
 
-task buildDocker(type: Docker) {
+task buildDocker(type: Docker, dependsOn: assemble) {
 	/* use the Dockerfile as a baseline */
 	dockerfile file('src/main/docker/Dockerfile')
 	/* add the built jar file */
