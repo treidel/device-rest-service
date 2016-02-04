@@ -3,7 +3,7 @@ services:
   - docker
 language: java
 jdk:
-  - openjdk7
+  - oraclejdk7
 before_install:
   - cat /etc/hosts # optionally check the content *before*
   - sudo hostname "$(hostname | cut -c1-63)"
@@ -11,7 +11,5 @@ before_install:
   - cat /etc/hosts # optionally check the content *after*
   - export BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
   - echo $BUILD_NUMBER
-script:
-  - gradle assemble
-  - gradle check
+ after_success:
   - gradle buildDocker
