@@ -9,6 +9,8 @@ before_install:
   - sudo hostname "$(hostname | cut -c1-63)"
   - sed -e "s/^\\(127\\.0\\.0\\.1.*\\)/\\1 $(hostname | cut -c1-63)/" /etc/hosts | sudo tee /etc/hosts
   - cat /etc/hosts # optionally check the content *after*
+  - sudo apt-get -qq update # update apt packge list
+  - sudo apt-get install -y haveged # install entropy package to make random numbers work
   - export BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
   - echo $BUILD_NUMBER
 after_success:
