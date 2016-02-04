@@ -16,5 +16,5 @@ before_install:
 after_success:
   - gradle buildDocker
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWORD
-  - docker images | grep "$DOCKER_USER/" | while read l; do TAG=`echo $l | awk '{print $1}'`; IMAGE=`echo $l | awk '{print $3}'`; docker tag $IMAGE $TAG/latest; docker push $TAG/latest; done
+  - docker images | grep "$DOCKER_USER/" | while read l; do TAG=`echo $l | awk '{print $1}'`; IMAGE=`echo $l | awk '{print $3}'`; docker tag $IMAGE $TAG:latest; docker push $TAG:latest; done
   - docker images
