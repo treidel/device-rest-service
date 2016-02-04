@@ -15,4 +15,4 @@ before_install:
   - echo $BUILD_NUMBER
 after_success:
   - gradle buildDocker
-  - docker images
+  - docker images | grep "reideltj/" | while read l; do TAG=`echo $l | awk '{print $1}'`; IMAGE=`echo $l | awk '{print $3}'`; docker tag $IMAGE $TAG/latest; done
