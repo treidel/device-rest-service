@@ -5,7 +5,7 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Service;
 
 import com.fancypants.common.exception.AbstractServiceException;
@@ -18,7 +18,7 @@ import com.fancypants.message.exception.AbstractMessageException;
 import com.fancypants.message.topic.TopicManager;
 
 @Service
-@Lazy
+@ConditionalOnMissingBean(name = "deviceServiceProxy")
 public class DeviceServiceImpl implements DeviceService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DeviceServiceImpl.class);

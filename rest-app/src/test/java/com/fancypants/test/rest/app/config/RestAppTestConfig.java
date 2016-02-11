@@ -11,7 +11,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.hateoas.hal.Jackson2HalModule;
@@ -29,9 +28,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
-@EnableAutoConfiguration
-@ComponentScan(basePackageClasses = { RestAppTestConfig.class,
-		TestDataScanMe.class })
+@ComponentScan(basePackageClasses = { RestAppTestConfig.class, TestDataScanMe.class })
 public class RestAppTestConfig {
 
 	@Bean
@@ -39,19 +36,16 @@ public class RestAppTestConfig {
 		// create an HttpClient
 		HttpClientBuilder builder = HttpClientBuilder.create();
 		CredentialsProvider provider = new BasicCredentialsProvider();
-		Credentials credentials = new UsernamePasswordCredentials(
-				DeviceValues.DEVICEENTITY.getDevice(),
+		Credentials credentials = new UsernamePasswordCredentials(DeviceValues.DEVICEENTITY.getDevice(),
 				DeviceValues.DEVICEENTITY.getSerialNumber());
 		provider.setCredentials(AuthScope.ANY, credentials);
-		HttpClient client = builder.setDefaultCredentialsProvider(provider)
-				.build();
+		HttpClient client = builder.setDefaultCredentialsProvider(provider).build();
 		return client;
 	}
 
 	@Bean
 	@Autowired
-	public HttpComponentsClientHttpRequestFactory httpClientFactory(
-			HttpClient client) {
+	public HttpComponentsClientHttpRequestFactory httpClientFactory(HttpClient client) {
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
 		factory.setHttpClient(client);
 		return factory;
@@ -59,8 +53,7 @@ public class RestAppTestConfig {
 
 	@Bean
 	@Autowired
-	public RestTemplate restTemplate(
-			HttpComponentsClientHttpRequestFactory factory) {
+	public RestTemplate restTemplate(HttpComponentsClientHttpRequestFactory factory) {
 		// create the object mapper
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new JodaModule());
@@ -71,10 +64,8 @@ public class RestAppTestConfig {
 		// create the message converter
 		MappingJackson2HttpMessageConverter jsonMessageConverter = new MappingJackson2HttpMessageConverter();
 		jsonMessageConverter.setObjectMapper(objectMapper);
-		jsonMessageConverter.setSupportedMediaTypes(MediaType
-				.parseMediaTypes("application/hal+json,application/json"));
-		List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>(
-				1);
+		jsonMessageConverter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json,application/json"));
+		List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>(1);
 		messageConverters.add(jsonMessageConverter);
 		// create the REST template
 		RestTemplate restTemplate = new RestTemplate(factory);

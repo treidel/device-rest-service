@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,7 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import ch.qos.logback.access.tomcat.LogbackValve;
 
 @Configuration
+@EnableAutoConfiguration
 public class RESTWebConfig {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RESTWebConfig.class);

@@ -11,11 +11,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-@EnableAutoConfiguration
 public class Application {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Application.class);

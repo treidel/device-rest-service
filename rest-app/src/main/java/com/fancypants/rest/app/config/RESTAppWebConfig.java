@@ -1,7 +1,6 @@
 package com.fancypants.rest.app.config;
 
 import org.apache.catalina.connector.Connector;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;
@@ -19,7 +18,6 @@ import com.fancypants.rest.app.RestAppScanMe;
 import com.fancypants.usage.UsageScanMe;
 
 @Configuration
-@EnableAutoConfiguration
 @ComponentScan(basePackageClasses = { CommonScanMe.class, AppScanMe.class,
 		RestScanMe.class, RestAppScanMe.class, DataScanMe.class,
 		DeviceScanMe.class, UsageScanMe.class })

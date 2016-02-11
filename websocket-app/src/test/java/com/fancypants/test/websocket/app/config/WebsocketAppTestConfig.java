@@ -1,7 +1,6 @@
 package com.fancypants.test.websocket.app.config;
 
 import org.junit.Test;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -13,7 +12,6 @@ import com.fancypants.test.data.TestDataScanMe;
 import com.fancypants.test.message.TestMessageScanMe;
 
 @Configuration
-@EnableAutoConfiguration
 @ComponentScan(basePackageClasses = { WebsocketAppTestConfig.class, TestDataScanMe.class, TestMessageScanMe.class })
 public class WebsocketAppTestConfig {
 
