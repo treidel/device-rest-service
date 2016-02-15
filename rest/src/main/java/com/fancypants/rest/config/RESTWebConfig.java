@@ -2,6 +2,8 @@ package com.fancypants.rest.config;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -9,13 +11,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
 import org.springframework.util.FileCopyUtils;
 
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
@@ -24,7 +29,7 @@ import ch.qos.logback.access.tomcat.LogbackValve;
 
 @Configuration
 @EnableAutoConfiguration
-public class RESTWebConfig {
+public class RESTWebConfig extends WebMvcAutoConfiguration.WebMvcAutoConfigurationAdapter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RESTWebConfig.class);
 
@@ -72,4 +77,18 @@ public class RESTWebConfig {
 		return tomcat;
 	}
 
+	@Override
+	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+		LOG.trace("configureMessageConverters enter {}={}", "converters", converters);
+		// pick up the default converters
+		List<HttpMessageConverter<?>> baseConverters = new ArrayList<HttpMessageConverter<?>>();
+		super.configureMessageConverters(baseConverters);
+		// add all the converters except the Jaxb converter
+		for (HttpMessageConverter<?> c : baseConverters) {
+			if (false == (c instanceof Jaxb2RootElementHttpMessageConverter)) {
+				converters.add(c);
+			}
+		}
+		LOG.trace("configureMessageConverters exit");
+	}
 }
