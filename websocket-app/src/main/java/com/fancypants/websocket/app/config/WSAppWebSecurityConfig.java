@@ -30,7 +30,7 @@ public class WSAppWebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// 5) enable HTTP basic authentication
 		// 6) disable cross-domain request forwarding protection as this
 		// prevents HTML5 apps from connecting
-		http.authorizeRequests().antMatchers("/index.html").permitAll().and()
+		http.authorizeRequests().antMatchers("/*.html").permitAll().and()
 				.authorizeRequests().anyRequest().authenticated().and()
 				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()

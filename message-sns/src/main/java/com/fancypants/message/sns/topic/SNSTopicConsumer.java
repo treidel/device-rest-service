@@ -108,8 +108,10 @@ public class SNSTopicConsumer implements TopicConsumer {
 								message.getMessageId(), message.getReceiptHandle());
 						deleteMessages.add(deleteMessageEntry);
 					}
-					// ack all messages
-					sqsClient.deleteMessageBatch(sqsURL, deleteMessages);
+					// ack all messages (if there were any)
+					if (0 != deleteMessages.size()) {
+						sqsClient.deleteMessageBatch(sqsURL, deleteMessages);
+					}
 				} catch (AbortedException e) {
 					LOG.debug("aborted blocking waiting for message");
 				} catch (Exception e) {
